@@ -1,25 +1,21 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
+import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
+import jakarta.xml.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.XmlType;
-import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
-
+import java.util.Objects;
 
 /**
- * <TimePrimitive>
+ * {@code <TimePrimitive>}
  * <p>
- * Associates this Feature with a period of time (<TimeSpan>) or a point in time (<TimeStamp>). 
+ * Associates this Feature with a period of time ({@code <TimeSpan>}) or a point in time ({@code <TimeStamp>}).
  * </p>
  * <p>
  * This is an abstract element and cannot be used directly in a KML file. This element 
- * is extended by the <TimeSpan> and <TimeStamp> elements. 
+ * is extended by the {@code <TimeSpan>} and {@code <TimeStamp>} elements. 
  * </p>
  * 
  * Syntax: 
@@ -29,11 +25,11 @@ import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
  * &lt;!-- /TimePrimitive --&gt;</strong></pre>
  * 
  * Extends: 
- * @see: <Object>
+ *
  * 
  * Extended By: 
- * @see: <TimeSpan>
- * @see: <TimeStamp>
+ *
+ *
  * 
  * 
  * 
@@ -56,12 +52,12 @@ public abstract class TimePrimitive
     @XmlSchemaType(name = "anySimpleType")
     protected List<Object> timePrimitiveSimpleExtension;
     /**
-     * <Object>
+     * {@code <Object>}
      * <p>
      * This is an abstract base class and cannot be used directly in a KML file. It provides 
      * the id attribute, which allows unique identification of a KML element, and the targetId 
      * attribute, which is used to reference objects that have already been loaded into 
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
      * be used. 
      * </p>
      * 
@@ -81,7 +77,7 @@ public abstract class TimePrimitive
     }
 
     /**
-     * @see timePrimitiveSimpleExtension
+     *
      * 
      */
     public List<Object> getTimePrimitiveSimpleExtension() {
@@ -92,7 +88,7 @@ public abstract class TimePrimitive
     }
 
     /**
-     * @see timePrimitiveObjectExtension
+     *
      * 
      */
     public List<AbstractObject> getTimePrimitiveObjectExtension() {
@@ -103,54 +99,34 @@ public abstract class TimePrimitive
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = ((prime*result)+((timePrimitiveSimpleExtension == null)? 0 :timePrimitiveSimpleExtension.hashCode()));
-        result = ((prime*result)+((timePrimitiveObjectExtension == null)? 0 :timePrimitiveObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        TimePrimitive that = (TimePrimitive) object;
+        return Objects.equals(timePrimitiveSimpleExtension, that.timePrimitiveSimpleExtension)
+                && Objects.equals(timePrimitiveObjectExtension, that.timePrimitiveObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof TimePrimitive) == false) {
-            return false;
-        }
-        TimePrimitive other = ((TimePrimitive) obj);
-        if (timePrimitiveSimpleExtension == null) {
-            if (other.timePrimitiveSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (timePrimitiveSimpleExtension.equals(other.timePrimitiveSimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (timePrimitiveObjectExtension == null) {
-            if (other.timePrimitiveObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (timePrimitiveObjectExtension.equals(other.timePrimitiveObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(timePrimitiveSimpleExtension);
+        result = 31 * result + Objects.hashCode(timePrimitiveObjectExtension);
+        return result;
     }
 
     /**
-     * @see timePrimitiveSimpleExtension
+     *
      * 
      * @param timePrimitiveSimpleExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setTimePrimitiveSimpleExtension(final List<Object> timePrimitiveSimpleExtension) {
         this.timePrimitiveSimpleExtension = timePrimitiveSimpleExtension;
@@ -162,7 +138,7 @@ public abstract class TimePrimitive
      * @param timePrimitiveSimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public TimePrimitive addToTimePrimitiveSimpleExtension(final Object timePrimitiveSimpleExtension) {
         this.getTimePrimitiveSimpleExtension().add(timePrimitiveSimpleExtension);
@@ -170,9 +146,10 @@ public abstract class TimePrimitive
     }
 
     /**
-     * @see timePrimitiveObjectExtension
+     *
      * 
      * @param timePrimitiveObjectExtension
+     *     Objects of the following type are allowed in the list: {@link AbstractObject}
      */
     public void setTimePrimitiveObjectExtension(final List<AbstractObject> timePrimitiveObjectExtension) {
         this.timePrimitiveObjectExtension = timePrimitiveObjectExtension;
@@ -184,7 +161,7 @@ public abstract class TimePrimitive
      * @param timePrimitiveObjectExtension
      *     Objects of the following type are allowed in the list: {@link AbstractObject}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public TimePrimitive addToTimePrimitiveObjectExtension(final AbstractObject timePrimitiveObjectExtension) {
         this.getTimePrimitiveObjectExtension().add(timePrimitiveObjectExtension);
@@ -192,7 +169,7 @@ public abstract class TimePrimitive
     }
 
     /**
-     * @see objectSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -210,7 +187,7 @@ public abstract class TimePrimitive
 
     /**
      * fluent setter
-     * @see #setTimePrimitiveSimpleExtension(List<Object>)
+     *
      * 
      * @param timePrimitiveSimpleExtension
      *     required parameter
@@ -222,7 +199,7 @@ public abstract class TimePrimitive
 
     /**
      * fluent setter
-     * @see #setTimePrimitiveObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param timePrimitiveObjectExtension
      *     required parameter

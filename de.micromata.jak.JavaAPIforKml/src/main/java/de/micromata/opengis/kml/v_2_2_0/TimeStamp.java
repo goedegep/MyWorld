@@ -1,24 +1,20 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
+import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
+import jakarta.xml.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
-
+import java.util.Objects;
 
 /**
- * <TimeStamp>
+ * {@code <TimeStamp>}
  * <p>
  * Represents a single moment in time. This is a simple element and contains no children. 
  * Its value is a dateTime, specified in XML time (see XML Schema Part 2: Datatypes 
  * Second Edition). The precision of the TimeStamp is dictated by the dateTime value 
- * in the <when> element. 
+ * in the {@code <when>} element.
  * </p>
  * 
  * Syntax: 
@@ -27,11 +23,11 @@ import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
  * <strong>&lt;/TimeStamp&gt;</strong> </pre>
  * 
  * Extends: 
- * @see: <TimePrimitive>
+ *
  * 
  * Contained By: 
- * @see: <Feature>
- * @see: A copy of the <TimeSpan> and <TimeStamp> elements, in the extension namespace. This allows for the inclusion of time values in AbstractViews (<Camera> and <LookAt>). Time values are used to control historical imagery, sunlight, and visibility of time-stamped Features.
+ *
+ *
  * 
  * 
  * 
@@ -49,7 +45,7 @@ public class TimeStamp
 {
 
     /**
-     * <when>
+     * {@code <when>}
      * <p>
      * Specifies a single moment in time. The value is a dateTime, which can be one of 
      * the following: dateTime gives second resolution date gives day resolution gYearMonth 
@@ -64,12 +60,12 @@ public class TimeStamp
     @XmlSchemaType(name = "anySimpleType")
     protected List<Object> timeStampSimpleExtension;
     /**
-     * <Object>
+     * {@code <Object>}
      * <p>
      * This is an abstract base class and cannot be used directly in a KML file. It provides 
      * the id attribute, which allows unique identification of a KML element, and the targetId 
      * attribute, which is used to reference objects that have already been loaded into 
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
      * be used. 
      * </p>
      * 
@@ -89,7 +85,7 @@ public class TimeStamp
     }
 
     /**
-     * @see when
+     *
      * 
      * @return
      *     possible object is
@@ -101,7 +97,7 @@ public class TimeStamp
     }
 
     /**
-     * @see when
+     *
      * 
      * @param value
      *     allowed object is
@@ -113,7 +109,7 @@ public class TimeStamp
     }
 
     /**
-     * @see timeStampSimpleExtension
+     *
      * 
      */
     public List<Object> getTimeStampSimpleExtension() {
@@ -124,7 +120,7 @@ public class TimeStamp
     }
 
     /**
-     * @see timeStampObjectExtension
+     *
      * 
      */
     public List<AbstractObject> getTimeStampObjectExtension() {
@@ -135,64 +131,36 @@ public class TimeStamp
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = ((prime*result)+((when == null)? 0 :when.hashCode()));
-        result = ((prime*result)+((timeStampSimpleExtension == null)? 0 :timeStampSimpleExtension.hashCode()));
-        result = ((prime*result)+((timeStampObjectExtension == null)? 0 :timeStampObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        TimeStamp timeStamp = (TimeStamp) object;
+        return Objects.equals(when, timeStamp.when)
+                && Objects.equals(timeStampSimpleExtension, timeStamp.timeStampSimpleExtension)
+                && Objects.equals(timeStampObjectExtension, timeStamp.timeStampObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof TimeStamp) == false) {
-            return false;
-        }
-        TimeStamp other = ((TimeStamp) obj);
-        if (when == null) {
-            if (other.when!= null) {
-                return false;
-            }
-        } else {
-            if (when.equals(other.when) == false) {
-                return false;
-            }
-        }
-        if (timeStampSimpleExtension == null) {
-            if (other.timeStampSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (timeStampSimpleExtension.equals(other.timeStampSimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (timeStampObjectExtension == null) {
-            if (other.timeStampObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (timeStampObjectExtension.equals(other.timeStampObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(when);
+        result = 31 * result + Objects.hashCode(timeStampSimpleExtension);
+        result = 31 * result + Objects.hashCode(timeStampObjectExtension);
+        return result;
     }
 
     /**
-     * @see timeStampSimpleExtension
+     *
      * 
      * @param timeStampSimpleExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setTimeStampSimpleExtension(final List<Object> timeStampSimpleExtension) {
         this.timeStampSimpleExtension = timeStampSimpleExtension;
@@ -204,7 +172,7 @@ public class TimeStamp
      * @param timeStampSimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public TimeStamp addToTimeStampSimpleExtension(final Object timeStampSimpleExtension) {
         this.getTimeStampSimpleExtension().add(timeStampSimpleExtension);
@@ -212,9 +180,10 @@ public class TimeStamp
     }
 
     /**
-     * @see timeStampObjectExtension
+     *
      * 
      * @param timeStampObjectExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setTimeStampObjectExtension(final List<AbstractObject> timeStampObjectExtension) {
         this.timeStampObjectExtension = timeStampObjectExtension;
@@ -226,7 +195,7 @@ public class TimeStamp
      * @param timeStampObjectExtension
      *     Objects of the following type are allowed in the list: {@link AbstractObject}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public TimeStamp addToTimeStampObjectExtension(final AbstractObject timeStampObjectExtension) {
         this.getTimeStampObjectExtension().add(timeStampObjectExtension);
@@ -234,7 +203,7 @@ public class TimeStamp
     }
 
     /**
-     * @see objectSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -251,7 +220,7 @@ public class TimeStamp
     }
 
     /**
-     * @see timePrimitiveSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -268,7 +237,7 @@ public class TimeStamp
     }
 
     /**
-     * @see timePrimitiveObjectExtension
+     *
      * 
      */
     @Obvious
@@ -286,7 +255,7 @@ public class TimeStamp
 
     /**
      * fluent setter
-     * @see #setWhen(String)
+     *
      * 
      * @param when
      *     required parameter
@@ -298,7 +267,7 @@ public class TimeStamp
 
     /**
      * fluent setter
-     * @see #setTimeStampSimpleExtension(List<Object>)
+     *
      * 
      * @param timeStampSimpleExtension
      *     required parameter
@@ -310,7 +279,7 @@ public class TimeStamp
 
     /**
      * fluent setter
-     * @see #setTimeStampObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param timeStampObjectExtension
      *     required parameter

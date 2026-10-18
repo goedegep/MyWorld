@@ -4,9 +4,13 @@ import goedegep.travels.model.Travel;
 import goedegep.util.datetime.FlexDateFormat;
 
 
+/**
+ * Abstract base class for converting Travel objects to text.
+ */
 public class TravelToTextConverterAbstract {
   protected static final FlexDateFormat FDF = new FlexDateFormat();
 
+  // TODO is this the same as travel.getId()?
   protected String getTravelTitle(Travel travel) {
     StringBuilder buf = new StringBuilder();
     

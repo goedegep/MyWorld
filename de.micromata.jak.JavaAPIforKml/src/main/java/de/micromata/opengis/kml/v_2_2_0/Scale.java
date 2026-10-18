@@ -1,28 +1,24 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
+import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
+import jakarta.xml.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
-
+import java.util.Objects;
 
 /**
- * <scale>
+ * {@code <scale>}
  * <p>
- * Note: The <geomScale> tag has been deprecated. Use <scale> instead. 
+ * Note: The {@code <geomScale>} tag has been deprecated. Use {@code <scale>} instead. 
  * </p>
  * <p>
  * Resizes the icon. 
  * </p>
  * <p>
- * Scales a model along the x, y, and z axes in the model's coordinate space. <Scale> 
- * <x>2.5</x> <y>2.5</y> <z>3.5</z> </Scale> 
+ * Scales a model along the x, y, and z axes in the model's coordinate space. {@code <scale>
+ * <x>2.5</x> <y>2.5</y> <z>3.5</z> </Scale> }
  * </p>
  * 
  * 
@@ -43,9 +39,9 @@ public class Scale
 {
 
     /**
-     * <x>, <y>, <w>, <h>
+     * {@code <x>, <y>, <w>, <h>}
      * <p>
-     * Use of these elements within <Icon> has been deprecated. 
+     * Use of these elements within {@code <Icon>}has been deprecated. 
      * </p>
      * 
      * 
@@ -61,12 +57,12 @@ public class Scale
     @XmlSchemaType(name = "anySimpleType")
     protected List<Object> scaleSimpleExtension;
     /**
-     * <Object>
+     * {@code <Object>}
      * <p>
      * This is an abstract base class and cannot be used directly in a KML file. It provides 
      * the id attribute, which allows unique identification of a KML element, and the targetId 
      * attribute, which is used to reference objects that have already been loaded into 
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
      * be used. 
      * </p>
      * 
@@ -86,7 +82,7 @@ public class Scale
     }
 
     /**
-     * @see x
+     *
      * 
      * @return
      *     possible object is
@@ -98,7 +94,7 @@ public class Scale
     }
 
     /**
-     * @see x
+     *
      * 
      * @param value
      *     allowed object is
@@ -110,7 +106,7 @@ public class Scale
     }
 
     /**
-     * @see y
+     *
      * 
      * @return
      *     possible object is
@@ -122,7 +118,7 @@ public class Scale
     }
 
     /**
-     * @see y
+     *
      * 
      * @param value
      *     allowed object is
@@ -134,7 +130,7 @@ public class Scale
     }
 
     /**
-     * @see z
+     *
      * 
      * @return
      *     possible object is
@@ -146,7 +142,7 @@ public class Scale
     }
 
     /**
-     * @see z
+     *
      * 
      * @param value
      *     allowed object is
@@ -158,7 +154,7 @@ public class Scale
     }
 
     /**
-     * @see scaleSimpleExtension
+     *
      * 
      */
     public List<Object> getScaleSimpleExtension() {
@@ -169,7 +165,7 @@ public class Scale
     }
 
     /**
-     * @see scaleObjectExtension
+     *
      * 
      */
     public List<AbstractObject> getScaleObjectExtension() {
@@ -180,70 +176,40 @@ public class Scale
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        long temp;
-        temp = Double.doubleToLongBits(x);
-        result = ((prime*result)+((int)(temp^(temp >>>(32)))));
-        temp = Double.doubleToLongBits(y);
-        result = ((prime*result)+((int)(temp^(temp >>>(32)))));
-        temp = Double.doubleToLongBits(z);
-        result = ((prime*result)+((int)(temp^(temp >>>(32)))));
-        result = ((prime*result)+((scaleSimpleExtension == null)? 0 :scaleSimpleExtension.hashCode()));
-        result = ((prime*result)+((scaleObjectExtension == null)? 0 :scaleObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        Scale scale = (Scale) object;
+        return Double.compare(x, scale.x) == 0
+                && Double.compare(y, scale.y) == 0
+                && Double.compare(z, scale.z) == 0
+                && Objects.equals(scaleSimpleExtension, scale.scaleSimpleExtension)
+                && Objects.equals(scaleObjectExtension, scale.scaleObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof Scale) == false) {
-            return false;
-        }
-        Scale other = ((Scale) obj);
-        if (x!= other.x) {
-            return false;
-        }
-        if (y!= other.y) {
-            return false;
-        }
-        if (z!= other.z) {
-            return false;
-        }
-        if (scaleSimpleExtension == null) {
-            if (other.scaleSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (scaleSimpleExtension.equals(other.scaleSimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (scaleObjectExtension == null) {
-            if (other.scaleObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (scaleObjectExtension.equals(other.scaleObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Double.hashCode(x);
+        result = 31 * result + Double.hashCode(y);
+        result = 31 * result + Double.hashCode(z);
+        result = 31 * result + Objects.hashCode(scaleSimpleExtension);
+        result = 31 * result + Objects.hashCode(scaleObjectExtension);
+        return result;
     }
 
     /**
-     * @see scaleSimpleExtension
+     *
      * 
      * @param scaleSimpleExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setScaleSimpleExtension(final List<Object> scaleSimpleExtension) {
         this.scaleSimpleExtension = scaleSimpleExtension;
@@ -255,7 +221,7 @@ public class Scale
      * @param scaleSimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Scale addToScaleSimpleExtension(final Object scaleSimpleExtension) {
         this.getScaleSimpleExtension().add(scaleSimpleExtension);
@@ -263,9 +229,10 @@ public class Scale
     }
 
     /**
-     * @see scaleObjectExtension
+     *
      * 
      * @param scaleObjectExtension
+     *     Objects of the following type are allowed in the list: {@link AbstractObject}
      */
     public void setScaleObjectExtension(final List<AbstractObject> scaleObjectExtension) {
         this.scaleObjectExtension = scaleObjectExtension;
@@ -277,7 +244,7 @@ public class Scale
      * @param scaleObjectExtension
      *     Objects of the following type are allowed in the list: {@link AbstractObject}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Scale addToScaleObjectExtension(final AbstractObject scaleObjectExtension) {
         this.getScaleObjectExtension().add(scaleObjectExtension);
@@ -285,7 +252,7 @@ public class Scale
     }
 
     /**
-     * @see objectSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -303,7 +270,7 @@ public class Scale
 
     /**
      * fluent setter
-     * @see #setX(double)
+     *
      * 
      * @param x
      *     required parameter
@@ -315,7 +282,7 @@ public class Scale
 
     /**
      * fluent setter
-     * @see #setY(double)
+     *
      * 
      * @param y
      *     required parameter
@@ -327,7 +294,7 @@ public class Scale
 
     /**
      * fluent setter
-     * @see #setZ(double)
+     *
      * 
      * @param z
      *     required parameter
@@ -339,7 +306,7 @@ public class Scale
 
     /**
      * fluent setter
-     * @see #setScaleSimpleExtension(List<Object>)
+     *
      * 
      * @param scaleSimpleExtension
      *     required parameter
@@ -351,7 +318,7 @@ public class Scale
 
     /**
      * fluent setter
-     * @see #setScaleObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param scaleObjectExtension
      *     required parameter

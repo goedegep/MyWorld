@@ -1,25 +1,14 @@
 
 package de.micromata.opengis.kml.v_2_2_0.gx;
-import de.micromata.opengis.kml.v_2_2_0.AltitudeMode;
+
+import de.micromata.opengis.kml.v_2_2_0.*;
+import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
+import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementRef;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import de.micromata.opengis.kml.v_2_2_0.AbstractObject;
-import de.micromata.opengis.kml.v_2_2_0.BooleanConverter;
-import de.micromata.opengis.kml.v_2_2_0.ExtendedData;
-import de.micromata.opengis.kml.v_2_2_0.Geometry;
-import de.micromata.opengis.kml.v_2_2_0.Model;
-import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
-
+import java.util.Objects;
 
 /**
  * 
@@ -114,9 +103,9 @@ public class Track
      * 
      * @return
      *     possible object is
-     *     {@code <}{@link Object}{@code>}
-     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.AltitudeMode}{@code>}
-     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.gx.AltitudeMode}{@code>}
+     *     {@code <}{@link Object}{@code >}
+     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.AltitudeMode}{@code >}
+     *     
      *     
      */
     public AltitudeMode getAltitudeMode() {
@@ -127,9 +116,9 @@ public class Track
      * 
      * @param value
      *     allowed object is
-     *     {@code <}{@link Object}{@code>}
-     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.AltitudeMode}{@code>}
-     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.gx.AltitudeMode}{@code>}
+     *     {@code <}{@link Object}{@code >}
+     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.AltitudeMode}{@code >}
+     *     
      *     
      */
     public void setAltitudeMode(AltitudeMode value) {
@@ -221,127 +210,50 @@ public class Track
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = ((prime*result)+((extrude == null)? 0 :extrude.hashCode()));
-        result = ((prime*result)+((tessellate == null)? 0 :tessellate.hashCode()));
-        result = ((prime*result)+((altitudeMode == null)? 0 :altitudeMode.hashCode()));
-        result = ((prime*result)+((when == null)? 0 :when.hashCode()));
-        result = ((prime*result)+((coord == null)? 0 :coord.hashCode()));
-        result = ((prime*result)+((angles == null)? 0 :angles.hashCode()));
-        result = ((prime*result)+((model == null)? 0 :model.hashCode()));
-        result = ((prime*result)+((extendedData == null)? 0 :extendedData.hashCode()));
-        result = ((prime*result)+((trackSimpleExtension == null)? 0 :trackSimpleExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        Track track = (Track) object;
+        return altitudeMode == track.altitudeMode
+                && Objects.equals(extrude, track.extrude)
+                && Objects.equals(tessellate, track.tessellate)
+                && Objects.equals(when, track.when)
+                && Objects.equals(coord, track.coord)
+                && Objects.equals(angles, track.angles)
+                && Objects.equals(model, track.model)
+                && Objects.equals(extendedData, track.extendedData)
+                && Objects.equals(trackSimpleExtension, track.trackSimpleExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof Track) == false) {
-            return false;
-        }
-        Track other = ((Track) obj);
-        if (extrude == null) {
-            if (other.extrude!= null) {
-                return false;
-            }
-        } else {
-            if (extrude.equals(other.extrude) == false) {
-                return false;
-            }
-        }
-        if (tessellate == null) {
-            if (other.tessellate!= null) {
-                return false;
-            }
-        } else {
-            if (tessellate.equals(other.tessellate) == false) {
-                return false;
-            }
-        }
-        if (altitudeMode == null) {
-            if (other.altitudeMode!= null) {
-                return false;
-            }
-        } else {
-            if (altitudeMode.equals(other.altitudeMode) == false) {
-                return false;
-            }
-        }
-        if (when == null) {
-            if (other.when!= null) {
-                return false;
-            }
-        } else {
-            if (when.equals(other.when) == false) {
-                return false;
-            }
-        }
-        if (coord == null) {
-            if (other.coord!= null) {
-                return false;
-            }
-        } else {
-            if (coord.equals(other.coord) == false) {
-                return false;
-            }
-        }
-        if (angles == null) {
-            if (other.angles!= null) {
-                return false;
-            }
-        } else {
-            if (angles.equals(other.angles) == false) {
-                return false;
-            }
-        }
-        if (model == null) {
-            if (other.model!= null) {
-                return false;
-            }
-        } else {
-            if (model.equals(other.model) == false) {
-                return false;
-            }
-        }
-        if (extendedData == null) {
-            if (other.extendedData!= null) {
-                return false;
-            }
-        } else {
-            if (extendedData.equals(other.extendedData) == false) {
-                return false;
-            }
-        }
-        if (trackSimpleExtension == null) {
-            if (other.trackSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (trackSimpleExtension.equals(other.trackSimpleExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(extrude);
+        result = 31 * result + Objects.hashCode(tessellate);
+        result = 31 * result + Objects.hashCode(altitudeMode);
+        result = 31 * result + Objects.hashCode(when);
+        result = 31 * result + Objects.hashCode(coord);
+        result = 31 * result + Objects.hashCode(angles);
+        result = 31 * result + Objects.hashCode(model);
+        result = 31 * result + Objects.hashCode(extendedData);
+        result = 31 * result + Objects.hashCode(trackSimpleExtension);
+        return result;
     }
 
     /**
      * Creates a new instance of {@link Model} and set it to model.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * Model model = new Model();
-     * this.setModel(model); </code>
+     * this.setModel(model); }
      * 
      * 
      */
@@ -355,9 +267,9 @@ public class Track
      * Creates a new instance of {@link ExtendedData} and set it to extendedData.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * ExtendedData extendedData = new ExtendedData();
-     * this.setExtendedData(extendedData); </code>
+     * this.setExtendedData(extendedData); }
      * 
      * 
      */
@@ -368,12 +280,13 @@ public class Track
     }
 
     /**
-     * Sets the value of the when property Objects of the following type(s) are allowed in the list List<String>.
+     * Sets the value of the when property Objects of the following type(s) are allowed in the list {@code List<String>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withWhen} instead.
      * 
      * 
      * @param when
+     *     Objects of the following type are allowed in the list: {@link String}
      */
     public void setWhen(final List<String> when) {
         this.when = when;
@@ -385,7 +298,7 @@ public class Track
      * @param when
      *     Objects of the following type are allowed in the list: {@link String}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Track addToWhen(final String when) {
         this.getWhen().add(when);
@@ -393,12 +306,13 @@ public class Track
     }
 
     /**
-     * Sets the value of the coord property Objects of the following type(s) are allowed in the list List<String>.
+     * Sets the value of the coord property Objects of the following type(s) are allowed in the list {@code List<String>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withCoord} instead.
      * 
      * 
      * @param coord
+     *     Objects of the following type are allowed in the list: {@link String}
      */
     public void setCoord(final List<String> coord) {
         this.coord = coord;
@@ -410,7 +324,7 @@ public class Track
      * @param coord
      *     Objects of the following type are allowed in the list: {@link String}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Track addToCoord(final String coord) {
         this.getCoord().add(coord);
@@ -418,12 +332,13 @@ public class Track
     }
 
     /**
-     * Sets the value of the angles property Objects of the following type(s) are allowed in the list List<String>.
+     * Sets the value of the angles property Objects of the following type(s) are allowed in the list {@code List<String>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAngles} instead.
      * 
      * 
      * @param angles
+     *     Objects of the following type are allowed in the list: {@link String}
      */
     public void setAngles(final List<String> angles) {
         this.angles = angles;
@@ -435,7 +350,7 @@ public class Track
      * @param angles
      *     Objects of the following type are allowed in the list: {@link String}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Track addToAngles(final String angles) {
         this.getAngles().add(angles);
@@ -443,12 +358,13 @@ public class Track
     }
 
     /**
-     * Sets the value of the trackSimpleExtension property Objects of the following type(s) are allowed in the list List<Object>.
+     * Sets the value of the trackSimpleExtension property Objects of the following type(s) are allowed in the list {@code List<Object>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withTrackSimpleExtension} instead.
      * 
      * 
      * @param trackSimpleExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setTrackSimpleExtension(final List<Object> trackSimpleExtension) {
         this.trackSimpleExtension = trackSimpleExtension;
@@ -460,7 +376,7 @@ public class Track
      * @param trackSimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Track addToTrackSimpleExtension(final Object trackSimpleExtension) {
         this.getTrackSimpleExtension().add(trackSimpleExtension);
@@ -508,7 +424,7 @@ public class Track
 
     /**
      * fluent setter
-     * @see #setExtrude(Boolean)
+     *
      * 
      * @param extrude
      *     required parameter
@@ -520,7 +436,7 @@ public class Track
 
     /**
      * fluent setter
-     * @see #setTessellate(Boolean)
+     *
      * 
      * @param tessellate
      *     required parameter
@@ -532,7 +448,7 @@ public class Track
 
     /**
      * fluent setter
-     * @see #setAltitudeMode(Object)
+     *
      * 
      * @param altitudeMode
      *     required parameter
@@ -544,7 +460,7 @@ public class Track
 
     /**
      * fluent setter
-     * @see #setWhen(List<String>)
+     *
      * 
      * @param when
      *     required parameter
@@ -556,7 +472,7 @@ public class Track
 
     /**
      * fluent setter
-     * @see #setCoord(List<String>)
+     *
      * 
      * @param coord
      *     required parameter
@@ -568,7 +484,7 @@ public class Track
 
     /**
      * fluent setter
-     * @see #setAngles(List<String>)
+     *
      * 
      * @param angles
      *     required parameter
@@ -580,7 +496,7 @@ public class Track
 
     /**
      * fluent setter
-     * @see #setModel(Model)
+     *
      * 
      * @param model
      *     required parameter
@@ -592,7 +508,7 @@ public class Track
 
     /**
      * fluent setter
-     * @see #setExtendedData(ExtendedData)
+     *
      * 
      * @param extendedData
      *     required parameter
@@ -604,7 +520,7 @@ public class Track
 
     /**
      * fluent setter
-     * @see #setTrackSimpleExtension(List<Object>)
+     *
      * 
      * @param trackSimpleExtension
      *     required parameter

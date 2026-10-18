@@ -1,28 +1,21 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.adapters.HexBinaryAdapter;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
 import de.micromata.opengis.kml.v_2_2_0.atom.Author;
 import de.micromata.opengis.kml.v_2_2_0.xal.AddressDetails;
+import jakarta.xml.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
- * <Overlay>
+ * {@code <Overlay>}
  * <p>
- * This is an abstract element and cannot be used directly in a KML file. <Overlay> 
+ * This is an abstract element and cannot be used directly in a KML file. {@code <Overlay>} 
  * is the base type for image overlays drawn on the planet surface or on the screen. 
- * <Icon> specifies the image to use and can be configured to reload images based on 
+ * {@code <Icon>}specifies the image to use and can be configured to reload images based on 
  * a timer or by camera changes. This element also includes specifications for stacking 
  * order of multiple overlays and for adding color and transparency values to the base 
  * image. 
@@ -57,13 +50,13 @@ import de.micromata.opengis.kml.v_2_2_0.xal.AddressDetails;
  * <strong>&lt;!-- /<em>Overlay --</em>&gt;</strong></pre>
  * 
  * Extends: 
- * @see: <Feature>
+ *
  * 
  * Extended By: 
- * @see: <GroundOverlay>
- * @see: <PhotoOverlay
- * @see: <ScreenOverlay>
- * @see: Syntax
+ *
+ *
+ *
+ *
  * 
  * 
  * 
@@ -87,14 +80,14 @@ public abstract class Overlay
 {
 
     /**
-     * <color>
+     * {@code <color>}
      * <p>
      * Color and opacity (alpha) values are expressed in hexadecimal notation. The range 
      * of values for any one color is 0 to 255 (00 to ff). For alpha, 00 is fully transparent 
      * and ff is fully opaque. The order of expression is aabbggrr, where aa=alpha (00 
      * to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff). For example, 
      * if you want to apply a blue color with 50 percent opacity to an overlay, you would 
-     * specify the following: <color>7fff0000</color>, where alpha=0x7f, blue=0xff, green=0x00, 
+     * specify the following: {@code <color>7fff0000</color>}, where alpha=0x7f, blue=0xff, green=0x00, 
      * and red=0x00. 
      * </p>
      * <p>
@@ -102,10 +95,10 @@ public abstract class Overlay
      * The order of expression is alpha, blue, green, red (aabbggrr). The range of values 
      * for any one color is 0 to 255 (00 to ff). For opacity, 00 is fully transparent and 
      * ff is fully opaque. For example, if you want to apply a blue color with 50 percent 
-     * opacity to an overlay, you would specify the following: <color>7fff0000</color> 
+     * opacity to an overlay, you would specify the following: {@code <color>7fff0000</color>} 
      * </p>
      * <p>
-     * Note: The <geomColor> element has been deprecated. Use <color> instead. 
+     * Note: The {@code <geomColor>} element has been deprecated. Use {@code <color>} instead.
      * </p>
      * 
      * 
@@ -115,11 +108,11 @@ public abstract class Overlay
     
     protected String color;
     /**
-     * <draworder>
+     * {@code <draworder>}
      * <p>
      * This element defines the stacking order for the images in overlapping overlays. 
-     * Overlays with higher <drawOrder> values are drawn on top of overlays with lower 
-     * <drawOrder> values. 
+     * Overlays with higher {@code <drawOrder>} values are drawn on top of overlays with lower
+     * {@code <drawOrder>} values.
      * </p>
      * 
      * 
@@ -128,26 +121,26 @@ public abstract class Overlay
     @XmlElement(defaultValue = "0")
     protected int drawOrder;
     /**
-     * <icon> see also <icon>.
+     * {@code <Icon>}
      * <p>
-     * <Icon> <href>Sunset.jpg</href> </Icon> 
+     * {@code <Icon><href>Sunset.jpg</href> </Icon> }
      * </p>
      * <p>
-     * A custom Icon. In <IconStyle>, the only child element of <Icon> is <href>: <href>: 
+     * A custom Icon. In {@code <IconStyle>}, the only child element of {@code <Icon>} is {@code <href>: <href>: }
      * An HTTP address or a local file specification used to load an icon. 
      * </p>
      * <p>
-     * Defines an image associated with an Icon style or overlay. <Icon> has the same child 
-     * elements as <Link>. The required <href> child element defines the location of the 
+     * Defines an image associated with an Icon style or overlay. {@code <Icon>} has the same child
+     * elements as {@code <Link>}. The required {@code <href>}child element defines the location of the 
      * image to be used as the overlay or as the icon for the placemark. This location 
      * can either be on a local file system or a remote web server. 
      * </p>
      * <p>
-     * Defines the image associated with the Overlay. The <href> element defines the location 
+     * Defines the image associated with the Overlay. The {@code <href>} element defines the location
      * of the image to be used as the Overlay. This location can be either on a local file 
-     * system or on a web server. If this element is omitted or contains no <href>, a rectangle 
-     * is drawn using the color and size defined by the ground or screen overlay. <Icon> 
-     * <href>icon.jpg</href> </Icon> 
+     * system or on a web server. If this element is omitted or contains no {@code <href>}, a rectangle 
+     * is drawn using the color and size defined by the ground or screen overlay. {@code <Icon>
+     * <href>icon.jpg</href> </Icon> }
      * </p>
      * 
      * Syntax: 
@@ -166,9 +159,9 @@ public abstract class Overlay
      *   <strong>&lt;/Icon&gt;</strong></pre>
      * 
      * Contained By: 
-     * @see: <GroundOverlay>
-     * @see: <IconStyle>
-     * @see: <ScreenOverlay>
+     *
+     *
+     *
      * 
      * 
      * 
@@ -179,12 +172,12 @@ public abstract class Overlay
     @XmlSchemaType(name = "anySimpleType")
     protected List<Object> overlaySimpleExtension;
     /**
-     * <Object>
+     * {@code <Object>}
      * <p>
      * This is an abstract base class and cannot be used directly in a KML file. It provides 
      * the id attribute, which allows unique identification of a KML element, and the targetId 
      * attribute, which is used to reference objects that have already been loaded into 
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
      * be used. 
      * </p>
      * 
@@ -204,7 +197,7 @@ public abstract class Overlay
     }
 
     /**
-     * @see color
+     *
      * 
      * @return
      *     possible object is
@@ -216,7 +209,7 @@ public abstract class Overlay
     }
 
     /**
-     * @see color
+     *
      * 
      * @param value
      *     allowed object is
@@ -228,7 +221,7 @@ public abstract class Overlay
     }
 
     /**
-     * @see drawOrder
+     *
      * 
      * @return
      *     possible object is
@@ -240,7 +233,7 @@ public abstract class Overlay
     }
 
     /**
-     * @see drawOrder
+     *
      * 
      * @param value
      *     allowed object is
@@ -252,7 +245,7 @@ public abstract class Overlay
     }
 
     /**
-     * @see icon
+     *
      * 
      * @return
      *     possible object is
@@ -264,7 +257,7 @@ public abstract class Overlay
     }
 
     /**
-     * @see icon
+     *
      * 
      * @param value
      *     allowed object is
@@ -276,7 +269,7 @@ public abstract class Overlay
     }
 
     /**
-     * @see overlaySimpleExtension
+     *
      * 
      */
     public List<Object> getOverlaySimpleExtension() {
@@ -287,7 +280,7 @@ public abstract class Overlay
     }
 
     /**
-     * @see overlayObjectExtension
+     *
      * 
      */
     public List<AbstractObject> getOverlayObjectExtension() {
@@ -298,81 +291,42 @@ public abstract class Overlay
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = ((prime*result)+((color == null)? 0 :color.hashCode()));
-        result = ((prime*result)+ drawOrder);
-        result = ((prime*result)+((icon == null)? 0 :icon.hashCode()));
-        result = ((prime*result)+((overlaySimpleExtension == null)? 0 :overlaySimpleExtension.hashCode()));
-        result = ((prime*result)+((overlayObjectExtension == null)? 0 :overlayObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        Overlay overlay = (Overlay) object;
+        return drawOrder == overlay.drawOrder
+                && Objects.equals(color, overlay.color)
+                && Objects.equals(icon, overlay.icon)
+                && Objects.equals(overlaySimpleExtension, overlay.overlaySimpleExtension)
+                && Objects.equals(overlayObjectExtension, overlay.overlayObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof Overlay) == false) {
-            return false;
-        }
-        Overlay other = ((Overlay) obj);
-        if (color == null) {
-            if (other.color!= null) {
-                return false;
-            }
-        } else {
-            if (color.equals(other.color) == false) {
-                return false;
-            }
-        }
-        if (drawOrder!= other.drawOrder) {
-            return false;
-        }
-        if (icon == null) {
-            if (other.icon!= null) {
-                return false;
-            }
-        } else {
-            if (icon.equals(other.icon) == false) {
-                return false;
-            }
-        }
-        if (overlaySimpleExtension == null) {
-            if (other.overlaySimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (overlaySimpleExtension.equals(other.overlaySimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (overlayObjectExtension == null) {
-            if (other.overlayObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (overlayObjectExtension.equals(other.overlayObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(color);
+        result = 31 * result + drawOrder;
+        result = 31 * result + Objects.hashCode(icon);
+        result = 31 * result + Objects.hashCode(overlaySimpleExtension);
+        result = 31 * result + Objects.hashCode(overlayObjectExtension);
+        return result;
     }
 
     /**
      * Creates a new instance of {@link Icon} and set it to icon.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * Icon icon = new Icon();
-     * this.setIcon(icon); </code>
+     * this.setIcon(icon); }
      * 
      * 
      */
@@ -383,9 +337,10 @@ public abstract class Overlay
     }
 
     /**
-     * @see overlaySimpleExtension
+     *
      * 
      * @param overlaySimpleExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setOverlaySimpleExtension(final List<Object> overlaySimpleExtension) {
         this.overlaySimpleExtension = overlaySimpleExtension;
@@ -397,7 +352,7 @@ public abstract class Overlay
      * @param overlaySimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Overlay addToOverlaySimpleExtension(final Object overlaySimpleExtension) {
         this.getOverlaySimpleExtension().add(overlaySimpleExtension);
@@ -405,9 +360,10 @@ public abstract class Overlay
     }
 
     /**
-     * @see overlayObjectExtension
+     *
      * 
      * @param overlayObjectExtension
+     *     Objects of the following type are allowed in the list: {@link AbstractObject}
      */
     public void setOverlayObjectExtension(final List<AbstractObject> overlayObjectExtension) {
         this.overlayObjectExtension = overlayObjectExtension;
@@ -419,7 +375,7 @@ public abstract class Overlay
      * @param overlayObjectExtension
      *     Objects of the following type are allowed in the list: {@link AbstractObject}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Overlay addToOverlayObjectExtension(final AbstractObject overlayObjectExtension) {
         this.getOverlayObjectExtension().add(overlayObjectExtension);
@@ -427,7 +383,7 @@ public abstract class Overlay
     }
 
     /**
-     * @see objectSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -444,7 +400,7 @@ public abstract class Overlay
     }
 
     /**
-     * @see styleSelector
+     *
      * 
      */
     @Obvious
@@ -461,7 +417,7 @@ public abstract class Overlay
     }
 
     /**
-     * @see featureSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -478,7 +434,7 @@ public abstract class Overlay
     }
 
     /**
-     * @see featureObjectExtension
+     *
      * 
      */
     @Obvious
@@ -496,7 +452,7 @@ public abstract class Overlay
 
     /**
      * fluent setter
-     * @see #setColor(String)
+     *
      * 
      * @param color
      *     required parameter
@@ -508,7 +464,7 @@ public abstract class Overlay
 
     /**
      * fluent setter
-     * @see #setDrawOrder(int)
+     *
      * 
      * @param drawOrder
      *     required parameter
@@ -520,7 +476,7 @@ public abstract class Overlay
 
     /**
      * fluent setter
-     * @see #setIcon(Icon)
+     *
      * 
      * @param icon
      *     required parameter
@@ -532,7 +488,7 @@ public abstract class Overlay
 
     /**
      * fluent setter
-     * @see #setOverlaySimpleExtension(List<Object>)
+     *
      * 
      * @param overlaySimpleExtension
      *     required parameter
@@ -544,7 +500,7 @@ public abstract class Overlay
 
     /**
      * fluent setter
-     * @see #setOverlayObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param overlayObjectExtension
      *     required parameter

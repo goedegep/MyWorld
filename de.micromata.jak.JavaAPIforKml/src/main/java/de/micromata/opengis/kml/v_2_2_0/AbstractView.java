@@ -1,19 +1,13 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementRef;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.XmlType;
 import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
 import de.micromata.opengis.kml.v_2_2_0.gx.ViewerOptions;
+import jakarta.xml.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 
@@ -63,57 +57,37 @@ public abstract class AbstractView
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = ((prime*result)+((abstractViewSimpleExtension == null)? 0 :abstractViewSimpleExtension.hashCode()));
-        result = ((prime*result)+((abstractViewObjectExtension == null)? 0 :abstractViewObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        AbstractView that = (AbstractView) object;
+        return Objects.equals(abstractViewSimpleExtension, that.abstractViewSimpleExtension)
+                && Objects.equals(abstractViewObjectExtension, that.abstractViewObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof AbstractView) == false) {
-            return false;
-        }
-        AbstractView other = ((AbstractView) obj);
-        if (abstractViewSimpleExtension == null) {
-            if (other.abstractViewSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (abstractViewSimpleExtension.equals(other.abstractViewSimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (abstractViewObjectExtension == null) {
-            if (other.abstractViewObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (abstractViewObjectExtension.equals(other.abstractViewObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(abstractViewSimpleExtension);
+        result = 31 * result + Objects.hashCode(abstractViewObjectExtension);
+        return result;
     }
 
     /**
-     * Sets the value of the abstractViewSimpleExtension property Objects of the following type(s) are allowed in the list List<Object>.
+     * Sets the value of the abstractViewSimpleExtension property Objects of the following type(s) are allowed in the list {@code List<Object>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAbstractViewSimpleExtension} instead.
      * 
      * 
      * @param abstractViewSimpleExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setAbstractViewSimpleExtension(final List<Object> abstractViewSimpleExtension) {
         this.abstractViewSimpleExtension = abstractViewSimpleExtension;
@@ -125,7 +99,7 @@ public abstract class AbstractView
      * @param abstractViewSimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public AbstractView addToAbstractViewSimpleExtension(final Object abstractViewSimpleExtension) {
         this.getAbstractViewSimpleExtension().add(abstractViewSimpleExtension);
@@ -133,12 +107,13 @@ public abstract class AbstractView
     }
 
     /**
-     * Sets the value of the abstractViewObjectExtension property Objects of the following type(s) are allowed in the list List<AbstractObject>.
+     * Sets the value of the abstractViewObjectExtension property Objects of the following type(s) are allowed in the list {@code List<AbstractObject>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAbstractViewObjectExtension} instead.
      * 
      * 
      * @param abstractViewObjectExtension
+     *     Objects of the following type are allowed in the list: {@code <}{@link TimeSpan}{@code >}{@code <}{@link AbstractObject}{@code >}{@code <}{@link TimeStamp}{@code >}{@code <}{@link ViewerOptions}{@code >}
      */
     public void setAbstractViewObjectExtension(final List<AbstractObject> abstractViewObjectExtension) {
         this.abstractViewObjectExtension = abstractViewObjectExtension;
@@ -148,9 +123,9 @@ public abstract class AbstractView
      * add a value to the abstractViewObjectExtension property collection
      * 
      * @param abstractViewObjectExtension
-     *     Objects of the following type are allowed in the list: {@code <}{@link TimeSpan}{@code>}{@link JAXBElement}{@code <}{@link AbstractObject}{@code>}{@link JAXBElement}{@code <}{@link TimeStamp}{@code>}{@link JAXBElement}{@code <}{@link ViewerOptions}{@code>}
+     *     Objects of the following type are allowed in the list: {@code <}{@link TimeSpan}{@code >}{@code <}{@link AbstractObject}{@code >}{@code <}{@link TimeStamp}{@code >}{@code <}{@link ViewerOptions}{@code >}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public AbstractView addToAbstractViewObjectExtension(final AbstractObject abstractViewObjectExtension) {
         this.getAbstractViewObjectExtension().add(abstractViewObjectExtension);
@@ -172,10 +147,12 @@ public abstract class AbstractView
 
     /**
      * fluent setter
-     * @see #setAbstractViewSimpleExtension(List<Object>)
+     *
      * 
      * @param abstractViewSimpleExtension
      *     required parameter
+     * @return
+     *     AbstractView
      */
     public AbstractView withAbstractViewSimpleExtension(final List<Object> abstractViewSimpleExtension) {
         this.setAbstractViewSimpleExtension(abstractViewSimpleExtension);
@@ -184,10 +161,12 @@ public abstract class AbstractView
 
     /**
      * fluent setter
-     * @see #setAbstractViewObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param abstractViewObjectExtension
      *     required parameter
+     * @return
+     *     AbstractView
      */
     public AbstractView withAbstractViewObjectExtension(final List<AbstractObject> abstractViewObjectExtension) {
         this.setAbstractViewObjectExtension(abstractViewObjectExtension);

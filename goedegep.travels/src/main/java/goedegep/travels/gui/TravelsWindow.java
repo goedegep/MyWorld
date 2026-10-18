@@ -59,7 +59,7 @@ import goedegep.travels.logic.TravelToHtmlConverterSettings;
 import goedegep.travels.logic.TravelsRegistry;
 import goedegep.travels.logic.TravelsTreeViewUtils;
 import goedegep.travels.logic.TravelsUtils;
-import goedegep.travels.logic.VacationsKmlConverter;
+import goedegep.travels.logic.TravelsToKmlConverter;
 import goedegep.travels.model.BoundingBox;
 import goedegep.travels.model.Day;
 import goedegep.travels.model.DayTrip;
@@ -2068,7 +2068,7 @@ public class TravelsWindow extends JfxStage {
     LOGGER.severe("Creating kml file: " + file.getAbsolutePath());
         
     // Generate the file using the VacationsKmlConverter
-    VacationsKmlConverter vacationsKmlConverter = new VacationsKmlConverter();
+    TravelsToKmlConverter vacationsKmlConverter = new TravelsToKmlConverter();
     try {
       vacationsKmlConverter.createKmlForVacations(travels, file);
       statusLabel.setText("KML file " + file.getAbsolutePath() + " created");
@@ -2098,9 +2098,9 @@ public class TravelsWindow extends JfxStage {
     }
     
     // Generate the file using the VacationsKmlConverter
-    VacationsKmlConverter vacationsKmlConverter = new VacationsKmlConverter();
+    TravelsToKmlConverter vacationsKmlConverter = new TravelsToKmlConverter();
     try {
-      vacationsKmlConverter.createKmlForVacation(travel, file);
+      vacationsKmlConverter.createKmlForTravel(travel, file);
       statusLabel.setText("KML file " + file.getAbsolutePath() + " created");
     } catch (FileNotFoundException e) {
       statusLabel.setText("Failed to write to file: " + file.getAbsolutePath());

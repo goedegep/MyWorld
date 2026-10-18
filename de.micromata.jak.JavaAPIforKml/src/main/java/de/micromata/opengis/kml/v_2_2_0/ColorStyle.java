@@ -1,21 +1,15 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
+import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
+import jakarta.xml.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.adapters.HexBinaryAdapter;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
-
+import java.util.Objects;
 
 /**
- * <ColorStyle>
+ * {@code {@code <ColorStyle>}}
  * <p>
  * This is an abstract element and cannot be used directly in a KML file. It provides 
  * elements for specifying the color and color mode of extended style types. 
@@ -29,13 +23,13 @@ import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
  * <strong>&lt;!-- /<em>ColorStyle</em> --&gt;</strong></pre>
  * 
  * Extends: 
- * @see: <Object>
+ *
  * 
  * Extended By: 
- * @see: <IconStyle>
- * @see: <LabelStyle>
- * @see: <LineStyle>
- * @see: PolyStyle
+ *
+ *
+ *
+ *
  * 
  * 
  * 
@@ -59,14 +53,14 @@ public abstract class ColorStyle
 {
 
     /**
-     * <color>
+     * {@code <color>}
      * <p>
      * Color and opacity (alpha) values are expressed in hexadecimal notation. The range 
      * of values for any one color is 0 to 255 (00 to ff). For alpha, 00 is fully transparent 
      * and ff is fully opaque. The order of expression is aabbggrr, where aa=alpha (00 
      * to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff). For example, 
      * if you want to apply a blue color with 50 percent opacity to an overlay, you would 
-     * specify the following: <color>7fff0000</color>, where alpha=0x7f, blue=0xff, green=0x00, 
+     * specify the following: {@code <color>7fff0000</color>}, where alpha=0x7f, blue=0xff, green=0x00, 
      * and red=0x00. 
      * </p>
      * <p>
@@ -74,10 +68,10 @@ public abstract class ColorStyle
      * The order of expression is alpha, blue, green, red (aabbggrr). The range of values 
      * for any one color is 0 to 255 (00 to ff). For opacity, 00 is fully transparent and 
      * ff is fully opaque. For example, if you want to apply a blue color with 50 percent 
-     * opacity to an overlay, you would specify the following: <color>7fff0000</color> 
+     * opacity to an overlay, you would specify the following: {@code <color>7fff0000</color>} 
      * </p>
      * <p>
-     * Note: The <geomColor> element has been deprecated. Use <color> instead. 
+     * Note: The {@code <geomColor>} element has been deprecated. Use {@code <color>} instead.
      * </p>
      * 
      * 
@@ -93,7 +87,7 @@ public abstract class ColorStyle
      * </p>
      * 
      * See Also: 
-     * See any element that extends <ColorStyle>
+     * See any element that extends {@code <ColorStyle>}
      * 
      * 
      * 
@@ -104,12 +98,12 @@ public abstract class ColorStyle
     @XmlSchemaType(name = "anySimpleType")
     protected List<Object> colorStyleSimpleExtension;
     /**
-     * <Object>
+     * {@code <Object>}
      * <p>
      * This is an abstract base class and cannot be used directly in a KML file. It provides 
      * the id attribute, which allows unique identification of a KML element, and the targetId 
      * attribute, which is used to reference objects that have already been loaded into 
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
      * be used. 
      * </p>
      * 
@@ -129,7 +123,7 @@ public abstract class ColorStyle
     }
 
     /**
-     * @see color
+     *
      * 
      * @return
      *     possible object is
@@ -141,7 +135,7 @@ public abstract class ColorStyle
     }
 
     /**
-     * @see color
+     *
      * 
      * @param value
      *     allowed object is
@@ -153,7 +147,7 @@ public abstract class ColorStyle
     }
 
     /**
-     * @see colorMode
+     *
      * 
      * @return
      *     possible object is
@@ -165,7 +159,7 @@ public abstract class ColorStyle
     }
 
     /**
-     * @see colorMode
+     *
      * 
      * @param value
      *     allowed object is
@@ -177,7 +171,7 @@ public abstract class ColorStyle
     }
 
     /**
-     * @see colorStyleSimpleExtension
+     *
      * 
      */
     public List<Object> getColorStyleSimpleExtension() {
@@ -188,7 +182,7 @@ public abstract class ColorStyle
     }
 
     /**
-     * @see colorStyleObjectExtension
+     *
      * 
      */
     public List<AbstractObject> getColorStyleObjectExtension() {
@@ -199,74 +193,38 @@ public abstract class ColorStyle
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = ((prime*result)+((color == null)? 0 :color.hashCode()));
-        result = ((prime*result)+((colorMode == null)? 0 :colorMode.hashCode()));
-        result = ((prime*result)+((colorStyleSimpleExtension == null)? 0 :colorStyleSimpleExtension.hashCode()));
-        result = ((prime*result)+((colorStyleObjectExtension == null)? 0 :colorStyleObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        ColorStyle that = (ColorStyle) object;
+        return colorMode == that.colorMode
+                && Objects.equals(color, that.color)
+                && Objects.equals(colorStyleSimpleExtension, that.colorStyleSimpleExtension)
+                && Objects.equals(colorStyleObjectExtension, that.colorStyleObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof ColorStyle) == false) {
-            return false;
-        }
-        ColorStyle other = ((ColorStyle) obj);
-        if (color == null) {
-            if (other.color!= null) {
-                return false;
-            }
-        } else {
-            if (color.equals(other.color) == false) {
-                return false;
-            }
-        }
-        if (colorMode == null) {
-            if (other.colorMode!= null) {
-                return false;
-            }
-        } else {
-            if (colorMode.equals(other.colorMode) == false) {
-                return false;
-            }
-        }
-        if (colorStyleSimpleExtension == null) {
-            if (other.colorStyleSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (colorStyleSimpleExtension.equals(other.colorStyleSimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (colorStyleObjectExtension == null) {
-            if (other.colorStyleObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (colorStyleObjectExtension.equals(other.colorStyleObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(color);
+        result = 31 * result + Objects.hashCode(colorMode);
+        result = 31 * result + Objects.hashCode(colorStyleSimpleExtension);
+        result = 31 * result + Objects.hashCode(colorStyleObjectExtension);
+        return result;
     }
 
     /**
-     * @see colorStyleSimpleExtension
+     *
      * 
      * @param colorStyleSimpleExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setColorStyleSimpleExtension(final List<Object> colorStyleSimpleExtension) {
         this.colorStyleSimpleExtension = colorStyleSimpleExtension;
@@ -278,7 +236,7 @@ public abstract class ColorStyle
      * @param colorStyleSimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public ColorStyle addToColorStyleSimpleExtension(final Object colorStyleSimpleExtension) {
         this.getColorStyleSimpleExtension().add(colorStyleSimpleExtension);
@@ -286,9 +244,10 @@ public abstract class ColorStyle
     }
 
     /**
-     * @see colorStyleObjectExtension
+     *
      * 
      * @param colorStyleObjectExtension
+     *     Objects of the following type are allowed in the list: {@link AbstractObject}
      */
     public void setColorStyleObjectExtension(final List<AbstractObject> colorStyleObjectExtension) {
         this.colorStyleObjectExtension = colorStyleObjectExtension;
@@ -300,7 +259,7 @@ public abstract class ColorStyle
      * @param colorStyleObjectExtension
      *     Objects of the following type are allowed in the list: {@link AbstractObject}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public ColorStyle addToColorStyleObjectExtension(final AbstractObject colorStyleObjectExtension) {
         this.getColorStyleObjectExtension().add(colorStyleObjectExtension);
@@ -308,7 +267,7 @@ public abstract class ColorStyle
     }
 
     /**
-     * @see objectSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -325,7 +284,7 @@ public abstract class ColorStyle
     }
 
     /**
-     * @see subStyleSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -342,7 +301,7 @@ public abstract class ColorStyle
     }
 
     /**
-     * @see subStyleObjectExtension
+     *
      * 
      */
     @Obvious
@@ -360,10 +319,12 @@ public abstract class ColorStyle
 
     /**
      * fluent setter
-     * @see #setColor(String)
+     *
      * 
      * @param color
      *     required parameter
+     * @return
+     *     ColorStyle
      */
     public ColorStyle withColor(final String color) {
         this.setColor(color);
@@ -372,10 +333,12 @@ public abstract class ColorStyle
 
     /**
      * fluent setter
-     * @see #setColorMode(ColorMode)
+     *
      * 
      * @param colorMode
      *     required parameter
+     * @return
+     *     ColorStyle
      */
     public ColorStyle withColorMode(final ColorMode colorMode) {
         this.setColorMode(colorMode);
@@ -384,10 +347,12 @@ public abstract class ColorStyle
 
     /**
      * fluent setter
-     * @see #setColorStyleSimpleExtension(List<Object>)
+     *
      * 
      * @param colorStyleSimpleExtension
      *     required parameter
+     * @return
+     *     ColorStyle
      */
     public ColorStyle withColorStyleSimpleExtension(final List<Object> colorStyleSimpleExtension) {
         this.setColorStyleSimpleExtension(colorStyleSimpleExtension);
@@ -396,10 +361,12 @@ public abstract class ColorStyle
 
     /**
      * fluent setter
-     * @see #setColorStyleObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param colorStyleObjectExtension
      *     required parameter
+     * @return
+     *     ColorStyle
      */
     public ColorStyle withColorStyleObjectExtension(final List<AbstractObject> colorStyleObjectExtension) {
         this.setColorStyleObjectExtension(colorStyleObjectExtension);

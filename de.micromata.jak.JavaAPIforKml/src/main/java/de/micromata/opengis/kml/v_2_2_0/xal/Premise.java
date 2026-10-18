@@ -1,24 +1,16 @@
 
 package de.micromata.opengis.kml.v_2_2_0.xal;
 
+import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAnyAttribute;
-import jakarta.xml.bind.annotation.XmlAnyElement;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.XmlValue;
-import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.namespace.QName;
-
+import java.util.Objects;
 
 /**
  * 
@@ -293,24 +285,10 @@ public class Premise implements Cloneable
         this.postalCode = value;
     }
 
-    /**
-     * 
-     * @return
-     *     possible object is
-     *     {@link Premise}
-     *     
-     */
     public Premise getPremise() {
         return premise;
     }
 
-    /**
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Premise}
-     *     
-     */
     public void setPremise(Premise value) {
         this.premise = value;
     }
@@ -423,213 +401,66 @@ public class Premise implements Cloneable
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = ((prime*result)+((addressLine == null)? 0 :addressLine.hashCode()));
-        result = ((prime*result)+((premiseName == null)? 0 :premiseName.hashCode()));
-        result = ((prime*result)+((premiseLocation == null)? 0 :premiseLocation.hashCode()));
-        result = ((prime*result)+((premiseNumber == null)? 0 :premiseNumber.hashCode()));
-        result = ((prime*result)+((premiseNumberRange == null)? 0 :premiseNumberRange.hashCode()));
-        result = ((prime*result)+((premiseNumberPrefix == null)? 0 :premiseNumberPrefix.hashCode()));
-        result = ((prime*result)+((premiseNumberSuffix == null)? 0 :premiseNumberSuffix.hashCode()));
-        result = ((prime*result)+((buildingName == null)? 0 :buildingName.hashCode()));
-        result = ((prime*result)+((subPremise == null)? 0 :subPremise.hashCode()));
-        result = ((prime*result)+((firm == null)? 0 :firm.hashCode()));
-        result = ((prime*result)+((mailStop == null)? 0 :mailStop.hashCode()));
-        result = ((prime*result)+((postalCode == null)? 0 :postalCode.hashCode()));
-        result = ((prime*result)+((premise == null)? 0 :premise.hashCode()));
-        result = ((prime*result)+((any == null)? 0 :any.hashCode()));
-        result = ((prime*result)+((underscore == null)? 0 :underscore.hashCode()));
-        result = ((prime*result)+((xalPremiseDependency == null)? 0 :xalPremiseDependency.hashCode()));
-        result = ((prime*result)+((premiseDependency == null)? 0 :premiseDependency.hashCode()));
-        result = ((prime*result)+((premiseThoroughfareConnector == null)? 0 :premiseThoroughfareConnector.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+
+        Premise that = (Premise) object;
+        return Objects.equals(addressLine, that.addressLine)
+                && Objects.equals(premiseName, that.premiseName)
+                && Objects.equals(premiseLocation, that.premiseLocation)
+                && Objects.equals(premiseNumber, that.premiseNumber)
+                && Objects.equals(premiseNumberRange, that.premiseNumberRange)
+                && Objects.equals(premiseNumberPrefix, that.premiseNumberPrefix)
+                && Objects.equals(premiseNumberSuffix, that.premiseNumberSuffix)
+                && Objects.equals(buildingName, that.buildingName)
+                && Objects.equals(subPremise, that.subPremise)
+                && Objects.equals(firm, that.firm)
+                && Objects.equals(mailStop, that.mailStop)
+                && Objects.equals(postalCode, that.postalCode)
+                && Objects.equals(premise, that.premise)
+                && Objects.equals(any, that.any)
+                && Objects.equals(underscore, that.underscore)
+                && Objects.equals(xalPremiseDependency, that.xalPremiseDependency)
+                && Objects.equals(premiseDependency, that.premiseDependency)
+                && Objects.equals(premiseThoroughfareConnector, that.premiseThoroughfareConnector)
+                && Objects.equals(otherAttributes, that.otherAttributes);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if ((obj instanceof Premise) == false) {
-            return false;
-        }
-        Premise other = ((Premise) obj);
-        if (addressLine == null) {
-            if (other.addressLine!= null) {
-                return false;
-            }
-        } else {
-            if (addressLine.equals(other.addressLine) == false) {
-                return false;
-            }
-        }
-        if (premiseName == null) {
-            if (other.premiseName!= null) {
-                return false;
-            }
-        } else {
-            if (premiseName.equals(other.premiseName) == false) {
-                return false;
-            }
-        }
-        if (premiseLocation == null) {
-            if (other.premiseLocation!= null) {
-                return false;
-            }
-        } else {
-            if (premiseLocation.equals(other.premiseLocation) == false) {
-                return false;
-            }
-        }
-        if (premiseNumber == null) {
-            if (other.premiseNumber!= null) {
-                return false;
-            }
-        } else {
-            if (premiseNumber.equals(other.premiseNumber) == false) {
-                return false;
-            }
-        }
-        if (premiseNumberRange == null) {
-            if (other.premiseNumberRange!= null) {
-                return false;
-            }
-        } else {
-            if (premiseNumberRange.equals(other.premiseNumberRange) == false) {
-                return false;
-            }
-        }
-        if (premiseNumberPrefix == null) {
-            if (other.premiseNumberPrefix!= null) {
-                return false;
-            }
-        } else {
-            if (premiseNumberPrefix.equals(other.premiseNumberPrefix) == false) {
-                return false;
-            }
-        }
-        if (premiseNumberSuffix == null) {
-            if (other.premiseNumberSuffix!= null) {
-                return false;
-            }
-        } else {
-            if (premiseNumberSuffix.equals(other.premiseNumberSuffix) == false) {
-                return false;
-            }
-        }
-        if (buildingName == null) {
-            if (other.buildingName!= null) {
-                return false;
-            }
-        } else {
-            if (buildingName.equals(other.buildingName) == false) {
-                return false;
-            }
-        }
-        if (subPremise == null) {
-            if (other.subPremise!= null) {
-                return false;
-            }
-        } else {
-            if (subPremise.equals(other.subPremise) == false) {
-                return false;
-            }
-        }
-        if (firm == null) {
-            if (other.firm!= null) {
-                return false;
-            }
-        } else {
-            if (firm.equals(other.firm) == false) {
-                return false;
-            }
-        }
-        if (mailStop == null) {
-            if (other.mailStop!= null) {
-                return false;
-            }
-        } else {
-            if (mailStop.equals(other.mailStop) == false) {
-                return false;
-            }
-        }
-        if (postalCode == null) {
-            if (other.postalCode!= null) {
-                return false;
-            }
-        } else {
-            if (postalCode.equals(other.postalCode) == false) {
-                return false;
-            }
-        }
-        if (premise == null) {
-            if (other.premise!= null) {
-                return false;
-            }
-        } else {
-            if (premise.equals(other.premise) == false) {
-                return false;
-            }
-        }
-        if (any == null) {
-            if (other.any!= null) {
-                return false;
-            }
-        } else {
-            if (any.equals(other.any) == false) {
-                return false;
-            }
-        }
-        if (underscore == null) {
-            if (other.underscore!= null) {
-                return false;
-            }
-        } else {
-            if (underscore.equals(other.underscore) == false) {
-                return false;
-            }
-        }
-        if (xalPremiseDependency == null) {
-            if (other.xalPremiseDependency!= null) {
-                return false;
-            }
-        } else {
-            if (xalPremiseDependency.equals(other.xalPremiseDependency) == false) {
-                return false;
-            }
-        }
-        if (premiseDependency == null) {
-            if (other.premiseDependency!= null) {
-                return false;
-            }
-        } else {
-            if (premiseDependency.equals(other.premiseDependency) == false) {
-                return false;
-            }
-        }
-        if (premiseThoroughfareConnector == null) {
-            if (other.premiseThoroughfareConnector!= null) {
-                return false;
-            }
-        } else {
-            if (premiseThoroughfareConnector.equals(other.premiseThoroughfareConnector) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = Objects.hashCode(addressLine);
+        result = 31 * result + Objects.hashCode(premiseName);
+        result = 31 * result + Objects.hashCode(premiseLocation);
+        result = 31 * result + Objects.hashCode(premiseNumber);
+        result = 31 * result + Objects.hashCode(premiseNumberRange);
+        result = 31 * result + Objects.hashCode(premiseNumberPrefix);
+        result = 31 * result + Objects.hashCode(premiseNumberSuffix);
+        result = 31 * result + Objects.hashCode(buildingName);
+        result = 31 * result + Objects.hashCode(subPremise);
+        result = 31 * result + Objects.hashCode(firm);
+        result = 31 * result + Objects.hashCode(mailStop);
+        result = 31 * result + Objects.hashCode(postalCode);
+        result = 31 * result + Objects.hashCode(premise);
+        result = 31 * result + Objects.hashCode(any);
+        result = 31 * result + Objects.hashCode(underscore);
+        result = 31 * result + Objects.hashCode(xalPremiseDependency);
+        result = 31 * result + Objects.hashCode(premiseDependency);
+        result = 31 * result + Objects.hashCode(premiseThoroughfareConnector);
+        result = 31 * result + Objects.hashCode(otherAttributes);
+        return result;
     }
 
     /**
      * Creates a new instance of {@link AddressLine} and adds it to addressLine.
      * This method is a short version for:
-     * <code>
+     * {@code
      * AddressLine addressLine = new AddressLine();
-     * this.getAddressLine().add(addressLine); </code>
+     * this.getAddressLine().add(addressLine); }
      * 
      * 
      */
@@ -642,9 +473,9 @@ public class Premise implements Cloneable
     /**
      * Creates a new instance of {@link Premise.PremiseName} and adds it to premiseName.
      * This method is a short version for:
-     * <code>
+     * {@code
      * PremiseName premiseName = new PremiseName();
-     * this.getPremiseName().add(premiseName); </code>
+     * this.getPremiseName().add(premiseName); }
      * 
      * 
      */
@@ -658,9 +489,9 @@ public class Premise implements Cloneable
      * Creates a new instance of {@link Premise.PremiseLocation} and set it to premiseLocation.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PremiseLocation premiseLocation = new PremiseLocation();
-     * this.setPremiseLocation(premiseLocation); </code>
+     * this.setPremiseLocation(premiseLocation); }
      * 
      * 
      */
@@ -673,9 +504,9 @@ public class Premise implements Cloneable
     /**
      * Creates a new instance of {@link PremiseNumber} and adds it to premiseNumber.
      * This method is a short version for:
-     * <code>
+     * {@code
      * PremiseNumber premiseNumber = new PremiseNumber();
-     * this.getPremiseNumber().add(premiseNumber); </code>
+     * this.getPremiseNumber().add(premiseNumber); }
      * 
      * 
      */
@@ -689,9 +520,9 @@ public class Premise implements Cloneable
      * Creates a new instance of {@link Premise.PremiseNumberRange} and set it to premiseNumberRange.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PremiseNumberRange premiseNumberRange = new PremiseNumberRange();
-     * this.setPremiseNumberRange(premiseNumberRange); </code>
+     * this.setPremiseNumberRange(premiseNumberRange); }
      * 
      * 
      * @param premiseNumberRangeTo
@@ -708,9 +539,9 @@ public class Premise implements Cloneable
     /**
      * Creates a new instance of {@link PremiseNumberPrefix} and adds it to premiseNumberPrefix.
      * This method is a short version for:
-     * <code>
+     * {@code
      * PremiseNumberPrefix premiseNumberPrefix = new PremiseNumberPrefix();
-     * this.getPremiseNumberPrefix().add(premiseNumberPrefix); </code>
+     * this.getPremiseNumberPrefix().add(premiseNumberPrefix); }
      * 
      * 
      */
@@ -723,9 +554,9 @@ public class Premise implements Cloneable
     /**
      * Creates a new instance of {@link PremiseNumberSuffix} and adds it to premiseNumberSuffix.
      * This method is a short version for:
-     * <code>
+     * {@code
      * PremiseNumberSuffix premiseNumberSuffix = new PremiseNumberSuffix();
-     * this.getPremiseNumberSuffix().add(premiseNumberSuffix); </code>
+     * this.getPremiseNumberSuffix().add(premiseNumberSuffix); }
      * 
      * 
      */
@@ -738,9 +569,9 @@ public class Premise implements Cloneable
     /**
      * Creates a new instance of {@link BuildingName} and adds it to buildingName.
      * This method is a short version for:
-     * <code>
+     * {@code
      * BuildingName buildingName = new BuildingName();
-     * this.getBuildingName().add(buildingName); </code>
+     * this.getBuildingName().add(buildingName); }
      * 
      * 
      */
@@ -753,9 +584,9 @@ public class Premise implements Cloneable
     /**
      * Creates a new instance of {@link SubPremise} and adds it to subPremise.
      * This method is a short version for:
-     * <code>
+     * {@code
      * SubPremise subPremise = new SubPremise();
-     * this.getSubPremise().add(subPremise); </code>
+     * this.getSubPremise().add(subPremise); }
      * 
      * 
      * @param subPremiseLocation
@@ -771,9 +602,9 @@ public class Premise implements Cloneable
      * Creates a new instance of {@link Firm} and set it to firm.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * Firm firm = new Firm();
-     * this.setFirm(firm); </code>
+     * this.setFirm(firm); }
      * 
      * 
      */
@@ -787,9 +618,9 @@ public class Premise implements Cloneable
      * Creates a new instance of {@link MailStop} and set it to mailStop.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * MailStop mailStop = new MailStop();
-     * this.setMailStop(mailStop); </code>
+     * this.setMailStop(mailStop); }
      * 
      * 
      */
@@ -803,9 +634,9 @@ public class Premise implements Cloneable
      * Creates a new instance of {@link PostalCode} and set it to postalCode.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostalCode postalCode = new PostalCode();
-     * this.setPostalCode(postalCode); </code>
+     * this.setPostalCode(postalCode); }
      * 
      * 
      */
@@ -816,12 +647,12 @@ public class Premise implements Cloneable
     }
 
     /**
-     * Creates a new instance of {@link Premise} and set it to premise.
+     * Creates a new instance of Premise and set it to premise.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * Premise premise = new Premise();
-     * this.setPremise(premise); </code>
+     * this.setPremise(premise); }
      * 
      * 
      * @param premiseNumber
@@ -838,12 +669,13 @@ public class Premise implements Cloneable
     }
 
     /**
-     * Sets the value of the addressLine property Objects of the following type(s) are allowed in the list List<AddressLine>.
+     * Sets the value of the addressLine property Objects of the following type(s) are allowed in the list {@code List<AddressLine>}.
      * <p>Note:
-     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAddressLine} instead.
+     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use withAddressLine instead.
      * 
      * 
      * @param addressLine
+     *     Objects of the following type are allowed in the list: {@link AddressLine}
      */
     public void setAddressLine(final List<AddressLine> addressLine) {
         this.addressLine = addressLine;
@@ -855,7 +687,7 @@ public class Premise implements Cloneable
      * @param addressLine
      *     Objects of the following type are allowed in the list: {@link AddressLine}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Premise addToAddressLine(final AddressLine addressLine) {
         this.getAddressLine().add(addressLine);
@@ -863,12 +695,13 @@ public class Premise implements Cloneable
     }
 
     /**
-     * Sets the value of the premiseName property Objects of the following type(s) are allowed in the list List<PremiseName>.
+     * Sets the value of the premiseName property Objects of the following type(s) are allowed in the list {@code List<PremiseName>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withPremiseName} instead.
      * 
      * 
      * @param premiseName
+     *     Objects of the following type are allowed in the list: {@link Premise.PremiseName}
      */
     public void setPremiseName(final List<Premise.PremiseName> premiseName) {
         this.premiseName = premiseName;
@@ -880,7 +713,7 @@ public class Premise implements Cloneable
      * @param premiseName
      *     Objects of the following type are allowed in the list: {@link Premise.PremiseName}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Premise addToPremiseName(final Premise.PremiseName premiseName) {
         this.getPremiseName().add(premiseName);
@@ -888,12 +721,13 @@ public class Premise implements Cloneable
     }
 
     /**
-     * Sets the value of the premiseNumber property Objects of the following type(s) are allowed in the list List<PremiseNumber>.
+     * Sets the value of the premiseNumber property Objects of the following type(s) are allowed in the list {@code List<PremiseNumber>}.
      * <p>Note:
-     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withPremiseNumber} instead.
+     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use withPremiseNumber instead.
      * 
      * 
      * @param premiseNumber
+     *     Objects of the following type are allowed in the list: {@link PremiseNumber}
      */
     public void setPremiseNumber(final List<PremiseNumber> premiseNumber) {
         this.premiseNumber = premiseNumber;
@@ -905,7 +739,7 @@ public class Premise implements Cloneable
      * @param premiseNumber
      *     Objects of the following type are allowed in the list: {@link PremiseNumber}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Premise addToPremiseNumber(final PremiseNumber premiseNumber) {
         this.getPremiseNumber().add(premiseNumber);
@@ -913,12 +747,13 @@ public class Premise implements Cloneable
     }
 
     /**
-     * Sets the value of the premiseNumberPrefix property Objects of the following type(s) are allowed in the list List<PremiseNumberPrefix>.
+     * Sets the value of the premiseNumberPrefix property Objects of the following type(s) are allowed in the list {@code List<PremiseNumberPrefix>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withPremiseNumberPrefix} instead.
      * 
      * 
      * @param premiseNumberPrefix
+     *     Objects of the following type are allowed in the list: {@link PremiseNumberPrefix}
      */
     public void setPremiseNumberPrefix(final List<PremiseNumberPrefix> premiseNumberPrefix) {
         this.premiseNumberPrefix = premiseNumberPrefix;
@@ -930,7 +765,7 @@ public class Premise implements Cloneable
      * @param premiseNumberPrefix
      *     Objects of the following type are allowed in the list: {@link PremiseNumberPrefix}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Premise addToPremiseNumberPrefix(final PremiseNumberPrefix premiseNumberPrefix) {
         this.getPremiseNumberPrefix().add(premiseNumberPrefix);
@@ -938,12 +773,13 @@ public class Premise implements Cloneable
     }
 
     /**
-     * Sets the value of the premiseNumberSuffix property Objects of the following type(s) are allowed in the list List<PremiseNumberSuffix>.
+     * Sets the value of the premiseNumberSuffix property Objects of the following type(s) are allowed in the list {@code List<PremiseNumberSuffix>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withPremiseNumberSuffix} instead.
      * 
      * 
      * @param premiseNumberSuffix
+     *     Objects of the following type are allowed in the list: {@link PremiseNumberSuffix}
      */
     public void setPremiseNumberSuffix(final List<PremiseNumberSuffix> premiseNumberSuffix) {
         this.premiseNumberSuffix = premiseNumberSuffix;
@@ -955,7 +791,7 @@ public class Premise implements Cloneable
      * @param premiseNumberSuffix
      *     Objects of the following type are allowed in the list: {@link PremiseNumberSuffix}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Premise addToPremiseNumberSuffix(final PremiseNumberSuffix premiseNumberSuffix) {
         this.getPremiseNumberSuffix().add(premiseNumberSuffix);
@@ -963,12 +799,13 @@ public class Premise implements Cloneable
     }
 
     /**
-     * Sets the value of the buildingName property Objects of the following type(s) are allowed in the list List<BuildingName>.
+     * Sets the value of the buildingName property Objects of the following type(s) are allowed in the list {@code List<BuildingName>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withBuildingName} instead.
      * 
      * 
      * @param buildingName
+     *     Objects of the following type are allowed in the list: {@link BuildingName}
      */
     public void setBuildingName(final List<BuildingName> buildingName) {
         this.buildingName = buildingName;
@@ -980,7 +817,7 @@ public class Premise implements Cloneable
      * @param buildingName
      *     Objects of the following type are allowed in the list: {@link BuildingName}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Premise addToBuildingName(final BuildingName buildingName) {
         this.getBuildingName().add(buildingName);
@@ -988,12 +825,13 @@ public class Premise implements Cloneable
     }
 
     /**
-     * Sets the value of the subPremise property Objects of the following type(s) are allowed in the list List<SubPremise>.
+     * Sets the value of the subPremise property Objects of the following type(s) are allowed in the list {@code List<SubPremise>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withSubPremise} instead.
      * 
      * 
      * @param subPremise
+     *     Objects of the following type are allowed in the list: {@link SubPremise}
      */
     public void setSubPremise(final List<SubPremise> subPremise) {
         this.subPremise = subPremise;
@@ -1005,7 +843,7 @@ public class Premise implements Cloneable
      * @param subPremise
      *     Objects of the following type are allowed in the list: {@link SubPremise}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Premise addToSubPremise(final SubPremise subPremise) {
         this.getSubPremise().add(subPremise);
@@ -1013,12 +851,13 @@ public class Premise implements Cloneable
     }
 
     /**
-     * Sets the value of the any property Objects of the following type(s) are allowed in the list List<Object>.
+     * Sets the value of the any property Objects of the following type(s) are allowed in the list {@code List<Object>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAny} instead.
      * 
      * 
      * @param any
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setAny(final List<Object> any) {
         this.any = any;
@@ -1030,7 +869,7 @@ public class Premise implements Cloneable
      * @param any
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Premise addToAny(final Object any) {
         this.getAny().add(any);
@@ -1039,7 +878,7 @@ public class Premise implements Cloneable
 
     /**
      * fluent setter
-     * @see #setAddressLine(List<AddressLine>)
+     *
      * 
      * @param addressLine
      *     required parameter
@@ -1051,7 +890,7 @@ public class Premise implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPremiseName(List<PremiseName>)
+     *
      * 
      * @param premiseName
      *     required parameter
@@ -1063,7 +902,7 @@ public class Premise implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPremiseNumberPrefix(List<PremiseNumberPrefix>)
+     *
      * 
      * @param premiseNumberPrefix
      *     required parameter
@@ -1075,7 +914,7 @@ public class Premise implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPremiseNumberSuffix(List<PremiseNumberSuffix>)
+     *
      * 
      * @param premiseNumberSuffix
      *     required parameter
@@ -1087,7 +926,7 @@ public class Premise implements Cloneable
 
     /**
      * fluent setter
-     * @see #setBuildingName(List<BuildingName>)
+     *
      * 
      * @param buildingName
      *     required parameter
@@ -1099,7 +938,7 @@ public class Premise implements Cloneable
 
     /**
      * fluent setter
-     * @see #setSubPremise(List<SubPremise>)
+     *
      * 
      * @param subPremise
      *     required parameter
@@ -1111,7 +950,7 @@ public class Premise implements Cloneable
 
     /**
      * fluent setter
-     * @see #setFirm(Firm)
+     *
      * 
      * @param firm
      *     required parameter
@@ -1123,7 +962,7 @@ public class Premise implements Cloneable
 
     /**
      * fluent setter
-     * @see #setMailStop(MailStop)
+     *
      * 
      * @param mailStop
      *     required parameter
@@ -1135,7 +974,7 @@ public class Premise implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPostalCode(PostalCode)
+     *
      * 
      * @param postalCode
      *     required parameter
@@ -1147,7 +986,7 @@ public class Premise implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPremise(Premise)
+     *
      * 
      * @param premise
      *     required parameter
@@ -1159,7 +998,7 @@ public class Premise implements Cloneable
 
     /**
      * fluent setter
-     * @see #setAny(List<Object>)
+     *
      * 
      * @param any
      *     required parameter
@@ -1171,7 +1010,7 @@ public class Premise implements Cloneable
 
     /**
      * fluent setter
-     * @see #setUnderscore(String)
+     *
      * 
      * @param underscore
      *     required parameter
@@ -1183,7 +1022,7 @@ public class Premise implements Cloneable
 
     /**
      * fluent setter
-     * @see #setXalPremiseDependency(String)
+     *
      * 
      * @param xalPremiseDependency
      *     required parameter
@@ -1195,7 +1034,7 @@ public class Premise implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPremiseDependency(String)
+     *
      * 
      * @param premiseDependency
      *     required parameter
@@ -1207,7 +1046,7 @@ public class Premise implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPremiseThoroughfareConnector(String)
+     *
      * 
      * @param premiseThoroughfareConnector
      *     required parameter
@@ -1387,7 +1226,7 @@ public class Premise implements Cloneable
 
         /**
          * fluent setter
-         * @see #setContent(String)
+         *
          * 
          * @param content
          *     required parameter
@@ -1399,7 +1238,7 @@ public class Premise implements Cloneable
 
         /**
          * fluent setter
-         * @see #setCode(String)
+         *
          * 
          * @param code
          *     required parameter
@@ -1613,7 +1452,7 @@ public class Premise implements Cloneable
 
         /**
          * fluent setter
-         * @see #setContent(String)
+         *
          * 
          * @param content
          *     required parameter
@@ -1625,7 +1464,7 @@ public class Premise implements Cloneable
 
         /**
          * fluent setter
-         * @see #setUnderscore(String)
+         *
          * 
          * @param underscore
          *     required parameter
@@ -1637,7 +1476,7 @@ public class Premise implements Cloneable
 
         /**
          * fluent setter
-         * @see #setTypeOccurrence(String)
+         *
          * 
          * @param typeOccurrence
          *     required parameter
@@ -1649,7 +1488,7 @@ public class Premise implements Cloneable
 
         /**
          * fluent setter
-         * @see #setCode(String)
+         *
          * 
          * @param code
          *     required parameter
@@ -2013,9 +1852,9 @@ public class Premise implements Cloneable
          * Creates a new instance of {@link Premise.PremiseNumberRange.PremiseNumberRangeFrom} and set it to premiseNumberRangeFrom.
          * 
          * This method is a short version for:
-         * <code>
+         * {@code
          * PremiseNumberRangeFrom premiseNumberRangeFrom = new PremiseNumberRangeFrom();
-         * this.setPremiseNumberRangeFrom(premiseNumberRangeFrom); </code>
+         * this.setPremiseNumberRangeFrom(premiseNumberRangeFrom); }
          * 
          * 
          * @param premiseNumber
@@ -2031,9 +1870,9 @@ public class Premise implements Cloneable
          * Creates a new instance of {@link Premise.PremiseNumberRange.PremiseNumberRangeTo} and set it to premiseNumberRangeTo.
          * 
          * This method is a short version for:
-         * <code>
+         * {@code
          * PremiseNumberRangeTo premiseNumberRangeTo = new PremiseNumberRangeTo();
-         * this.setPremiseNumberRangeTo(premiseNumberRangeTo); </code>
+         * this.setPremiseNumberRangeTo(premiseNumberRangeTo); }
          * 
          * 
          * @param premiseNumber
@@ -2047,7 +1886,7 @@ public class Premise implements Cloneable
 
         /**
          * fluent setter
-         * @see #setRange(String)
+         *
          * 
          * @param range
          *     required parameter
@@ -2059,7 +1898,7 @@ public class Premise implements Cloneable
 
         /**
          * fluent setter
-         * @see #setIndicator(String)
+         *
          * 
          * @param indicator
          *     required parameter
@@ -2071,7 +1910,7 @@ public class Premise implements Cloneable
 
         /**
          * fluent setter
-         * @see #setSeparator(String)
+         *
          * 
          * @param separator
          *     required parameter
@@ -2083,7 +1922,7 @@ public class Premise implements Cloneable
 
         /**
          * fluent setter
-         * @see #setUnderscore(String)
+         *
          * 
          * @param underscore
          *     required parameter
@@ -2095,7 +1934,7 @@ public class Premise implements Cloneable
 
         /**
          * fluent setter
-         * @see #setIndicatorOccurence(String)
+         *
          * 
          * @param indicatorOccurence
          *     required parameter
@@ -2107,7 +1946,7 @@ public class Premise implements Cloneable
 
         /**
          * fluent setter
-         * @see #setNumberRangeOccurence(String)
+         *
          * 
          * @param numberRangeOccurence
          *     required parameter
@@ -2279,9 +2118,9 @@ public class Premise implements Cloneable
             /**
              * Creates a new instance of {@link AddressLine} and adds it to addressLine.
              * This method is a short version for:
-             * <code>
+             * {@code
              * AddressLine addressLine = new AddressLine();
-             * this.getAddressLine().add(addressLine); </code>
+             * this.getAddressLine().add(addressLine); }
              * 
              * 
              */
@@ -2294,9 +2133,9 @@ public class Premise implements Cloneable
             /**
              * Creates a new instance of {@link PremiseNumberPrefix} and adds it to premiseNumberPrefix.
              * This method is a short version for:
-             * <code>
+             * {@code
              * PremiseNumberPrefix premiseNumberPrefix = new PremiseNumberPrefix();
-             * this.getPremiseNumberPrefix().add(premiseNumberPrefix); </code>
+             * this.getPremiseNumberPrefix().add(premiseNumberPrefix); }
              * 
              * 
              */
@@ -2309,9 +2148,9 @@ public class Premise implements Cloneable
             /**
              * Creates a new instance of {@link PremiseNumber} and adds it to premiseNumber.
              * This method is a short version for:
-             * <code>
+             * {@code
              * PremiseNumber premiseNumber = new PremiseNumber();
-             * this.getPremiseNumber().add(premiseNumber); </code>
+             * this.getPremiseNumber().add(premiseNumber); }
              * 
              * 
              */
@@ -2324,9 +2163,9 @@ public class Premise implements Cloneable
             /**
              * Creates a new instance of {@link PremiseNumberSuffix} and adds it to premiseNumberSuffix.
              * This method is a short version for:
-             * <code>
+             * {@code
              * PremiseNumberSuffix premiseNumberSuffix = new PremiseNumberSuffix();
-             * this.getPremiseNumberSuffix().add(premiseNumberSuffix); </code>
+             * this.getPremiseNumberSuffix().add(premiseNumberSuffix); }
              * 
              * 
              */
@@ -2337,12 +2176,13 @@ public class Premise implements Cloneable
             }
 
             /**
-             * Sets the value of the addressLine property Objects of the following type(s) are allowed in the list List<AddressLine>.
+             * Sets the value of the addressLine property Objects of the following type(s) are allowed in the list {@code List<AddressLine>}.
              * <p>Note:
-             * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAddressLine} instead.
+             * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use withAddressLine instead.
              * 
              * 
              * @param addressLine
+             *     Objects of the following type are allowed in the list: {@link AddressLine}
              */
             public void setAddressLine(final List<AddressLine> addressLine) {
                 this.addressLine = addressLine;
@@ -2354,7 +2194,7 @@ public class Premise implements Cloneable
              * @param addressLine
              *     Objects of the following type are allowed in the list: {@link AddressLine}
              * @return
-             *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+             *     true (as general contract of Collection.add). 
              */
             public Premise.PremiseNumberRange.PremiseNumberRangeFrom addToAddressLine(final AddressLine addressLine) {
                 this.getAddressLine().add(addressLine);
@@ -2362,12 +2202,13 @@ public class Premise implements Cloneable
             }
 
             /**
-             * Sets the value of the premiseNumberPrefix property Objects of the following type(s) are allowed in the list List<PremiseNumberPrefix>.
+             * Sets the value of the premiseNumberPrefix property Objects of the following type(s) are allowed in the list {@code List<PremiseNumberPrefix>}.
              * <p>Note:
              * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withPremiseNumberPrefix} instead.
              * 
              * 
              * @param premiseNumberPrefix
+             *     Objects of the following type are allowed in the list: {@link PremiseNumberPrefix}
              */
             public void setPremiseNumberPrefix(final List<PremiseNumberPrefix> premiseNumberPrefix) {
                 this.premiseNumberPrefix = premiseNumberPrefix;
@@ -2379,7 +2220,7 @@ public class Premise implements Cloneable
              * @param premiseNumberPrefix
              *     Objects of the following type are allowed in the list: {@link PremiseNumberPrefix}
              * @return
-             *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+             *     true (as general contract of Collection.add). 
              */
             public Premise.PremiseNumberRange.PremiseNumberRangeFrom addToPremiseNumberPrefix(final PremiseNumberPrefix premiseNumberPrefix) {
                 this.getPremiseNumberPrefix().add(premiseNumberPrefix);
@@ -2387,12 +2228,13 @@ public class Premise implements Cloneable
             }
 
             /**
-             * Sets the value of the premiseNumber property Objects of the following type(s) are allowed in the list List<PremiseNumber>.
+             * Sets the value of the premiseNumber property Objects of the following type(s) are allowed in the list {@code List<PremiseNumber>}.
              * <p>Note:
-             * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withPremiseNumber} instead.
+             * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use withPremiseNumber instead.
              * 
              * 
              * @param premiseNumber
+             *     Objects of the following type are allowed in the list: {@link PremiseNumber}
              */
             public void setPremiseNumber(final List<PremiseNumber> premiseNumber) {
                 this.premiseNumber = premiseNumber;
@@ -2404,7 +2246,7 @@ public class Premise implements Cloneable
              * @param premiseNumber
              *     Objects of the following type are allowed in the list: {@link PremiseNumber}
              * @return
-             *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+             *     true (as general contract of Collection.add). 
              */
             public Premise.PremiseNumberRange.PremiseNumberRangeFrom addToPremiseNumber(final PremiseNumber premiseNumber) {
                 this.getPremiseNumber().add(premiseNumber);
@@ -2412,12 +2254,13 @@ public class Premise implements Cloneable
             }
 
             /**
-             * Sets the value of the premiseNumberSuffix property Objects of the following type(s) are allowed in the list List<PremiseNumberSuffix>.
+             * Sets the value of the premiseNumberSuffix property Objects of the following type(s) are allowed in the list {@code List<PremiseNumberSuffix>}.
              * <p>Note:
              * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withPremiseNumberSuffix} instead.
              * 
              * 
              * @param premiseNumberSuffix
+             *     Objects of the following type are allowed in the list: {@link PremiseNumberSuffix}
              */
             public void setPremiseNumberSuffix(final List<PremiseNumberSuffix> premiseNumberSuffix) {
                 this.premiseNumberSuffix = premiseNumberSuffix;
@@ -2429,7 +2272,7 @@ public class Premise implements Cloneable
              * @param premiseNumberSuffix
              *     Objects of the following type are allowed in the list: {@link PremiseNumberSuffix}
              * @return
-             *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+             *     true (as general contract of Collection.add). 
              */
             public Premise.PremiseNumberRange.PremiseNumberRangeFrom addToPremiseNumberSuffix(final PremiseNumberSuffix premiseNumberSuffix) {
                 this.getPremiseNumberSuffix().add(premiseNumberSuffix);
@@ -2438,7 +2281,7 @@ public class Premise implements Cloneable
 
             /**
              * fluent setter
-             * @see #setAddressLine(List<AddressLine>)
+             *
              * 
              * @param addressLine
              *     required parameter
@@ -2450,7 +2293,7 @@ public class Premise implements Cloneable
 
             /**
              * fluent setter
-             * @see #setPremiseNumberPrefix(List<PremiseNumberPrefix>)
+             *
              * 
              * @param premiseNumberPrefix
              *     required parameter
@@ -2462,7 +2305,7 @@ public class Premise implements Cloneable
 
             /**
              * fluent setter
-             * @see #setPremiseNumberSuffix(List<PremiseNumberSuffix>)
+             *
              * 
              * @param premiseNumberSuffix
              *     required parameter
@@ -2650,9 +2493,9 @@ public class Premise implements Cloneable
             /**
              * Creates a new instance of {@link AddressLine} and adds it to addressLine.
              * This method is a short version for:
-             * <code>
+             * {@code
              * AddressLine addressLine = new AddressLine();
-             * this.getAddressLine().add(addressLine); </code>
+             * this.getAddressLine().add(addressLine); }
              * 
              * 
              */
@@ -2665,9 +2508,9 @@ public class Premise implements Cloneable
             /**
              * Creates a new instance of {@link PremiseNumberPrefix} and adds it to premiseNumberPrefix.
              * This method is a short version for:
-             * <code>
+             * {@code
              * PremiseNumberPrefix premiseNumberPrefix = new PremiseNumberPrefix();
-             * this.getPremiseNumberPrefix().add(premiseNumberPrefix); </code>
+             * this.getPremiseNumberPrefix().add(premiseNumberPrefix); }
              * 
              * 
              */
@@ -2680,9 +2523,9 @@ public class Premise implements Cloneable
             /**
              * Creates a new instance of {@link PremiseNumber} and adds it to premiseNumber.
              * This method is a short version for:
-             * <code>
+             * {@code
              * PremiseNumber premiseNumber = new PremiseNumber();
-             * this.getPremiseNumber().add(premiseNumber); </code>
+             * this.getPremiseNumber().add(premiseNumber); }
              * 
              * 
              */
@@ -2695,9 +2538,9 @@ public class Premise implements Cloneable
             /**
              * Creates a new instance of {@link PremiseNumberSuffix} and adds it to premiseNumberSuffix.
              * This method is a short version for:
-             * <code>
+             * {@code
              * PremiseNumberSuffix premiseNumberSuffix = new PremiseNumberSuffix();
-             * this.getPremiseNumberSuffix().add(premiseNumberSuffix); </code>
+             * this.getPremiseNumberSuffix().add(premiseNumberSuffix); }
              * 
              * 
              */
@@ -2708,12 +2551,13 @@ public class Premise implements Cloneable
             }
 
             /**
-             * Sets the value of the addressLine property Objects of the following type(s) are allowed in the list List<AddressLine>.
+             * Sets the value of the addressLine property Objects of the following type(s) are allowed in the list {@code List<AddressLine>}.
              * <p>Note:
-             * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAddressLine} instead.
+             * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use withAddressLine instead.
              * 
              * 
              * @param addressLine
+             *     Objects of the following type are allowed in the list: {@link AddressLine}
              */
             public void setAddressLine(final List<AddressLine> addressLine) {
                 this.addressLine = addressLine;
@@ -2725,7 +2569,7 @@ public class Premise implements Cloneable
              * @param addressLine
              *     Objects of the following type are allowed in the list: {@link AddressLine}
              * @return
-             *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+             *     true (as general contract of Collection.add). 
              */
             public Premise.PremiseNumberRange.PremiseNumberRangeTo addToAddressLine(final AddressLine addressLine) {
                 this.getAddressLine().add(addressLine);
@@ -2733,12 +2577,13 @@ public class Premise implements Cloneable
             }
 
             /**
-             * Sets the value of the premiseNumberPrefix property Objects of the following type(s) are allowed in the list List<PremiseNumberPrefix>.
+             * Sets the value of the premiseNumberPrefix property Objects of the following type(s) are allowed in the list {@code List<PremiseNumberPrefix>}.
              * <p>Note:
              * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withPremiseNumberPrefix} instead.
              * 
              * 
              * @param premiseNumberPrefix
+             *     Objects of the following type are allowed in the list: {@link PremiseNumberPrefix}
              */
             public void setPremiseNumberPrefix(final List<PremiseNumberPrefix> premiseNumberPrefix) {
                 this.premiseNumberPrefix = premiseNumberPrefix;
@@ -2750,7 +2595,7 @@ public class Premise implements Cloneable
              * @param premiseNumberPrefix
              *     Objects of the following type are allowed in the list: {@link PremiseNumberPrefix}
              * @return
-             *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+             *     true (as general contract of Collection.add). 
              */
             public Premise.PremiseNumberRange.PremiseNumberRangeTo addToPremiseNumberPrefix(final PremiseNumberPrefix premiseNumberPrefix) {
                 this.getPremiseNumberPrefix().add(premiseNumberPrefix);
@@ -2758,12 +2603,13 @@ public class Premise implements Cloneable
             }
 
             /**
-             * Sets the value of the premiseNumber property Objects of the following type(s) are allowed in the list List<PremiseNumber>.
+             * Sets the value of the premiseNumber property Objects of the following type(s) are allowed in the list {@code List<PremiseNumber>}.
              * <p>Note:
-             * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withPremiseNumber} instead.
+             * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use withPremiseNumber instead.
              * 
              * 
              * @param premiseNumber
+             *     Objects of the following type are allowed in the list: {@link PremiseNumber}
              */
             public void setPremiseNumber(final List<PremiseNumber> premiseNumber) {
                 this.premiseNumber = premiseNumber;
@@ -2775,7 +2621,7 @@ public class Premise implements Cloneable
              * @param premiseNumber
              *     Objects of the following type are allowed in the list: {@link PremiseNumber}
              * @return
-             *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+             *     true (as general contract of Collection.add). 
              */
             public Premise.PremiseNumberRange.PremiseNumberRangeTo addToPremiseNumber(final PremiseNumber premiseNumber) {
                 this.getPremiseNumber().add(premiseNumber);
@@ -2783,12 +2629,13 @@ public class Premise implements Cloneable
             }
 
             /**
-             * Sets the value of the premiseNumberSuffix property Objects of the following type(s) are allowed in the list List<PremiseNumberSuffix>.
+             * Sets the value of the premiseNumberSuffix property Objects of the following type(s) are allowed in the list {@code List<PremiseNumberSuffix>}.
              * <p>Note:
              * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withPremiseNumberSuffix} instead.
              * 
              * 
              * @param premiseNumberSuffix
+             *     Objects of the following type are allowed in the list: {@link PremiseNumberSuffix}
              */
             public void setPremiseNumberSuffix(final List<PremiseNumberSuffix> premiseNumberSuffix) {
                 this.premiseNumberSuffix = premiseNumberSuffix;
@@ -2800,7 +2647,7 @@ public class Premise implements Cloneable
              * @param premiseNumberSuffix
              *     Objects of the following type are allowed in the list: {@link PremiseNumberSuffix}
              * @return
-             *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+             *     true (as general contract of Collection.add). 
              */
             public Premise.PremiseNumberRange.PremiseNumberRangeTo addToPremiseNumberSuffix(final PremiseNumberSuffix premiseNumberSuffix) {
                 this.getPremiseNumberSuffix().add(premiseNumberSuffix);
@@ -2809,7 +2656,7 @@ public class Premise implements Cloneable
 
             /**
              * fluent setter
-             * @see #setAddressLine(List<AddressLine>)
+             *
              * 
              * @param addressLine
              *     required parameter
@@ -2821,7 +2668,7 @@ public class Premise implements Cloneable
 
             /**
              * fluent setter
-             * @see #setPremiseNumberPrefix(List<PremiseNumberPrefix>)
+             *
              * 
              * @param premiseNumberPrefix
              *     required parameter
@@ -2833,7 +2680,7 @@ public class Premise implements Cloneable
 
             /**
              * fluent setter
-             * @see #setPremiseNumberSuffix(List<PremiseNumberSuffix>)
+             *
              * 
              * @param premiseNumberSuffix
              *     required parameter

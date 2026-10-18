@@ -1,16 +1,13 @@
 
 package de.micromata.opengis.kml.v_2_2_0.gx;
 
-import java.util.ArrayList;
-import java.util.List;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlType;
 import de.micromata.opengis.kml.v_2_2_0.AbstractObject;
 import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
+import jakarta.xml.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 
@@ -59,46 +56,33 @@ public class ViewerOptions
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = ((prime*result)+((option == null)? 0 :option.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        ViewerOptions that = (ViewerOptions) object;
+        return Objects.equals(option, that.option);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof ViewerOptions) == false) {
-            return false;
-        }
-        ViewerOptions other = ((ViewerOptions) obj);
-        if (option == null) {
-            if (other.option!= null) {
-                return false;
-            }
-        } else {
-            if (option.equals(other.option) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(option);
+        return result;
     }
 
     /**
      * Creates a new instance of {@link Option} and adds it to option.
      * This method is a short version for:
-     * <code>
+     * {@code
      * Option option = new Option();
-     * this.getOption().add(option); </code>
+     * this.getOption().add(option); }
      * 
      * 
      */
@@ -109,12 +93,13 @@ public class ViewerOptions
     }
 
     /**
-     * Sets the value of the option property Objects of the following type(s) are allowed in the list List<Option>.
+     * Sets the value of the option property Objects of the following type(s) are allowed in the list {@code List<Option>}.
      * <p>Note:
-     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withOption} instead.
+     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use withOption instead.
      * 
      * 
      * @param option
+     *     Objects of the following type are allowed in the list: {@link Option}
      */
     public void setOption(final List<Option> option) {
         this.option = option;
@@ -126,7 +111,7 @@ public class ViewerOptions
      * @param option
      *     Objects of the following type are allowed in the list: {@link Option}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public ViewerOptions addToOption(final Option option) {
         this.getOption().add(option);

@@ -1,24 +1,16 @@
 
 package de.micromata.opengis.kml.v_2_2_0.xal;
 
+import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAnyAttribute;
-import jakarta.xml.bind.annotation.XmlAnyElement;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.XmlValue;
-import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.namespace.QName;
-
+import java.util.Objects;
 
 /**
  * 
@@ -236,123 +228,48 @@ public class PostOffice implements Cloneable
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = ((prime*result)+((addressLine == null)? 0 :addressLine.hashCode()));
-        result = ((prime*result)+((postOfficeName == null)? 0 :postOfficeName.hashCode()));
-        result = ((prime*result)+((postOfficeNumber == null)? 0 :postOfficeNumber.hashCode()));
-        result = ((prime*result)+((postalRoute == null)? 0 :postalRoute.hashCode()));
-        result = ((prime*result)+((postBox == null)? 0 :postBox.hashCode()));
-        result = ((prime*result)+((postalCode == null)? 0 :postalCode.hashCode()));
-        result = ((prime*result)+((any == null)? 0 :any.hashCode()));
-        result = ((prime*result)+((underscore == null)? 0 :underscore.hashCode()));
-        result = ((prime*result)+((indicator == null)? 0 :indicator.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+
+        PostOffice that = (PostOffice) object;
+        return Objects.equals(addressLine, that.addressLine)
+                && Objects.equals(postOfficeName, that.postOfficeName)
+                && Objects.equals(postOfficeNumber, that.postOfficeNumber)
+                && Objects.equals(postalRoute, that.postalRoute)
+                && Objects.equals(postBox, that.postBox)
+                && Objects.equals(postalCode, that.postalCode)
+                && Objects.equals(any, that.any)
+                && Objects.equals(underscore, that.underscore)
+                && Objects.equals(indicator, that.indicator)
+                && Objects.equals(otherAttributes, that.otherAttributes);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if ((obj instanceof PostOffice) == false) {
-            return false;
-        }
-        PostOffice other = ((PostOffice) obj);
-        if (addressLine == null) {
-            if (other.addressLine!= null) {
-                return false;
-            }
-        } else {
-            if (addressLine.equals(other.addressLine) == false) {
-                return false;
-            }
-        }
-        if (postOfficeName == null) {
-            if (other.postOfficeName!= null) {
-                return false;
-            }
-        } else {
-            if (postOfficeName.equals(other.postOfficeName) == false) {
-                return false;
-            }
-        }
-        if (postOfficeNumber == null) {
-            if (other.postOfficeNumber!= null) {
-                return false;
-            }
-        } else {
-            if (postOfficeNumber.equals(other.postOfficeNumber) == false) {
-                return false;
-            }
-        }
-        if (postalRoute == null) {
-            if (other.postalRoute!= null) {
-                return false;
-            }
-        } else {
-            if (postalRoute.equals(other.postalRoute) == false) {
-                return false;
-            }
-        }
-        if (postBox == null) {
-            if (other.postBox!= null) {
-                return false;
-            }
-        } else {
-            if (postBox.equals(other.postBox) == false) {
-                return false;
-            }
-        }
-        if (postalCode == null) {
-            if (other.postalCode!= null) {
-                return false;
-            }
-        } else {
-            if (postalCode.equals(other.postalCode) == false) {
-                return false;
-            }
-        }
-        if (any == null) {
-            if (other.any!= null) {
-                return false;
-            }
-        } else {
-            if (any.equals(other.any) == false) {
-                return false;
-            }
-        }
-        if (underscore == null) {
-            if (other.underscore!= null) {
-                return false;
-            }
-        } else {
-            if (underscore.equals(other.underscore) == false) {
-                return false;
-            }
-        }
-        if (indicator == null) {
-            if (other.indicator!= null) {
-                return false;
-            }
-        } else {
-            if (indicator.equals(other.indicator) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = Objects.hashCode(addressLine);
+        result = 31 * result + Objects.hashCode(postOfficeName);
+        result = 31 * result + Objects.hashCode(postOfficeNumber);
+        result = 31 * result + Objects.hashCode(postalRoute);
+        result = 31 * result + Objects.hashCode(postBox);
+        result = 31 * result + Objects.hashCode(postalCode);
+        result = 31 * result + Objects.hashCode(any);
+        result = 31 * result + Objects.hashCode(underscore);
+        result = 31 * result + Objects.hashCode(indicator);
+        result = 31 * result + Objects.hashCode(otherAttributes);
+        return result;
     }
 
     /**
      * Creates a new instance of {@link AddressLine} and adds it to addressLine.
      * This method is a short version for:
-     * <code>
+     * {@code
      * AddressLine addressLine = new AddressLine();
-     * this.getAddressLine().add(addressLine); </code>
+     * this.getAddressLine().add(addressLine); }
      * 
      * 
      */
@@ -365,9 +282,9 @@ public class PostOffice implements Cloneable
     /**
      * Creates a new instance of {@link PostOffice.PostOfficeName} and adds it to postOfficeName.
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostOfficeName postOfficeName = new PostOfficeName();
-     * this.getPostOfficeName().add(postOfficeName); </code>
+     * this.getPostOfficeName().add(postOfficeName); }
      * 
      * 
      */
@@ -381,9 +298,9 @@ public class PostOffice implements Cloneable
      * Creates a new instance of {@link PostOffice.PostOfficeNumber} and set it to postOfficeNumber.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostOfficeNumber postOfficeNumber = new PostOfficeNumber();
-     * this.setPostOfficeNumber(postOfficeNumber); </code>
+     * this.setPostOfficeNumber(postOfficeNumber); }
      * 
      * 
      */
@@ -397,9 +314,9 @@ public class PostOffice implements Cloneable
      * Creates a new instance of {@link PostalRoute} and set it to postalRoute.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostalRoute postalRoute = new PostalRoute();
-     * this.setPostalRoute(postalRoute); </code>
+     * this.setPostalRoute(postalRoute); }
      * 
      * 
      * @param postalRouteName
@@ -417,9 +334,9 @@ public class PostOffice implements Cloneable
      * Creates a new instance of {@link PostBox} and set it to postBox.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostBox postBox = new PostBox();
-     * this.setPostBox(postBox); </code>
+     * this.setPostBox(postBox); }
      * 
      * 
      * @param postBoxNumber
@@ -435,9 +352,9 @@ public class PostOffice implements Cloneable
      * Creates a new instance of {@link PostalCode} and set it to postalCode.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostalCode postalCode = new PostalCode();
-     * this.setPostalCode(postalCode); </code>
+     * this.setPostalCode(postalCode); }
      * 
      * 
      */
@@ -448,12 +365,13 @@ public class PostOffice implements Cloneable
     }
 
     /**
-     * Sets the value of the addressLine property Objects of the following type(s) are allowed in the list List<AddressLine>.
+     * Sets the value of the addressLine property Objects of the following type(s) are allowed in the list {@code List<AddressLine>}.
      * <p>Note:
-     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAddressLine} instead.
+     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use withAddressLine instead.
      * 
      * 
      * @param addressLine
+     *     Objects of the following type are allowed in the list: {@link AddressLine}
      */
     public void setAddressLine(final List<AddressLine> addressLine) {
         this.addressLine = addressLine;
@@ -465,7 +383,7 @@ public class PostOffice implements Cloneable
      * @param addressLine
      *     Objects of the following type are allowed in the list: {@link AddressLine}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public PostOffice addToAddressLine(final AddressLine addressLine) {
         this.getAddressLine().add(addressLine);
@@ -473,12 +391,13 @@ public class PostOffice implements Cloneable
     }
 
     /**
-     * Sets the value of the postOfficeName property Objects of the following type(s) are allowed in the list List<PostOfficeName>.
+     * Sets the value of the postOfficeName property Objects of the following type(s) are allowed in the list {@code List<PostOfficeName>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withPostOfficeName} instead.
      * 
      * 
      * @param postOfficeName
+     *     Objects of the following type are allowed in the list: {@link PostOffice.PostOfficeName}
      */
     public void setPostOfficeName(final List<PostOffice.PostOfficeName> postOfficeName) {
         this.postOfficeName = postOfficeName;
@@ -490,7 +409,7 @@ public class PostOffice implements Cloneable
      * @param postOfficeName
      *     Objects of the following type are allowed in the list: {@link PostOffice.PostOfficeName}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public PostOffice addToPostOfficeName(final PostOffice.PostOfficeName postOfficeName) {
         this.getPostOfficeName().add(postOfficeName);
@@ -498,12 +417,13 @@ public class PostOffice implements Cloneable
     }
 
     /**
-     * Sets the value of the any property Objects of the following type(s) are allowed in the list List<Object>.
+     * Sets the value of the any property Objects of the following type(s) are allowed in the list {@code List<Object>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAny} instead.
      * 
      * 
      * @param any
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setAny(final List<Object> any) {
         this.any = any;
@@ -515,7 +435,7 @@ public class PostOffice implements Cloneable
      * @param any
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public PostOffice addToAny(final Object any) {
         this.getAny().add(any);
@@ -524,7 +444,7 @@ public class PostOffice implements Cloneable
 
     /**
      * fluent setter
-     * @see #setAddressLine(List<AddressLine>)
+     *
      * 
      * @param addressLine
      *     required parameter
@@ -536,7 +456,7 @@ public class PostOffice implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPostOfficeName(List<PostOfficeName>)
+     *
      * 
      * @param postOfficeName
      *     required parameter
@@ -548,7 +468,7 @@ public class PostOffice implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPostOfficeNumber(PostOfficeNumber)
+     *
      * 
      * @param postOfficeNumber
      *     required parameter
@@ -560,7 +480,7 @@ public class PostOffice implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPostalRoute(PostalRoute)
+     *
      * 
      * @param postalRoute
      *     required parameter
@@ -572,7 +492,7 @@ public class PostOffice implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPostBox(PostBox)
+     *
      * 
      * @param postBox
      *     required parameter
@@ -584,7 +504,7 @@ public class PostOffice implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPostalCode(PostalCode)
+     *
      * 
      * @param postalCode
      *     required parameter
@@ -596,7 +516,7 @@ public class PostOffice implements Cloneable
 
     /**
      * fluent setter
-     * @see #setAny(List<Object>)
+     *
      * 
      * @param any
      *     required parameter
@@ -608,7 +528,7 @@ public class PostOffice implements Cloneable
 
     /**
      * fluent setter
-     * @see #setUnderscore(String)
+     *
      * 
      * @param underscore
      *     required parameter
@@ -620,7 +540,7 @@ public class PostOffice implements Cloneable
 
     /**
      * fluent setter
-     * @see #setIndicator(String)
+     *
      * 
      * @param indicator
      *     required parameter
@@ -813,7 +733,7 @@ public class PostOffice implements Cloneable
 
         /**
          * fluent setter
-         * @see #setContent(String)
+         *
          * 
          * @param content
          *     required parameter
@@ -825,7 +745,7 @@ public class PostOffice implements Cloneable
 
         /**
          * fluent setter
-         * @see #setUnderscore(String)
+         *
          * 
          * @param underscore
          *     required parameter
@@ -837,7 +757,7 @@ public class PostOffice implements Cloneable
 
         /**
          * fluent setter
-         * @see #setCode(String)
+         *
          * 
          * @param code
          *     required parameter
@@ -1051,7 +971,7 @@ public class PostOffice implements Cloneable
 
         /**
          * fluent setter
-         * @see #setContent(String)
+         *
          * 
          * @param content
          *     required parameter
@@ -1063,7 +983,7 @@ public class PostOffice implements Cloneable
 
         /**
          * fluent setter
-         * @see #setIndicator(String)
+         *
          * 
          * @param indicator
          *     required parameter
@@ -1075,7 +995,7 @@ public class PostOffice implements Cloneable
 
         /**
          * fluent setter
-         * @see #setIndicatorOccurrence(String)
+         *
          * 
          * @param indicatorOccurrence
          *     required parameter
@@ -1087,7 +1007,7 @@ public class PostOffice implements Cloneable
 
         /**
          * fluent setter
-         * @see #setCode(String)
+         *
          * 
          * @param code
          *     required parameter

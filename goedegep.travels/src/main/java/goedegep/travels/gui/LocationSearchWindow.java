@@ -36,7 +36,6 @@ import goedegep.poi.app.LocationCategory;
 import goedegep.resources.ImageSize;
 import goedegep.travels.logic.EnumStringConverterForLocationCategory;
 import goedegep.travels.logic.NominatimUtil;
-import goedegep.travels.logic.TravelsRegistry;
 import goedegep.travels.model.Boundary;
 import goedegep.travels.model.BoundingBox;
 import goedegep.travels.model.Location;
@@ -101,8 +100,6 @@ public class LocationSearchWindow extends JfxStage {
    * The GUI customization.
    */
   private CustomizationFx customization;
-  
-  private TravelsRegistry travelsRegistry = TravelsRegistry.getInstance();
   
   /**
    * An instance of the {@link NominatimAPI} used to perform the search queries.

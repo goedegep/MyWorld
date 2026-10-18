@@ -18,7 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
-import org.eclipse.emf.ecore.EObject;
 
 import de.micromata.opengis.kml.v_2_2_0.Document;
 import de.micromata.opengis.kml.v_2_2_0.Feature;
@@ -39,10 +38,9 @@ import goedegep.travels.model.Location;
 import goedegep.travels.model.Picture;
 import goedegep.travels.model.Text;
 import goedegep.travels.model.Travel;
-import goedegep.travels.model.Vacation;
-import goedegep.travels.model.VacationElement;
 import goedegep.travels.model.Travels;
 import goedegep.travels.model.TravelsPackage;
+import goedegep.travels.model.VacationElement;
 import goedegep.types.model.FileReference;
 import goedegep.util.datetime.FlexDateFormat;
 import goedegep.util.html.HtmlUtil;
@@ -50,14 +48,13 @@ import goedegep.util.img.PhotoFileMetaDataHandler;
 import goedegep.util.sgml.SgmlUtil;
 
 /**
- * This class creates a KML file for a Vacations structure.
+ * This class creates a KML file for a {@code Travels} structure.
  */
-public class VacationsKmlConverter extends TravelToTextConverterAbstract {
-  private static final Logger LOGGER = Logger.getLogger(VacationsKmlConverter.class.getName());
+public class TravelsToKmlConverter extends TravelToTextConverterAbstract {
+  private static final Logger LOGGER = Logger.getLogger(TravelsToKmlConverter.class.getName());
   private static final String NEWLINE = System.getProperty("line.separator");
   private static final String ICON_DIRECTORY = "C:/MyWorld/goedegep.poi.app/src/main/resources/goedegep/poi/app/guifx";
   private static final FlexDateFormat FDF = new FlexDateFormat(true, false);
-//  private static final FlexDateFormat FDF_REV = new FlexDateFormat(true, true);
   private static final SimpleDateFormat DF = new SimpleDateFormat("dd-MM-yyyy");
 
   private Parser parser = Parser.builder().build();
@@ -71,11 +68,11 @@ public class VacationsKmlConverter extends TravelToTextConverterAbstract {
    * Constructor
    * 
    */
-  public VacationsKmlConverter() {
+  public TravelsToKmlConverter() {
   }
   
   /**
-   * Create a KML file for a Vacations structure.
+   * Create a KML file for a {@code Travels} structure.
    * <p>
    * The KML file will have the following structure:<pre>
    * - Home
@@ -84,24 +81,24 @@ public class VacationsKmlConverter extends TravelToTextConverterAbstract {
    *     - Vacation elements
    * </pre>
    * 
-   * @param vacations The <code>Vacations</code> structure for which a KML file is to be created.
+   * @param travels The {@code Travels} structure for which a KML file is to be created.
    * @param file The file to be created.
    * @throws FileNotFoundException if the file cannot be written.
    */
-  public void createKmlForVacations(Travels vacations, File file) throws FileNotFoundException {
+  public void createKmlForVacations(Travels travels, File file) throws FileNotFoundException {
     if (!Files.isWritable(file.getParentFile().toPath())) {
-      LOGGER.severe("Geen schrijfrechten in " + file.getParentFile().toString());
-      throw new RuntimeException("Geen schrijfrechten in " + file.getParentFile().toString());
+      LOGGER.severe("No rights to write file to folder: " + file.getParentFile().toString());
+      throw new RuntimeException("No rights to write file to folder: " + file.getParentFile().toString());
     }
     
     kmlDocument = kml.createAndSetDocument().withOpen(true);
     
-    createAndAddKmlForHome(vacations);
+    createAndAddKmlForHome(travels);
     
-    Folder vacationsFolder = kmlDocument.createAndAddFolder().withName("Vakanties").withOpen(true);
+    Folder travelsFolder = kmlDocument.createAndAddFolder().withName("Travels").withOpen(true);
     
-    for (Travel travel: vacations.getTravels()) {
-      createKmlForVacation(travel, vacationsFolder);
+    for (Travel travel: travels.getTravels()) {
+      createKmlForTravel(travel, travelsFolder);
     }
     
     saveToFile(file);
@@ -111,31 +108,26 @@ public class VacationsKmlConverter extends TravelToTextConverterAbstract {
    * Create a KML file for a Vacations structure.
    * <p>
    * The KML file will have the following structure:<pre>
-   * - Home
    * - Vacations
    *   - Vacation: folder, name is the vacation Title
    *     - Vacation elements
    * </pre>
    * 
-   * @param vacation The <code>Vacation</code>s structure for which a KML file is to be created.
+   * @param travel The {@code Travel} for which a KML file is to be created.
    * @param file The file to be created.
    * @throws FileNotFoundException if the file cannot be written.
    */
-  public void createKmlForVacation(Travel vacation, File file) throws FileNotFoundException {
+  public void createKmlForTravel(Travel travel, File file) throws FileNotFoundException {
     if (!Files.isWritable(file.getParentFile().toPath())) {
-      LOGGER.severe("Geen schrijfrechten in " + file.getParentFile().toString());
-      throw new RuntimeException("Geen schrijfrechten in " + file.getParentFile().toString());
+      LOGGER.severe("No rights to write file to folder: " + file.getParentFile().toString());
+      throw new RuntimeException("No rights to write file to folder: " + file.getParentFile().toString());
     }
     
     kmlDocument = kml.createAndSetDocument().withOpen(true);
     
-//    createAndAddKmlForHome(vacations);
+    Folder travelFolder = kmlDocument.createAndAddFolder().withName(travel.getId()).withOpen(true);
     
-    Folder vacationsFolder = kmlDocument.createAndAddFolder().withName("Vakanties").withOpen(true);
-    
-//    for (Vacation vacation: vacations.getVacations()) {
-      createKmlForVacation(vacation, vacationsFolder);
-//    }
+    createKmlForTravel(travel, travelFolder);
     
     saveToFile(file);
   }
@@ -174,12 +166,12 @@ public class VacationsKmlConverter extends TravelToTextConverterAbstract {
   /**
    * Create a node for the home location.
    * 
-   * @param vacations The Vacations structure from which the home location is to be taken
+   * @param travels The {@code Travels} structure from which the home location is to be taken
    */
-  private void createAndAddKmlForHome(Travels vacations) {
-    if (vacations.isSetHome()) {
+  private void createAndAddKmlForHome(Travels travels) {
+    if (travels.isSetHome()) {
       Placemark homePlacemark = kmlDocument.createAndAddPlacemark().withName("Home").withOpen(true);
-      Location homeLocation = vacations.getHome();
+      Location homeLocation = travels.getHome();
       if (homeLocation.isSetLongitude()  &&  homeLocation.isSetLatitude()) {
         homePlacemark.createAndSetPoint().addToCoordinates(homeLocation.getLongitude(), homeLocation.getLatitude(), 0F);
       }
@@ -193,59 +185,54 @@ public class VacationsKmlConverter extends TravelToTextConverterAbstract {
   }
   
   /**
-   * Create a node for a vacation.
+   * Create a node for a {@code Travel}.
    * 
-   * @param vacation The <code>Vacation</code> to be added.
-   * @param vacationsFolder The folder in the KML document to which the folder is to be added.
+   * @param travel The <code>Vacation</code> to be added.
+   * @param travelsFolder The folder in the KML document to which the folder is to be added.
    */
-  private void createKmlForVacation(Travel vacation, Folder vacationsFolder) {
+  private void createKmlForTravel(Travel travel, Folder travelsFolder) {
     
     // Folder name
-    Folder vacationFolder = vacationsFolder.createAndAddFolder().withName(HtmlUtil.encodeHTML(getTravelTitle(vacation), false));
+    Folder travelFolder = travelsFolder.createAndAddFolder().withName(HtmlUtil.encodeHTML(getTravelTitle(travel), false));
     
     // Folder description
     buf.setLength(0);
-    if (vacation.isSetNotes()) {
-      buf.append(vacation.getNotes()).append(NEWLINE);
+    if (travel.isSetNotes()) {
+      buf.append(travel.getNotes()).append(NEWLINE);
     }
     
-    if (vacation.isSetDate()) {
+    if (travel.isSetDate()) {
       buf.append("@van: ");
-      buf.append(FDF.format(vacation.getDate())).append(NEWLINE);
+      buf.append(FDF.format(travel.getDate())).append(NEWLINE);
       
-      if (vacation.getEndDate() != null) {
+      if (travel.getEndDate() != null) {
         buf.append("@tot: ");
-        buf.append(FDF.format(vacation.getEndDate())).append(NEWLINE);
+        buf.append(FDF.format(travel.getEndDate())).append(NEWLINE);
       }
     }
     
-    vacationFolder.setDescription(SgmlUtil.encloseInCData(buf.toString()));
+    travelFolder.setDescription(SgmlUtil.encloseInCData(buf.toString()));
     
-    for (VacationElement element: vacation.getElements()) {
-      createKmlForVacationElement(element, vacationFolder);
+    for (VacationElement element: travel.getElements()) {
+      createKmlForVacationElement(element, travelFolder);
     }
     
     try {
-      List<List<WGS84Coordinates>> locationsConnectingLines = TravelsUtils.getLocationConnectingLines(vacation);
+      List<List<WGS84Coordinates>> locationsConnectingLines = TravelsUtils.getLocationConnectingLines(travel);
       for (List<WGS84Coordinates> locationsConnectingLine: locationsConnectingLines) {
-        addPath(vacationFolder, locationsConnectingLine);
+        addPath(travelFolder, locationsConnectingLine);
       }
-      
-      
-//      List<WGS84Coordinates> lineNodes = VacationsUtils.getGeoLocations(vacation);
-//      if (lineNodes.size() > 1) {
-//        addPath(vacationFolder, lineNodes);
-//      }
+            
     } catch (FileNotFoundException e) {
       LOGGER.severe("File not found");
     }
   }
 
   /**
-   * Generate kml data for a <code>VacationElement</code>.
+   * Generate kml data for a {@code VacationElement}.
    * 
-   * @param element the <code>VacationElement</code> for which kml data is to be generated.
-   * @param parentFolder the parent <code>Folder</code> element.
+   * @param element the {@code VacationElement} for which kml data is to be generated.
+   * @param parentFolder the parent {@code Folder} element.
    */
   private void createKmlForVacationElement(VacationElement element, Folder parentFolder) {
     Feature feature = null;
@@ -277,18 +264,17 @@ public class VacationsKmlConverter extends TravelToTextConverterAbstract {
         createKmlForVacationElement(childElement, (Folder) feature);
       } else {
         createKmlForVacationElement(childElement, parentFolder);
-//        throw new RuntimeException("Cannot add child " + childElement.toString() + "as node is null or not a Folder");
       }
     }
   }
 
   /**
-   * Create a node for a VacationElementDay
+   * Create a node for a vacation element {@code Day}.
    * <p>
    * The node is a Folder with the day number and date as name.
    * 
-   * @param day The VacationElementDay for which a node has to be created.
-   * @param parentFolder The Folder to which the node is to be added.
+   * @param day The {@code Day} for which a node has to be created.
+   * @param parentFolder The {@code Folder} to which the node is to be added.
    */
   private Folder createKmlForVacationElementDay(Day day, Folder parentFolder) {
     buf.setLength(0);
@@ -307,12 +293,12 @@ public class VacationsKmlConverter extends TravelToTextConverterAbstract {
   /**
    * Create a node for a Location.
    * <p>
-   * In a Vacations structure, a Location can have children. However in KML a Placemark cannot have children.<br/>
-   * As most Locations will not have children, and a Placemark is the most logical element to map a Location to, a Placemark is
-   * used if there are no children, else a Folder with a Placemark is used.
+   * A {@code Location} can have children. However in KML a {@code Placemark} cannot have children.<br/>
+   * As most Locations will not have children, and a {@code Placemark} is the most logical element to map a {@code Location} to, a {@code Placemark} is
+   * used if there are no children, else a Folder with a {@code Placemark} is used.
    * 
-   * @param location The Location for which a node has to be added.
-   * @param parentFolder The Folder to which the node is to be added.
+   * @param location The {@code Location} for which a node has to be added.
+   * @param parentFolder The {@code Folder} to which the node is to be added.
    */
   private Feature createKmlForVacationElementLocation(Location location, Folder parentFolder) {
     // Placemark/Folder name
@@ -372,12 +358,12 @@ public class VacationsKmlConverter extends TravelToTextConverterAbstract {
   }
 
   /**
-   * Create a Text node.
+   * Create a {@code Text} node.
    * <p>
    * The node is a Folder, with the text as description and the first part of the text as name.
    * 
-   * @param vacationElementText The Text for which a node has to be added.
-   * @param parentFolder The Folder to which the node is to be added.
+   * @param vacationElementText The {@code Text} for which a node has to be added.
+   * @param parentFolder The {@code Folder} to which the node is to be added.
    */
   private Folder createKmlForVacationElementText(Text vacationElementText, Folder parentFolder) {
     if (!vacationElementText.isSetText()) {
@@ -402,14 +388,14 @@ public class VacationsKmlConverter extends TravelToTextConverterAbstract {
   }
 
   /**
-   * Create a node for a Picture.
+   * Create a node for a {@code Picture}.
    * <p>
-   * In a Vacations structure, a Picture can have children. However in KML a Placemark cannot have children.<br/>
-   * As most Pictures will not have children, and a Placemark is the most logical element to map a Picture to, a Placemark is
-   * used if there are no children, else a Folder with a Placemark is used.
+   * A {@code Picture} can have children. However in KML a {@code Placemark} cannot have children.<br/>
+   * As most pictures will not have children, and a {@code Placemark} is the most logical element to map a {@code Picture} to, a {@code Placemark} is
+   * used if there are no children, else a {@code Folder} with a {@code Placemark} is used.
    * 
-   * @param picture The VacationElementPicture for which a node has to be added.
-   * @param parentFolder The Folder to which the node is to be added.
+   * @param picture The {@code Picture} for which a node has to be added.
+   * @param parentFolder The {@code Folder} to which the node is to be added.
    */
   private Feature createKmlForVacationElementPicture(Picture picture, Folder parentFolder) {
     FileReference pictureReference = picture.getPictureReference();
@@ -458,7 +444,7 @@ public class VacationsKmlConverter extends TravelToTextConverterAbstract {
     }
     
     if (coordinates == null) {
-      Location location = getRelatedLocation(picture);
+      Location location = TravelsUtils.getAncestorOfType(picture, Location.class);
       if (location != null) {
         coordinates = new WGS84Coordinates(location.getLatitude(), location.getLongitude());
       }
@@ -478,34 +464,12 @@ public class VacationsKmlConverter extends TravelToTextConverterAbstract {
       return folder;
     }
   }
-  
+    
   /**
-   * Get the <code>Location</code> to which a picture belongs.
-   * <p>
-   * Parent relations (container) are followed until a Location is encountered, or until there's no parent anymore.
+   * Create a {@code StyleMap} for a picture.
    * 
-   * @param vacationElementPicture for which the related location is to be found.
-   * @return The <code>Location</code> to which the picture is related.
-   */
-  private Location getRelatedLocation(Picture vacationElementPicture) {
-    if (vacationElementPicture == null) {
-      return null;
-    }
-    
-    EObject container = vacationElementPicture.eContainer();
-    
-    while ((container != null)  &&  !(container instanceof Location)) {
-      container = container.eContainer();
-    }
-    
-    return (Location) container;
-  }
-  
-  /**
-   * Create a <code>StyleMap</code> for a picture.
-   * 
-   * @param pictureReference the reference to the picture for which a <code>StyleMap</code> is to be created.
-   * @return a <code>StyleMap</code> created for the <code>pictureReference</code>.
+   * @param pictureReference the reference to the picture for which a {@code StyleMap} is to be created.
+   * @return a {@code StyleMap} created for the {@code pictureReference}.
    */
   private StyleMap createPictureStyleMap(FileReference pictureReference) {
     // normal is photo icon
@@ -543,10 +507,10 @@ public class VacationsKmlConverter extends TravelToTextConverterAbstract {
   }
   
   /**
-   * Add the text for a <code>Location</code> to a buffer.
+   * Add the text for a {@code Location} to a buffer.
    * 
-   * @param location the <code>Location</code> for which the text is to be added to the <code>buffer</code>.
-   * @param buffer the <code>StringBuilder</code> to which the text is to be added.
+   * @param location the {@code Location} for which the text is to be added to the {@code buffer}.
+   * @param buffer the {@code StringBuilder} to which the text is to be added.
    */
   private void addLocationTextToBuffer(Location location, StringBuilder buffer) {
     if (location.isSetCountry()) {
@@ -576,19 +540,19 @@ public class VacationsKmlConverter extends TravelToTextConverterAbstract {
   }
 
   /**
-   * Get the <code>StyleMap</code> for a location type.
+   * Get the {@code StyleMap} for a location type.
    * <p>
-   * The requested <code>StyleMap</code> is created if it doesn't exist yet.
+   * The requested {@code StyleMap} is created if it doesn't exist yet.
    * 
-   * @param locationType the <code>POICategoryId</code> representing the location type.
-   * @return the <code>StyleMap</code> for <code>locationType</code>.
+   * @param locationCategory the {@code LocationCategory} representing the location type.
+   * @return the {@code StyleMap} for {@code locationType}.
    */
-  private StyleMap getIconStyleMap(LocationCategory locationType) {
-    StyleMap styleMap = iconStyleMapMap.get(locationType);
+  private StyleMap getIconStyleMap(LocationCategory locationCategory) {
+    StyleMap styleMap = iconStyleMapMap.get(locationCategory);
     
     if (styleMap == null) {
-      styleMap = createAndAddIconStyleMap(locationType);
-      iconStyleMapMap.put(locationType, styleMap);
+      styleMap = createAndAddIconStyleMap(locationCategory);
+      iconStyleMapMap.put(locationCategory, styleMap);
     }
     return styleMap;
   }
@@ -608,16 +572,16 @@ public class VacationsKmlConverter extends TravelToTextConverterAbstract {
    * 
    * The StyleMap has 2 entries, one 
    * 
-   * @param poiCategoryId The POICategoryId for the style to be created
-   * @return the created StyleMap
+   * @param locationCategory The {@code LocationCategory} for the style to be created
+   * @return the created {@code StyleMap}
    */
-  private StyleMap createAndAddIconStyleMap(LocationCategory poiCategoryId) {
-    String imageId = poiCategoryId.name();
+  private StyleMap createAndAddIconStyleMap(LocationCategory locationCategory) {
+    String imageId = locationCategory.name();
     String styleNormalId = String.format("s_%s", imageId);
     String styleHighlightId = String.format("s_%s_hl", imageId);
     String styleMapId = String.format("m_%s", imageId);
     
-    Icon icon = KmlFactory.createIcon().withHref(ICON_DIRECTORY + "/" + poiCategoryId.getIconFilename());
+    Icon icon = KmlFactory.createIcon().withHref(ICON_DIRECTORY + "/" + locationCategory.getIconFilename());
     
     Style normalStyle = kmlDocument
         .createAndAddStyle()
@@ -643,9 +607,9 @@ public class VacationsKmlConverter extends TravelToTextConverterAbstract {
   }
 
   /**
-   * Add a path (poly line) between the <code>lineNodes</code> to a <code>Folder</code>.
+   * Add a path (poly line) between the {@code lineNodes} to a {@code Folder}.
    * 
-   * @param folder the <code>Folder</code> to which the path is to be added.
+   * @param folder the {@code Folder} to which the path is to be added.
    */
   private void addPath(Folder folder, List<WGS84Coordinates> lineNodes) {
     Placemark path = folder.createAndAddPlacemark().withName("path");

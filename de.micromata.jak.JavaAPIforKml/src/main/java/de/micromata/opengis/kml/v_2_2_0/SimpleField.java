@@ -1,15 +1,11 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
+import jakarta.xml.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlType;
-
+import java.util.Objects;
 
 /**
  * 
@@ -112,74 +108,38 @@ public class SimpleField implements Cloneable
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = ((prime*result)+((displayName == null)? 0 :displayName.hashCode()));
-        result = ((prime*result)+((simpleFieldExtension == null)? 0 :simpleFieldExtension.hashCode()));
-        result = ((prime*result)+((type == null)? 0 :type.hashCode()));
-        result = ((prime*result)+((name == null)? 0 :name.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+
+        SimpleField that = (SimpleField) object;
+        return Objects.equals(displayName, that.displayName)
+                && Objects.equals(simpleFieldExtension, that.simpleFieldExtension)
+                && Objects.equals(type, that.type)
+                && Objects.equals(name, that.name);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if ((obj instanceof SimpleField) == false) {
-            return false;
-        }
-        SimpleField other = ((SimpleField) obj);
-        if (displayName == null) {
-            if (other.displayName!= null) {
-                return false;
-            }
-        } else {
-            if (displayName.equals(other.displayName) == false) {
-                return false;
-            }
-        }
-        if (simpleFieldExtension == null) {
-            if (other.simpleFieldExtension!= null) {
-                return false;
-            }
-        } else {
-            if (simpleFieldExtension.equals(other.simpleFieldExtension) == false) {
-                return false;
-            }
-        }
-        if (type == null) {
-            if (other.type!= null) {
-                return false;
-            }
-        } else {
-            if (type.equals(other.type) == false) {
-                return false;
-            }
-        }
-        if (name == null) {
-            if (other.name!= null) {
-                return false;
-            }
-        } else {
-            if (name.equals(other.name) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = Objects.hashCode(displayName);
+        result = 31 * result + Objects.hashCode(simpleFieldExtension);
+        result = 31 * result + Objects.hashCode(type);
+        result = 31 * result + Objects.hashCode(name);
+        return result;
     }
 
     /**
-     * Sets the value of the simpleFieldExtension property Objects of the following type(s) are allowed in the list List<Object>.
+     * Sets the value of the simpleFieldExtension property Objects of the following type(s) are allowed in the list {@code List<Object>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withSimpleFieldExtension} instead.
      * 
      * 
      * @param simpleFieldExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setSimpleFieldExtension(final List<Object> simpleFieldExtension) {
         this.simpleFieldExtension = simpleFieldExtension;
@@ -191,7 +151,7 @@ public class SimpleField implements Cloneable
      * @param simpleFieldExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public SimpleField addToSimpleFieldExtension(final Object simpleFieldExtension) {
         this.getSimpleFieldExtension().add(simpleFieldExtension);
@@ -200,7 +160,7 @@ public class SimpleField implements Cloneable
 
     /**
      * fluent setter
-     * @see #setDisplayName(String)
+     *
      * 
      * @param displayName
      *     required parameter
@@ -212,7 +172,7 @@ public class SimpleField implements Cloneable
 
     /**
      * fluent setter
-     * @see #setSimpleFieldExtension(List<Object>)
+     *
      * 
      * @param simpleFieldExtension
      *     required parameter
@@ -224,7 +184,7 @@ public class SimpleField implements Cloneable
 
     /**
      * fluent setter
-     * @see #setType(String)
+     *
      * 
      * @param type
      *     required parameter
@@ -236,7 +196,7 @@ public class SimpleField implements Cloneable
 
     /**
      * fluent setter
-     * @see #setName(String)
+     *
      * 
      * @param name
      *     required parameter

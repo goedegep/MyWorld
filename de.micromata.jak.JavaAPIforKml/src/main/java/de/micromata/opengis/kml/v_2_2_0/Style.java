@@ -1,35 +1,31 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
+import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
+import jakarta.xml.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
-
+import java.util.Objects;
 
 /**
- * <Style>
+ * {@code <Style>}
  * <p>
  * A Style defines an addressable style group that can be referenced by StyleMaps and 
  * Features. Styles affect how Geometry is presented in the 3D viewer and how Features 
- * appear in the Places panel of the List view. Shared styles are collected in a <Document> 
+ * appear in the Places panel of the List view. Shared styles are collected in a {@code <Document>} 
  * and must have an id defined for them so that they can be referenced by the individual 
  * Features that use them. 
  * </p>
  * <p>
  * A Style defines an addressable style group that can be referenced by StyleMaps and 
  * Features. Styles affect how Geometry is presented in the 3D viewer and how Features 
- * appear in the Places panel of the List view. Shared styles are collected in a <Document> 
+ * appear in the Places panel of the List view. Shared styles are collected in a {@code <Document>} 
  * and must have an id defined for them so that they can be referenced by the individual 
  * Features that use them. 
  * </p>
  * <p>
- * Use an id to refer to the style from a <styleUrl>. 
+ * Use an id to refer to the style from a {@code <styleUrl>}.
  * </p>
  * 
  * Syntax: 
@@ -46,10 +42,10 @@ import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
  * &lt;/Style&gt;</strong></pre>
  * 
  * Extends: 
- * @see: <StyleSelector>
+ *
  * 
  * Contained By: 
- * @see: <Feature>
+ *
  * 
  * 
  * 
@@ -72,12 +68,12 @@ public class Style
 {
 
     /**
-     * <IconStyle>
+     * {@code <IconStyle>}
      * <p>
      * Specifies how icons for point Placemarks are drawn, both in the Places panel and 
-     * in the 3D viewer of Google Earth. The <Icon> element specifies the icon image. The 
-     * <scale> element specifies the x, y scaling of the icon. The color specified in the 
-     * <color> element of <IconStyle> is blended with the color of the <Icon>. 
+     * in the 3D viewer of Google Earth. The {@code <Icon>}element specifies the icon image. The 
+     * {@code <scale>} element specifies the x, y scaling of the icon. The color specified in the 
+     * {@code <color>} element of {@code <IconStyle>} is blended with the color of the {@code <Icon>}.
      * </p>
      * 
      * Syntax: 
@@ -97,14 +93,14 @@ public class Style
      * <strong>&lt;/IconStyle&gt;</strong></pre>
      * 
      * Extends: 
-     * @see: <ColorStyle>
+     *
      * 
      * Contains: 
-     * @see: <Icon>
-     * @see: <href>
+     *
+     *
      * 
      * Contained By: 
-     * @see: <Style>
+     *
      * 
      * 
      * 
@@ -112,12 +108,12 @@ public class Style
     @XmlElement(name = "IconStyle")
     protected IconStyle iconStyle;
     /**
-     * <LabelStyle>
+     * {@code <LabelStyle>}
      * <p>
-     * Note: The <labelColor> tag is deprecated. Use <LabelStyle> instead. 
+     * Note: The {@code <LabelColor>} tag is deprecated. Use {@code <LabelStyle>} instead. 
      * </p>
      * <p>
-     * Specifies how the <name> of a Feature is drawn in the 3D viewer. A custom color, 
+     * Specifies how the {@code <name>} of a Feature is drawn in the 3D viewer. A custom color,
      * color mode, and scale for the label (name) can be specified. 
      * </p>
      * 
@@ -132,10 +128,10 @@ public class Style
      * <strong>&lt;/LabelStyle&gt;</strong></pre>
      * 
      * Extends: 
-     * @see: <ColorStyle>
+     *
      * 
      * Contained By: 
-     * @see: <Style>
+     *
      * 
      * 
      * 
@@ -143,7 +139,7 @@ public class Style
     @XmlElement(name = "LabelStyle")
     protected LabelStyle labelStyle;
     /**
-     * <LineStyle>
+     * {@code <LineStyle>}
      * <p>
      * Specifies the drawing style (color, color mode, and line width) for all line geometry. 
      * Line geometry includes the outlines of outlined polygons and the extruded "tether" 
@@ -161,10 +157,10 @@ public class Style
      * <strong>&lt;/LineStyle&gt;</strong></pre>
      * 
      * Extends: 
-     * @see: <ColorStyle>
+     *
      * 
      * Contained By: 
-     * @see: <Style>
+     *
      * 
      * 
      * 
@@ -172,7 +168,7 @@ public class Style
     @XmlElement(name = "LineStyle")
     protected LineStyle lineStyle;
     /**
-     * <PolyStyle>
+     * {@code <PolyStyle>}
      * Syntax: 
      * <pre><strong>&lt;PolyStyle id="ID"&gt;</strong>
      *   &lt;!-- inherited from <em>ColorStyle</em> --&gt;
@@ -185,10 +181,10 @@ public class Style
      * <strong>&lt;/PolyStyle&gt;</strong></pre>
      * 
      * Extends: 
-     * @see: <ColorStyle>
+     *
      * 
      * Contained By: 
-     * @see: <Style>
+     *
      * 
      * 
      * 
@@ -196,10 +192,10 @@ public class Style
     @XmlElement(name = "PolyStyle")
     protected PolyStyle polyStyle;
     /**
-     * <BalloonStyle>
+     * {@code <BalloonStyle>}
      * <p>
-     * Specifies how the description balloon for placemarks is drawn. The <bgColor>, if 
-     * specified, is used as the background color of the balloon. See <Feature> for a diagram 
+     * Specifies how the description balloon for placemarks is drawn. The {@code <bgColor>}, if
+     * specified, is used as the background color of the balloon. See {@code <Feature>} for a diagram 
      * illustrating how the default description balloon appears in Google Earth. 
      * </p>
      * 
@@ -213,10 +209,10 @@ public class Style
      * &lt;/BalloonStyle&gt;</strong></pre>
      * 
      * Extends: 
-     * @see: <ColorStyle>
+     *
      * 
      * Contained By: 
-     * @see: <Style>
+     *
      * 
      * 
      * 
@@ -224,7 +220,7 @@ public class Style
     @XmlElement(name = "BalloonStyle")
     protected BalloonStyle balloonStyle;
     /**
-     * <ListStyle>
+     * {@code <ListStyle>}
      * <p>
      * Specifies how a Feature is displayed in the list view. The list view is a hierarchy 
      * of containers and children; in Google Earth, this is the Places panel. 
@@ -245,10 +241,10 @@ public class Style
      * <strong>&lt;/ListStyle&gt;</strong></pre>
      * 
      * Extends: 
-     * @see: <Object>
+     *
      * 
      * Contained By: 
-     * @see: <Style>
+     *
      * 
      * 
      * 
@@ -259,12 +255,12 @@ public class Style
     @XmlSchemaType(name = "anySimpleType")
     protected List<Object> styleSimpleExtension;
     /**
-     * <Object>
+     * {@code <Object>}
      * <p>
      * This is an abstract base class and cannot be used directly in a KML file. It provides 
      * the id attribute, which allows unique identification of a KML element, and the targetId 
      * attribute, which is used to reference objects that have already been loaded into 
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
      * be used. 
      * </p>
      * 
@@ -284,7 +280,7 @@ public class Style
     }
 
     /**
-     * @see iconStyle
+     *
      * 
      * @return
      *     possible object is
@@ -296,7 +292,7 @@ public class Style
     }
 
     /**
-     * @see iconStyle
+     *
      * 
      * @param value
      *     allowed object is
@@ -308,7 +304,7 @@ public class Style
     }
 
     /**
-     * @see labelStyle
+     *
      * 
      * @return
      *     possible object is
@@ -320,7 +316,7 @@ public class Style
     }
 
     /**
-     * @see labelStyle
+     *
      * 
      * @param value
      *     allowed object is
@@ -332,7 +328,7 @@ public class Style
     }
 
     /**
-     * @see lineStyle
+     *
      * 
      * @return
      *     possible object is
@@ -344,7 +340,7 @@ public class Style
     }
 
     /**
-     * @see lineStyle
+     *
      * 
      * @param value
      *     allowed object is
@@ -356,7 +352,7 @@ public class Style
     }
 
     /**
-     * @see polyStyle
+     *
      * 
      * @return
      *     possible object is
@@ -368,7 +364,7 @@ public class Style
     }
 
     /**
-     * @see polyStyle
+     *
      * 
      * @param value
      *     allowed object is
@@ -380,7 +376,7 @@ public class Style
     }
 
     /**
-     * @see balloonStyle
+     *
      * 
      * @return
      *     possible object is
@@ -392,7 +388,7 @@ public class Style
     }
 
     /**
-     * @see balloonStyle
+     *
      * 
      * @param value
      *     allowed object is
@@ -404,7 +400,7 @@ public class Style
     }
 
     /**
-     * @see listStyle
+     *
      * 
      * @return
      *     possible object is
@@ -416,7 +412,7 @@ public class Style
     }
 
     /**
-     * @see listStyle
+     *
      * 
      * @param value
      *     allowed object is
@@ -428,7 +424,7 @@ public class Style
     }
 
     /**
-     * @see styleSimpleExtension
+     *
      * 
      */
     public List<Object> getStyleSimpleExtension() {
@@ -439,7 +435,7 @@ public class Style
     }
 
     /**
-     * @see styleObjectExtension
+     *
      * 
      */
     public List<AbstractObject> getStyleObjectExtension() {
@@ -450,117 +446,48 @@ public class Style
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = ((prime*result)+((iconStyle == null)? 0 :iconStyle.hashCode()));
-        result = ((prime*result)+((labelStyle == null)? 0 :labelStyle.hashCode()));
-        result = ((prime*result)+((lineStyle == null)? 0 :lineStyle.hashCode()));
-        result = ((prime*result)+((polyStyle == null)? 0 :polyStyle.hashCode()));
-        result = ((prime*result)+((balloonStyle == null)? 0 :balloonStyle.hashCode()));
-        result = ((prime*result)+((listStyle == null)? 0 :listStyle.hashCode()));
-        result = ((prime*result)+((styleSimpleExtension == null)? 0 :styleSimpleExtension.hashCode()));
-        result = ((prime*result)+((styleObjectExtension == null)? 0 :styleObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        Style style = (Style) object;
+        return Objects.equals(iconStyle, style.iconStyle)
+                && Objects.equals(labelStyle, style.labelStyle)
+                && Objects.equals(lineStyle, style.lineStyle)
+                && Objects.equals(polyStyle, style.polyStyle)
+                && Objects.equals(balloonStyle, style.balloonStyle)
+                && Objects.equals(listStyle, style.listStyle)
+                && Objects.equals(styleSimpleExtension, style.styleSimpleExtension)
+                && Objects.equals(styleObjectExtension, style.styleObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof Style) == false) {
-            return false;
-        }
-        Style other = ((Style) obj);
-        if (iconStyle == null) {
-            if (other.iconStyle!= null) {
-                return false;
-            }
-        } else {
-            if (iconStyle.equals(other.iconStyle) == false) {
-                return false;
-            }
-        }
-        if (labelStyle == null) {
-            if (other.labelStyle!= null) {
-                return false;
-            }
-        } else {
-            if (labelStyle.equals(other.labelStyle) == false) {
-                return false;
-            }
-        }
-        if (lineStyle == null) {
-            if (other.lineStyle!= null) {
-                return false;
-            }
-        } else {
-            if (lineStyle.equals(other.lineStyle) == false) {
-                return false;
-            }
-        }
-        if (polyStyle == null) {
-            if (other.polyStyle!= null) {
-                return false;
-            }
-        } else {
-            if (polyStyle.equals(other.polyStyle) == false) {
-                return false;
-            }
-        }
-        if (balloonStyle == null) {
-            if (other.balloonStyle!= null) {
-                return false;
-            }
-        } else {
-            if (balloonStyle.equals(other.balloonStyle) == false) {
-                return false;
-            }
-        }
-        if (listStyle == null) {
-            if (other.listStyle!= null) {
-                return false;
-            }
-        } else {
-            if (listStyle.equals(other.listStyle) == false) {
-                return false;
-            }
-        }
-        if (styleSimpleExtension == null) {
-            if (other.styleSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (styleSimpleExtension.equals(other.styleSimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (styleObjectExtension == null) {
-            if (other.styleObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (styleObjectExtension.equals(other.styleObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(iconStyle);
+        result = 31 * result + Objects.hashCode(labelStyle);
+        result = 31 * result + Objects.hashCode(lineStyle);
+        result = 31 * result + Objects.hashCode(polyStyle);
+        result = 31 * result + Objects.hashCode(balloonStyle);
+        result = 31 * result + Objects.hashCode(listStyle);
+        result = 31 * result + Objects.hashCode(styleSimpleExtension);
+        result = 31 * result + Objects.hashCode(styleObjectExtension);
+        return result;
     }
 
     /**
      * Creates a new instance of {@link IconStyle} and set it to iconStyle.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * IconStyle iconStyle = new IconStyle();
-     * this.setIconStyle(iconStyle); </code>
+     * this.setIconStyle(iconStyle); }
      * 
      * 
      */
@@ -574,9 +501,9 @@ public class Style
      * Creates a new instance of {@link LabelStyle} and set it to labelStyle.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * LabelStyle labelStyle = new LabelStyle();
-     * this.setLabelStyle(labelStyle); </code>
+     * this.setLabelStyle(labelStyle); }
      * 
      * 
      */
@@ -590,9 +517,9 @@ public class Style
      * Creates a new instance of {@link LineStyle} and set it to lineStyle.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * LineStyle lineStyle = new LineStyle();
-     * this.setLineStyle(lineStyle); </code>
+     * this.setLineStyle(lineStyle); }
      * 
      * 
      */
@@ -606,9 +533,9 @@ public class Style
      * Creates a new instance of {@link PolyStyle} and set it to polyStyle.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PolyStyle polyStyle = new PolyStyle();
-     * this.setPolyStyle(polyStyle); </code>
+     * this.setPolyStyle(polyStyle); }
      * 
      * 
      */
@@ -622,9 +549,9 @@ public class Style
      * Creates a new instance of {@link BalloonStyle} and set it to balloonStyle.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * BalloonStyle balloonStyle = new BalloonStyle();
-     * this.setBalloonStyle(balloonStyle); </code>
+     * this.setBalloonStyle(balloonStyle); }
      * 
      * 
      */
@@ -638,9 +565,9 @@ public class Style
      * Creates a new instance of {@link ListStyle} and set it to listStyle.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * ListStyle listStyle = new ListStyle();
-     * this.setListStyle(listStyle); </code>
+     * this.setListStyle(listStyle); }
      * 
      * 
      */
@@ -651,9 +578,10 @@ public class Style
     }
 
     /**
-     * @see styleSimpleExtension
+     *
      * 
      * @param styleSimpleExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setStyleSimpleExtension(final List<Object> styleSimpleExtension) {
         this.styleSimpleExtension = styleSimpleExtension;
@@ -665,7 +593,7 @@ public class Style
      * @param styleSimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Style addToStyleSimpleExtension(final Object styleSimpleExtension) {
         this.getStyleSimpleExtension().add(styleSimpleExtension);
@@ -673,9 +601,10 @@ public class Style
     }
 
     /**
-     * @see styleObjectExtension
+     *
      * 
      * @param styleObjectExtension
+     *     Objects of the following type are allowed in the list: {@link AbstractObject}
      */
     public void setStyleObjectExtension(final List<AbstractObject> styleObjectExtension) {
         this.styleObjectExtension = styleObjectExtension;
@@ -687,7 +616,7 @@ public class Style
      * @param styleObjectExtension
      *     Objects of the following type are allowed in the list: {@link AbstractObject}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Style addToStyleObjectExtension(final AbstractObject styleObjectExtension) {
         this.getStyleObjectExtension().add(styleObjectExtension);
@@ -695,7 +624,7 @@ public class Style
     }
 
     /**
-     * @see objectSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -712,7 +641,7 @@ public class Style
     }
 
     /**
-     * @see styleSelectorSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -729,7 +658,7 @@ public class Style
     }
 
     /**
-     * @see styleSelectorObjectExtension
+     *
      * 
      */
     @Obvious
@@ -747,7 +676,7 @@ public class Style
 
     /**
      * fluent setter
-     * @see #setIconStyle(IconStyle)
+     *
      * 
      * @param iconStyle
      *     required parameter
@@ -759,7 +688,7 @@ public class Style
 
     /**
      * fluent setter
-     * @see #setLabelStyle(LabelStyle)
+     *
      * 
      * @param labelStyle
      *     required parameter
@@ -771,7 +700,7 @@ public class Style
 
     /**
      * fluent setter
-     * @see #setLineStyle(LineStyle)
+     *
      * 
      * @param lineStyle
      *     required parameter
@@ -783,7 +712,7 @@ public class Style
 
     /**
      * fluent setter
-     * @see #setPolyStyle(PolyStyle)
+     *
      * 
      * @param polyStyle
      *     required parameter
@@ -795,7 +724,7 @@ public class Style
 
     /**
      * fluent setter
-     * @see #setBalloonStyle(BalloonStyle)
+     *
      * 
      * @param balloonStyle
      *     required parameter
@@ -807,7 +736,7 @@ public class Style
 
     /**
      * fluent setter
-     * @see #setListStyle(ListStyle)
+     *
      * 
      * @param listStyle
      *     required parameter
@@ -819,7 +748,7 @@ public class Style
 
     /**
      * fluent setter
-     * @see #setStyleSimpleExtension(List<Object>)
+     *
      * 
      * @param styleSimpleExtension
      *     required parameter
@@ -831,7 +760,7 @@ public class Style
 
     /**
      * fluent setter
-     * @see #setStyleObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param styleObjectExtension
      *     required parameter

@@ -1,39 +1,34 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
+import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
+import jakarta.xml.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
-
+import java.util.Objects;
 
 /**
- * <icon> see also <icon>.
+ * {@code <Icon>}see also {@code <icon>}.
  * <p>
- * <Icon> <href>Sunset.jpg</href> </Icon>
+ * {@code <Icon><href>Sunset.jpg</href> </Icon> }
  * </p>
  * <p>
- * A custom Icon. In <IconStyle>, the only child element of <Icon> is <href>: <href>:
- * An HTTP address or a local file specification used to load an icon.
+ * A custom Icon. In {@code <IconStyle>}, the only child element of {@code <Icon>} is {@code <href>: <href>:}
+ * An HTTP address or a local file specification used to load an icon. 
  * </p>
  * <p>
- * Defines an image associated with an Icon style or overlay. <Icon> has the same child
- * elements as <Link>. The required <href> child element defines the location of the
- * image to be used as the overlay or as the icon for the placemark. This location
- * can either be on a local file system or a remote web server.
+ * Defines an image associated with an Icon style or overlay. {@code <Icon>}has the same child 
+ * elements as {@code <Link>}. The required {@code <href>}child element defines the location of the 
+ * image to be used as the overlay or as the icon for the placemark. This location 
+ * can either be on a local file system or a remote web server. 
  * </p>
  * <p>
- * Defines the image associated with the Overlay. The <href> element defines the location
- * of the image to be used as the Overlay. This location can be either on a local file
- * system or on a web server. If this element is omitted or contains no <href>, a rectangle
- * is drawn using the color and size defined by the ground or screen overlay. <Icon>
- * <href>icon.jpg</href> </Icon>
+ * Defines the image associated with the Overlay. The {@code <href>}element defines the location 
+ * of the image to be used as the Overlay. This location can be either on a local file 
+ * system or on a web server. If this element is omitted or contains no {@code <href>}, a rectangle
+ * is drawn using the color and size defined by the ground or screen overlay. {@code <Icon>
+ * <href>icon.jpg</href> </Icon>}
  * </p>
  *
  * Syntax:
@@ -50,17 +45,21 @@ import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
  *   &lt;viewFormat&gt;...&lt;/viewFormat&gt;          &lt;!-- string --&gt;
  *   &lt;httpQuery&gt;...&lt;/httpQuery&gt;            &lt;!-- string --&gt;
  *   <strong>&lt;/Icon&gt;</strong></pre>
- *
- * Contained By:
- * @see: <GroundOverlay>
- * @see: <IconStyle>
- * @see: <ScreenOverlay>
+ * 
+ * Contained By: 
  *
  *
  *
+ * 
+ * 
+ * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Icon", namespace = "", propOrder = {
+    "x",
+    "y",
+    "w",
+    "h",
     "refreshMode",
     "refreshInterval",
     "viewRefreshMode",
@@ -82,17 +81,17 @@ public class Icon
      * <p>
      * onChange, onInterval, onExpire
      * </p>
-     *
-     * See Also:
-     * See <Link>
-     *
-     *
-     *
+     * 
+     * See Also: 
+     * See {@code <Link>}
+     * 
+     * 
+     * 
      */
     @XmlElement(namespace = "http://www.opengis.net/kml/2.2", defaultValue = "onChange")
     protected RefreshMode refreshMode;
     /**
-     * <refreshinterval>
+     * {@code {@code <refreshInterval>}}
      * <p>
      * Indicates to refresh the file every n seconds.
      * </p>
@@ -107,20 +106,20 @@ public class Icon
      * <p>
      * never, onRequest, onStop, onRegion
      * </p>
-     *
-     * See Also:
-     * See <Link>
-     *
-     *
-     *
+     * 
+     * See Also: 
+     * See {@code <Link>}
+     * 
+     * 
+     * 
      */
     @XmlElement(namespace = "http://www.opengis.net/kml/2.2", defaultValue = "never")
     protected ViewRefreshMode viewRefreshMode;
     /**
-     * <viewrefreshtime>
+     * {@code <viewrefreshtime>}
      * <p>
-     * After camera movement stops, specifies the number of seconds to wait before refreshing
-     * the view. (See <viewRefreshMode> and onStop above.)
+     * After camera movement stops, specifies the number of seconds to wait before refreshing 
+     * the view. (See {@code {@code <viewRefreshMode>}} and onStop above.)
      * </p>
      *
      *
@@ -129,7 +128,7 @@ public class Icon
     @XmlElement(namespace = "http://www.opengis.net/kml/2.2", defaultValue = "4.0")
     protected Double viewRefreshTime;
     /**
-     * <viewboundscale>
+     * {@code <viewboundscale>}
      * <p>
      * Scales the BBOX parameters before sending them to the server. A value less than
      *  1 specifies to use less than the full view (screen). A value greater than 1 specifies
@@ -142,22 +141,22 @@ public class Icon
     @XmlElement(namespace = "http://www.opengis.net/kml/2.2", defaultValue = "1.0")
     protected Double viewBoundScale;
     /**
-     * <viewformat>
+     * {@code <viewFormat>}
      * <p>
      * BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]
      * </p>
      * <p>
-     * If you specify a <viewRefreshMode> of onStop and do not include the <viewFormat>
-     * tag in the file, the following information is automatically appended to the query
-     * string:
+     * If you specify a {@code <viewRefreshMode>} of onStop and do not include the {@code <viewFormat>} 
+     * tag in the file, the following information is automatically appended to the query 
+     * string: 
      * </p>
      * <p>
-     * If you specify an empty <viewFormat> tag, no information is appended to the query
-     * string.
+     * If you specify an empty {@code <viewFormat>} tag, no information is appended to the query 
+     * string. 
      * </p>
      * <p>
-     * Specifies the format of the query string that is appended to the Link's <href> before
-     * the file is fetched.(If the <href> specifies a local file, this element is ignored.)
+     * Specifies the format of the query string that is appended to the Link's {@code <href>}before 
+     * the file is fetched.(If the {@code <href>}specifies a local file, this element is ignored.) 
      * </p>
      * <p>
      * This information matches the Web Map Service (WMS) bounding box specification.
@@ -169,16 +168,16 @@ public class Icon
      * custom parameters.
      * </p>
      * <p>
-     * You can use any of the following parameters in your format string (and Google Earth
-     * will substitute the appropriate current value at the time it creates the query string):
-     * [lookatLon], [lookatLat] - longitude and latitude of the point that <LookAt> is
-     * viewing [lookatRange], [lookatTilt], [lookatHeading] - values used by the <LookAt>
-     * element (see descriptions of <range>, <tilt>, and <heading> in <LookAt>) [lookatTerrainLon],
-     * [lookatTerrainLat], [lookatTerrainAlt] - point on the terrain in degrees/meters
-     * that <LookAt> is viewing [cameraLon], [cameraLat], [cameraAlt] - degrees/meters
-     * of the eyepoint for the camera [horizFov], [vertFov] - horizontal, vertical field
-     * of view for the camera [horizPixels], [vertPixels] - size in pixels of the 3D viewer
-     * [terrainEnabled] - indicates whether the 3D viewer is showing terrain
+     * You can use any of the following parameters in your format string (and Google Earth 
+     * will substitute the appropriate current value at the time it creates the query string): 
+     * [lookatLon], [lookatLat] - longitude and latitude of the point that LookAt is 
+     * viewing [lookatRange], [lookatTilt], [lookatHeading] - values used by the LookAt 
+     * element (see descriptions of {@code <range>}, {@code <tilt>}, and {@code <heading>} in LookAt) [lookatTerrainLon],
+     * [lookatTerrainLat], [lookatTerrainAlt] - point on the terrain in degrees/meters 
+     * that LookAt is viewing [cameraLon], [cameraLat], [cameraAlt] - degrees/meters 
+     * of the eyepoint for the camera [horizFov], [vertFov] - horizontal, vertical field 
+     * of view for the camera [horizPixels], [vertPixels] - size in pixels of the 3D viewer 
+     * [terrainEnabled] - indicates whether the 3D viewer is showing terrain 
      * </p>
      *
      *
@@ -187,7 +186,7 @@ public class Icon
     @XmlElement(namespace = "http://www.opengis.net/kml/2.2")
     protected String viewFormat;
     /**
-     * <httpquery>
+     * {@code <httpQuery>}
      * <p>
      * Appends information to the query string, based on the parameters specified. (Google
      * Earth substitutes the appropriate current value at the time it creates the query
@@ -200,17 +199,61 @@ public class Icon
      */
     @XmlElement(namespace = "http://www.opengis.net/kml/2.2")
     protected String httpQuery;
+    /**
+     * {@code <gx:x>}
+     * <p>
+     * Google extension (<a href="http://www.google.com/kml/ext/2.2">...</a>). When the {@code <href>}
+     * points to an icon palette (sprite sheet), this element specifies the
+     * horizontal offset, in pixels, from the lower-left corner of the palette
+     * at which to start the sub-rectangle. Default is 0 when omitted.
+     * </p>
+     */
+    @XmlElement(name = "x", namespace = "http://www.google.com/kml/ext/2.2")
+    protected Double x;
+    /**
+     * {@code <gx:y>}
+     * <p>
+     * Google extension (<a href="http://www.google.com/kml/ext/2.2">...</a>). When the {@code <href>}
+     * points to an icon palette, this element specifies the vertical offset,
+     * in pixels, from the lower-left corner of the palette at which to start
+     * the sub-rectangle. Default is 0 when omitted.
+     * </p>
+     */
+    @XmlElement(name = "y", namespace = "http://www.google.com/kml/ext/2.2")
+    protected Double y;
+    /**
+     * {@code <gx:w>}
+     * <p>
+     * Google extension (<a href="http://www.google.com/kml/ext/2.2">...</a>). When the {@code <href>}
+     * points to an icon palette, this element specifies the width, in pixels,
+     * of the sub-rectangle to use from the palette. A value of -1 means
+     * "use the full width of the image".
+     * </p>
+     */
+    @XmlElement(name = "w", namespace = "http://www.google.com/kml/ext/2.2")
+    protected Double w;
+    /**
+     * {@code <gx:h>}
+     * <p>
+     * Google extension (<a href="http://www.google.com/kml/ext/2.2">...</a>). When the {@code <href>}
+     * points to an icon palette, this element specifies the height, in pixels,
+     * of the sub-rectangle to use from the palette. A value of -1 means
+     * "use the full height of the image".
+     * </p>
+     */
+    @XmlElement(name = "h", namespace = "http://www.google.com/kml/ext/2.2")
+    protected Double h;
     @XmlElement(name = "LinkSimpleExtensionGroup", namespace = "http://www.opengis.net/kml/2.2")
     @XmlSchemaType(name = "anySimpleType")
     protected List<Object> linkSimpleExtension;
     /**
-     * <Object>
+     * {@code <Object>}
      * <p>
-     * This is an abstract base class and cannot be used directly in a KML file. It provides
-     * the id attribute, which allows unique identification of a KML element, and the targetId
-     * attribute, which is used to reference objects that have already been loaded into
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to
-     * be used.
+     * This is an abstract base class and cannot be used directly in a KML file. It provides 
+     * the id attribute, which allows unique identification of a KML element, and the targetId 
+     * attribute, which is used to reference objects that have already been loaded into 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
+     * be used. 
      * </p>
      *
      * Syntax:
@@ -229,8 +272,8 @@ public class Icon
     }
 
     /**
-     * @see refreshMode
      *
+     * 
      * @return
      *     possible object is
      *     {@link RefreshMode}
@@ -241,8 +284,8 @@ public class Icon
     }
 
     /**
-     * @see refreshMode
      *
+     * 
      * @param value
      *     allowed object is
      *     {@link RefreshMode}
@@ -253,8 +296,8 @@ public class Icon
     }
 
     /**
-     * @see refreshInterval
      *
+     * 
      * @return
      *     possible object is
      *     {@link Double}
@@ -265,8 +308,8 @@ public class Icon
     }
 
     /**
-     * @see refreshInterval
      *
+     * 
      * @param value
      *     allowed object is
      *     {@link Double}
@@ -277,8 +320,8 @@ public class Icon
     }
 
     /**
-     * @see viewRefreshMode
      *
+     * 
      * @return
      *     possible object is
      *     {@link ViewRefreshMode}
@@ -289,8 +332,8 @@ public class Icon
     }
 
     /**
-     * @see viewRefreshMode
      *
+     * 
      * @param value
      *     allowed object is
      *     {@link ViewRefreshMode}
@@ -301,8 +344,8 @@ public class Icon
     }
 
     /**
-     * @see viewRefreshTime
      *
+     * 
      * @return
      *     possible object is
      *     {@link Double}
@@ -313,8 +356,8 @@ public class Icon
     }
 
     /**
-     * @see viewRefreshTime
      *
+     * 
      * @param value
      *     allowed object is
      *     {@link Double}
@@ -325,8 +368,8 @@ public class Icon
     }
 
     /**
-     * @see viewBoundScale
      *
+     * 
      * @return
      *     possible object is
      *     {@link Double}
@@ -337,8 +380,8 @@ public class Icon
     }
 
     /**
-     * @see viewBoundScale
      *
+     * 
      * @param value
      *     allowed object is
      *     {@link Double}
@@ -349,8 +392,8 @@ public class Icon
     }
 
     /**
-     * @see viewFormat
      *
+     * 
      * @return
      *     possible object is
      *     {@link String}
@@ -361,8 +404,8 @@ public class Icon
     }
 
     /**
-     * @see viewFormat
      *
+     * 
      * @param value
      *     allowed object is
      *     {@link String}
@@ -373,8 +416,8 @@ public class Icon
     }
 
     /**
-     * @see httpQuery
      *
+     * 
      * @return
      *     possible object is
      *     {@link String}
@@ -385,8 +428,8 @@ public class Icon
     }
 
     /**
-     * @see httpQuery
      *
+     * 
      * @param value
      *     allowed object is
      *     {@link String}
@@ -397,132 +440,150 @@ public class Icon
     }
 
     /**
-     * @see linkSimpleExtension
+     * Gets the value of the gx:x palette-sheet offset.
+     *
+     * @return possible object is {@link Double}
+     */
+    public Double getX() {
+        return x;
+    }
+
+    /**
+     * Sets the value of the gx:x palette-sheet offset.
+     *
+     * @param value allowed object is {@link Double}
+     */
+    public void setX(Double value) {
+        this.x = value;
+    }
+
+    /**
+     * Gets the value of the gx:y palette-sheet offset.
+     *
+     * @return possible object is {@link Double}
+     */
+    public Double getY() {
+        return y;
+    }
+
+    /**
+     * Sets the value of the gx:y palette-sheet offset.
+     *
+     * @param value allowed object is {@link Double}
+     */
+    public void setY(Double value) {
+        this.y = value;
+    }
+
+    /**
+     * Gets the value of the gx:w palette-sheet sub-rectangle width.
+     *
+     * @return possible object is {@link Double}
+     */
+    public Double getW() {
+        return w;
+    }
+
+    /**
+     * Sets the value of the gx:w palette-sheet sub-rectangle width.
+     *
+     * @param value allowed object is {@link Double}
+     */
+    public void setW(Double value) {
+        this.w = value;
+    }
+
+    /**
+     * Gets the value of the gx:h palette-sheet sub-rectangle height.
+     *
+     * @return possible object is {@link Double}
+     */
+    public Double getH() {
+        return h;
+    }
+
+    /**
+     * Sets the value of the gx:h palette-sheet sub-rectangle height.
+     *
+     * @param value allowed object is {@link Double}
+     */
+    public void setH(Double value) {
+        this.h = value;
+    }
+
+    /**
+     *
      *
      */
     public List<Object> getLinkSimpleExtension() {
         if (linkSimpleExtension == null) {
-            linkSimpleExtension = new ArrayList<Object>();
+            linkSimpleExtension = new ArrayList<>();
         }
         return this.linkSimpleExtension;
     }
 
     /**
-     * @see linkObjectExtension
      *
+     * 
      */
     public List<AbstractObject> getLinkObjectExtension() {
         if (linkObjectExtension == null) {
-            linkObjectExtension = new ArrayList<AbstractObject>();
+            linkObjectExtension = new ArrayList<>();
         }
         return this.linkObjectExtension;
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        long temp;
-        result = ((prime*result)+((refreshMode == null)? 0 :refreshMode.hashCode()));
-        temp = Double.doubleToLongBits(refreshInterval);
-        result = ((prime*result)+((int)(temp^(temp >>>(32)))));
-        result = ((prime*result)+((viewRefreshMode == null)? 0 :viewRefreshMode.hashCode()));
-        temp = Double.doubleToLongBits(viewRefreshTime);
-        result = ((prime*result)+((int)(temp^(temp >>>(32)))));
-        temp = Double.doubleToLongBits(viewBoundScale);
-        result = ((prime*result)+((int)(temp^(temp >>>(32)))));
-        result = ((prime*result)+((viewFormat == null)? 0 :viewFormat.hashCode()));
-        result = ((prime*result)+((httpQuery == null)? 0 :httpQuery.hashCode()));
-        result = ((prime*result)+((linkSimpleExtension == null)? 0 :linkSimpleExtension.hashCode()));
-        result = ((prime*result)+((linkObjectExtension == null)? 0 :linkObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        Icon icon = (Icon) object;
+        return refreshMode == icon.refreshMode
+                && viewRefreshMode == icon.viewRefreshMode
+                && Objects.equals(refreshInterval, icon.refreshInterval)
+                && Objects.equals(viewRefreshTime, icon.viewRefreshTime)
+                && Objects.equals(viewBoundScale, icon.viewBoundScale)
+                && Objects.equals(viewFormat, icon.viewFormat)
+                && Objects.equals(httpQuery, icon.httpQuery)
+                && Objects.equals(x, icon.x)
+                && Objects.equals(y, icon.y)
+                && Objects.equals(w, icon.w)
+                && Objects.equals(h, icon.h)
+                && Objects.equals(linkSimpleExtension, icon.linkSimpleExtension)
+                && Objects.equals(linkObjectExtension, icon.linkObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof Icon) == false) {
-            return false;
-        }
-        Icon other = ((Icon) obj);
-        if (refreshMode == null) {
-            if (other.refreshMode!= null) {
-                return false;
-            }
-        } else {
-            if (refreshMode.equals(other.refreshMode) == false) {
-                return false;
-            }
-        }
-        if (refreshInterval!= other.refreshInterval) {
-            return false;
-        }
-        if (viewRefreshMode == null) {
-            if (other.viewRefreshMode!= null) {
-                return false;
-            }
-        } else {
-            if (viewRefreshMode.equals(other.viewRefreshMode) == false) {
-                return false;
-            }
-        }
-        if (viewRefreshTime!= other.viewRefreshTime) {
-            return false;
-        }
-        if (viewBoundScale!= other.viewBoundScale) {
-            return false;
-        }
-        if (viewFormat == null) {
-            if (other.viewFormat!= null) {
-                return false;
-            }
-        } else {
-            if (viewFormat.equals(other.viewFormat) == false) {
-                return false;
-            }
-        }
-        if (httpQuery == null) {
-            if (other.httpQuery!= null) {
-                return false;
-            }
-        } else {
-            if (httpQuery.equals(other.httpQuery) == false) {
-                return false;
-            }
-        }
-        if (linkSimpleExtension == null) {
-            if (other.linkSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (linkSimpleExtension.equals(other.linkSimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (linkObjectExtension == null) {
-            if (other.linkObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (linkObjectExtension.equals(other.linkObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(refreshMode);
+        result = 31 * result + Objects.hashCode(refreshInterval);
+        result = 31 * result + Objects.hashCode(viewRefreshMode);
+        result = 31 * result + Objects.hashCode(viewRefreshTime);
+        result = 31 * result + Objects.hashCode(viewBoundScale);
+        result = 31 * result + Objects.hashCode(viewFormat);
+        result = 31 * result + Objects.hashCode(httpQuery);
+        result = 31 * result + Objects.hashCode(x);
+        result = 31 * result + Objects.hashCode(y);
+        result = 31 * result + Objects.hashCode(w);
+        result = 31 * result + Objects.hashCode(h);
+        result = 31 * result + Objects.hashCode(linkSimpleExtension);
+        result = 31 * result + Objects.hashCode(linkObjectExtension);
+        return result;
     }
 
     /**
-     * @see linkSimpleExtension
      *
+     * 
      * @param linkSimpleExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setLinkSimpleExtension(final List<Object> linkSimpleExtension) {
         this.linkSimpleExtension = linkSimpleExtension;
@@ -534,7 +595,7 @@ public class Icon
      * @param linkSimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>).
+     *     true (as general contract of Collection.add). 
      */
     public Icon addToLinkSimpleExtension(final Object linkSimpleExtension) {
         this.getLinkSimpleExtension().add(linkSimpleExtension);
@@ -542,9 +603,10 @@ public class Icon
     }
 
     /**
-     * @see linkObjectExtension
      *
+     * 
      * @param linkObjectExtension
+     *     Objects of the following type are allowed in the list: {@link AbstractObject}
      */
     public void setLinkObjectExtension(final List<AbstractObject> linkObjectExtension) {
         this.linkObjectExtension = linkObjectExtension;
@@ -556,7 +618,7 @@ public class Icon
      * @param linkObjectExtension
      *     Objects of the following type are allowed in the list: {@link AbstractObject}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>).
+     *     true (as general contract of Collection.add). 
      */
     public Icon addToLinkObjectExtension(final AbstractObject linkObjectExtension) {
         this.getLinkObjectExtension().add(linkObjectExtension);
@@ -564,8 +626,8 @@ public class Icon
     }
 
     /**
-     * @see objectSimpleExtension
      *
+     * 
      */
     @Obvious
     @Override
@@ -581,8 +643,8 @@ public class Icon
     }
 
     /**
-     * @see basicLinkSimpleExtension
      *
+     * 
      */
     @Obvious
     @Override
@@ -598,8 +660,8 @@ public class Icon
     }
 
     /**
-     * @see basicLinkObjectExtension
      *
+     * 
      */
     @Obvious
     @Override
@@ -616,8 +678,8 @@ public class Icon
 
     /**
      * fluent setter
-     * @see #setRefreshMode(RefreshMode)
      *
+     * 
      * @param refreshMode
      *     required parameter
      */
@@ -628,8 +690,8 @@ public class Icon
 
     /**
      * fluent setter
-     * @see #setRefreshInterval(Double)
      *
+     * 
      * @param refreshInterval
      *     required parameter
      */
@@ -640,8 +702,8 @@ public class Icon
 
     /**
      * fluent setter
-     * @see #setViewRefreshMode(ViewRefreshMode)
      *
+     * 
      * @param viewRefreshMode
      *     required parameter
      */
@@ -652,8 +714,8 @@ public class Icon
 
     /**
      * fluent setter
-     * @see #setViewRefreshTime(Double)
      *
+     * 
      * @param viewRefreshTime
      *     required parameter
      */
@@ -664,8 +726,8 @@ public class Icon
 
     /**
      * fluent setter
-     * @see #setViewBoundScale(Double)
      *
+     * 
      * @param viewBoundScale
      *     required parameter
      */
@@ -676,8 +738,8 @@ public class Icon
 
     /**
      * fluent setter
-     * @see #setViewFormat(String)
      *
+     * 
      * @param viewFormat
      *     required parameter
      */
@@ -688,8 +750,8 @@ public class Icon
 
     /**
      * fluent setter
-     * @see #setHttpQuery(String)
      *
+     * 
      * @param httpQuery
      *     required parameter
      */
@@ -699,8 +761,52 @@ public class Icon
     }
 
     /**
+     * fluent setter for the gx:x palette-sheet offset.
+     *
+     * @param x pixel offset from the lower-left corner of the palette image
+     * @return this Icon
+     */
+    public Icon withX(final Double x) {
+        this.setX(x);
+        return this;
+    }
+
+    /**
+     * fluent setter for the gx:y palette-sheet offset.
+     *
+     * @param y pixel offset from the lower-left corner of the palette image
+     * @return this Icon
+     */
+    public Icon withY(final Double y) {
+        this.setY(y);
+        return this;
+    }
+
+    /**
+     * fluent setter for the gx:w palette-sheet sub-rectangle width.
+     *
+     * @param w sub-rectangle width in pixels, or -1 for the full image width
+     * @return this Icon
+     */
+    public Icon withW(final Double w) {
+        this.setW(w);
+        return this;
+    }
+
+    /**
+     * fluent setter for the gx:h palette-sheet sub-rectangle height.
+     *
+     * @param h sub-rectangle height in pixels, or -1 for the full image height
+     * @return this Icon
+     */
+    public Icon withH(final Double h) {
+        this.setH(h);
+        return this;
+    }
+
+    /**
      * fluent setter
-     * @see #setLinkSimpleExtension(List<Object>)
+     *
      *
      * @param linkSimpleExtension
      *     required parameter
@@ -712,8 +818,8 @@ public class Icon
 
     /**
      * fluent setter
-     * @see #setLinkObjectExtension(List<AbstractObject>)
      *
+     * 
      * @param linkObjectExtension
      *     required parameter
      */
@@ -768,11 +874,9 @@ public class Icon
     public Icon clone() {
         Icon copy;
         copy = ((Icon) super.clone());
-        copy.linkSimpleExtension = new ArrayList<Object>((getLinkSimpleExtension().size()));
-        for (Object iter: linkSimpleExtension) {
-            copy.linkSimpleExtension.add(iter);
-        }
-        copy.linkObjectExtension = new ArrayList<AbstractObject>((getLinkObjectExtension().size()));
+        copy.linkSimpleExtension = new ArrayList<>((getLinkSimpleExtension().size()));
+        copy.linkSimpleExtension.addAll(linkSimpleExtension);
+        copy.linkObjectExtension = new ArrayList<>((getLinkObjectExtension().size()));
         for (AbstractObject iter: linkObjectExtension) {
             copy.linkObjectExtension.add(iter.clone());
         }

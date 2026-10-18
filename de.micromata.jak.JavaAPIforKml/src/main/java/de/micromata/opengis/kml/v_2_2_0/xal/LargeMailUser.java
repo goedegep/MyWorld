@@ -1,22 +1,14 @@
 
 package de.micromata.opengis.kml.v_2_2_0.xal;
 
+import jakarta.xml.bind.annotation.*;
+
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAnyAttribute;
-import jakarta.xml.bind.annotation.XmlAnyElement;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.XmlValue;
-import javax.xml.namespace.QName;
-
+import java.util.Objects;
 
 /**
  * 
@@ -246,133 +238,50 @@ public class LargeMailUser implements Cloneable
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = ((prime*result)+((addressLine == null)? 0 :addressLine.hashCode()));
-        result = ((prime*result)+((largeMailUserName == null)? 0 :largeMailUserName.hashCode()));
-        result = ((prime*result)+((largeMailUserIdentifier == null)? 0 :largeMailUserIdentifier.hashCode()));
-        result = ((prime*result)+((buildingName == null)? 0 :buildingName.hashCode()));
-        result = ((prime*result)+((department == null)? 0 :department.hashCode()));
-        result = ((prime*result)+((postBox == null)? 0 :postBox.hashCode()));
-        result = ((prime*result)+((thoroughfare == null)? 0 :thoroughfare.hashCode()));
-        result = ((prime*result)+((postalCode == null)? 0 :postalCode.hashCode()));
-        result = ((prime*result)+((any == null)? 0 :any.hashCode()));
-        result = ((prime*result)+((underscore == null)? 0 :underscore.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+
+        LargeMailUser that = (LargeMailUser) object;
+        return Objects.equals(addressLine, that.addressLine)
+                && Objects.equals(largeMailUserName, that.largeMailUserName)
+                && Objects.equals(largeMailUserIdentifier, that.largeMailUserIdentifier)
+                && Objects.equals(buildingName, that.buildingName)
+                && Objects.equals(department, that.department)
+                && Objects.equals(postBox, that.postBox)
+                && Objects.equals(thoroughfare, that.thoroughfare)
+                && Objects.equals(postalCode, that.postalCode)
+                && Objects.equals(any, that.any)
+                && Objects.equals(underscore, that.underscore)
+                && Objects.equals(otherAttributes, that.otherAttributes);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if ((obj instanceof LargeMailUser) == false) {
-            return false;
-        }
-        LargeMailUser other = ((LargeMailUser) obj);
-        if (addressLine == null) {
-            if (other.addressLine!= null) {
-                return false;
-            }
-        } else {
-            if (addressLine.equals(other.addressLine) == false) {
-                return false;
-            }
-        }
-        if (largeMailUserName == null) {
-            if (other.largeMailUserName!= null) {
-                return false;
-            }
-        } else {
-            if (largeMailUserName.equals(other.largeMailUserName) == false) {
-                return false;
-            }
-        }
-        if (largeMailUserIdentifier == null) {
-            if (other.largeMailUserIdentifier!= null) {
-                return false;
-            }
-        } else {
-            if (largeMailUserIdentifier.equals(other.largeMailUserIdentifier) == false) {
-                return false;
-            }
-        }
-        if (buildingName == null) {
-            if (other.buildingName!= null) {
-                return false;
-            }
-        } else {
-            if (buildingName.equals(other.buildingName) == false) {
-                return false;
-            }
-        }
-        if (department == null) {
-            if (other.department!= null) {
-                return false;
-            }
-        } else {
-            if (department.equals(other.department) == false) {
-                return false;
-            }
-        }
-        if (postBox == null) {
-            if (other.postBox!= null) {
-                return false;
-            }
-        } else {
-            if (postBox.equals(other.postBox) == false) {
-                return false;
-            }
-        }
-        if (thoroughfare == null) {
-            if (other.thoroughfare!= null) {
-                return false;
-            }
-        } else {
-            if (thoroughfare.equals(other.thoroughfare) == false) {
-                return false;
-            }
-        }
-        if (postalCode == null) {
-            if (other.postalCode!= null) {
-                return false;
-            }
-        } else {
-            if (postalCode.equals(other.postalCode) == false) {
-                return false;
-            }
-        }
-        if (any == null) {
-            if (other.any!= null) {
-                return false;
-            }
-        } else {
-            if (any.equals(other.any) == false) {
-                return false;
-            }
-        }
-        if (underscore == null) {
-            if (other.underscore!= null) {
-                return false;
-            }
-        } else {
-            if (underscore.equals(other.underscore) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = Objects.hashCode(addressLine);
+        result = 31 * result + Objects.hashCode(largeMailUserName);
+        result = 31 * result + Objects.hashCode(largeMailUserIdentifier);
+        result = 31 * result + Objects.hashCode(buildingName);
+        result = 31 * result + Objects.hashCode(department);
+        result = 31 * result + Objects.hashCode(postBox);
+        result = 31 * result + Objects.hashCode(thoroughfare);
+        result = 31 * result + Objects.hashCode(postalCode);
+        result = 31 * result + Objects.hashCode(any);
+        result = 31 * result + Objects.hashCode(underscore);
+        result = 31 * result + Objects.hashCode(otherAttributes);
+        return result;
     }
 
     /**
      * Creates a new instance of {@link AddressLine} and adds it to addressLine.
      * This method is a short version for:
-     * <code>
+     * {@code
      * AddressLine addressLine = new AddressLine();
-     * this.getAddressLine().add(addressLine); </code>
+     * this.getAddressLine().add(addressLine); }
      * 
      * 
      */
@@ -385,9 +294,9 @@ public class LargeMailUser implements Cloneable
     /**
      * Creates a new instance of {@link LargeMailUser.LargeMailUserName} and adds it to largeMailUserName.
      * This method is a short version for:
-     * <code>
+     * {@code
      * LargeMailUserName largeMailUserName = new LargeMailUserName();
-     * this.getLargeMailUserName().add(largeMailUserName); </code>
+     * this.getLargeMailUserName().add(largeMailUserName); }
      * 
      * 
      */
@@ -401,9 +310,9 @@ public class LargeMailUser implements Cloneable
      * Creates a new instance of {@link LargeMailUser.LargeMailUserIdentifier} and set it to largeMailUserIdentifier.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * LargeMailUserIdentifier largeMailUserIdentifier = new LargeMailUserIdentifier();
-     * this.setLargeMailUserIdentifier(largeMailUserIdentifier); </code>
+     * this.setLargeMailUserIdentifier(largeMailUserIdentifier); }
      * 
      * 
      */
@@ -416,9 +325,9 @@ public class LargeMailUser implements Cloneable
     /**
      * Creates a new instance of {@link BuildingName} and adds it to buildingName.
      * This method is a short version for:
-     * <code>
+     * {@code
      * BuildingName buildingName = new BuildingName();
-     * this.getBuildingName().add(buildingName); </code>
+     * this.getBuildingName().add(buildingName); }
      * 
      * 
      */
@@ -432,9 +341,9 @@ public class LargeMailUser implements Cloneable
      * Creates a new instance of {@link Department} and set it to department.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * Department department = new Department();
-     * this.setDepartment(department); </code>
+     * this.setDepartment(department); }
      * 
      * 
      */
@@ -448,9 +357,9 @@ public class LargeMailUser implements Cloneable
      * Creates a new instance of {@link PostBox} and set it to postBox.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostBox postBox = new PostBox();
-     * this.setPostBox(postBox); </code>
+     * this.setPostBox(postBox); }
      * 
      * 
      * @param postBoxNumber
@@ -466,9 +375,9 @@ public class LargeMailUser implements Cloneable
      * Creates a new instance of {@link Thoroughfare} and set it to thoroughfare.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * Thoroughfare thoroughfare = new Thoroughfare();
-     * this.setThoroughfare(thoroughfare); </code>
+     * this.setThoroughfare(thoroughfare); }
      * 
      * 
      * @param postalCode
@@ -490,9 +399,9 @@ public class LargeMailUser implements Cloneable
      * Creates a new instance of {@link PostalCode} and set it to postalCode.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostalCode postalCode = new PostalCode();
-     * this.setPostalCode(postalCode); </code>
+     * this.setPostalCode(postalCode); }
      * 
      * 
      */
@@ -503,12 +412,13 @@ public class LargeMailUser implements Cloneable
     }
 
     /**
-     * Sets the value of the addressLine property Objects of the following type(s) are allowed in the list List<AddressLine>.
+     * Sets the value of the addressLine property Objects of the following type(s) are allowed in the list {@code List<AddressLine>}.
      * <p>Note:
-     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAddressLine} instead.
+     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use withAddressLine instead.
      * 
      * 
      * @param addressLine
+     *     Objects of the following type are allowed in the list: {@link AddressLine}
      */
     public void setAddressLine(final List<AddressLine> addressLine) {
         this.addressLine = addressLine;
@@ -520,7 +430,7 @@ public class LargeMailUser implements Cloneable
      * @param addressLine
      *     Objects of the following type are allowed in the list: {@link AddressLine}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public LargeMailUser addToAddressLine(final AddressLine addressLine) {
         this.getAddressLine().add(addressLine);
@@ -528,12 +438,13 @@ public class LargeMailUser implements Cloneable
     }
 
     /**
-     * Sets the value of the largeMailUserName property Objects of the following type(s) are allowed in the list List<LargeMailUserName>.
+     * Sets the value of the largeMailUserName property Objects of the following type(s) are allowed in the list {@code List<LargeMailUserName>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withLargeMailUserName} instead.
      * 
      * 
      * @param largeMailUserName
+     *     Objects of the following type are allowed in the list: {@link LargeMailUser.LargeMailUserName}
      */
     public void setLargeMailUserName(final List<LargeMailUser.LargeMailUserName> largeMailUserName) {
         this.largeMailUserName = largeMailUserName;
@@ -545,7 +456,7 @@ public class LargeMailUser implements Cloneable
      * @param largeMailUserName
      *     Objects of the following type are allowed in the list: {@link LargeMailUser.LargeMailUserName}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public LargeMailUser addToLargeMailUserName(final LargeMailUser.LargeMailUserName largeMailUserName) {
         this.getLargeMailUserName().add(largeMailUserName);
@@ -553,12 +464,13 @@ public class LargeMailUser implements Cloneable
     }
 
     /**
-     * Sets the value of the buildingName property Objects of the following type(s) are allowed in the list List<BuildingName>.
+     * Sets the value of the buildingName property Objects of the following type(s) are allowed in the list {@code List<BuildingName>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withBuildingName} instead.
      * 
      * 
      * @param buildingName
+     *     Objects of the following type are allowed in the list: {@link BuildingName}
      */
     public void setBuildingName(final List<BuildingName> buildingName) {
         this.buildingName = buildingName;
@@ -570,7 +482,7 @@ public class LargeMailUser implements Cloneable
      * @param buildingName
      *     Objects of the following type are allowed in the list: {@link BuildingName}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public LargeMailUser addToBuildingName(final BuildingName buildingName) {
         this.getBuildingName().add(buildingName);
@@ -578,12 +490,13 @@ public class LargeMailUser implements Cloneable
     }
 
     /**
-     * Sets the value of the any property Objects of the following type(s) are allowed in the list List<Object>.
+     * Sets the value of the any property Objects of the following type(s) are allowed in the list {@code List<Object>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAny} instead.
      * 
      * 
      * @param any
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setAny(final List<Object> any) {
         this.any = any;
@@ -595,7 +508,7 @@ public class LargeMailUser implements Cloneable
      * @param any
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public LargeMailUser addToAny(final Object any) {
         this.getAny().add(any);
@@ -604,7 +517,7 @@ public class LargeMailUser implements Cloneable
 
     /**
      * fluent setter
-     * @see #setAddressLine(List<AddressLine>)
+     *
      * 
      * @param addressLine
      *     required parameter
@@ -616,7 +529,7 @@ public class LargeMailUser implements Cloneable
 
     /**
      * fluent setter
-     * @see #setLargeMailUserName(List<LargeMailUserName>)
+     *
      * 
      * @param largeMailUserName
      *     required parameter
@@ -628,7 +541,7 @@ public class LargeMailUser implements Cloneable
 
     /**
      * fluent setter
-     * @see #setLargeMailUserIdentifier(LargeMailUserIdentifier)
+     *
      * 
      * @param largeMailUserIdentifier
      *     required parameter
@@ -640,7 +553,7 @@ public class LargeMailUser implements Cloneable
 
     /**
      * fluent setter
-     * @see #setBuildingName(List<BuildingName>)
+     *
      * 
      * @param buildingName
      *     required parameter
@@ -652,7 +565,7 @@ public class LargeMailUser implements Cloneable
 
     /**
      * fluent setter
-     * @see #setDepartment(Department)
+     *
      * 
      * @param department
      *     required parameter
@@ -664,7 +577,7 @@ public class LargeMailUser implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPostBox(PostBox)
+     *
      * 
      * @param postBox
      *     required parameter
@@ -676,7 +589,7 @@ public class LargeMailUser implements Cloneable
 
     /**
      * fluent setter
-     * @see #setThoroughfare(Thoroughfare)
+     *
      * 
      * @param thoroughfare
      *     required parameter
@@ -688,7 +601,7 @@ public class LargeMailUser implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPostalCode(PostalCode)
+     *
      * 
      * @param postalCode
      *     required parameter
@@ -700,7 +613,7 @@ public class LargeMailUser implements Cloneable
 
     /**
      * fluent setter
-     * @see #setAny(List<Object>)
+     *
      * 
      * @param any
      *     required parameter
@@ -712,7 +625,7 @@ public class LargeMailUser implements Cloneable
 
     /**
      * fluent setter
-     * @see #setUnderscore(String)
+     *
      * 
      * @param underscore
      *     required parameter
@@ -944,7 +857,7 @@ public class LargeMailUser implements Cloneable
 
         /**
          * fluent setter
-         * @see #setContent(String)
+         *
          * 
          * @param content
          *     required parameter
@@ -956,7 +869,7 @@ public class LargeMailUser implements Cloneable
 
         /**
          * fluent setter
-         * @see #setUnderscore(String)
+         *
          * 
          * @param underscore
          *     required parameter
@@ -968,7 +881,7 @@ public class LargeMailUser implements Cloneable
 
         /**
          * fluent setter
-         * @see #setIndicator(String)
+         *
          * 
          * @param indicator
          *     required parameter
@@ -980,7 +893,7 @@ public class LargeMailUser implements Cloneable
 
         /**
          * fluent setter
-         * @see #setCode(String)
+         *
          * 
          * @param code
          *     required parameter
@@ -1157,7 +1070,7 @@ public class LargeMailUser implements Cloneable
 
         /**
          * fluent setter
-         * @see #setContent(String)
+         *
          * 
          * @param content
          *     required parameter
@@ -1169,7 +1082,7 @@ public class LargeMailUser implements Cloneable
 
         /**
          * fluent setter
-         * @see #setUnderscore(String)
+         *
          * 
          * @param underscore
          *     required parameter
@@ -1181,7 +1094,7 @@ public class LargeMailUser implements Cloneable
 
         /**
          * fluent setter
-         * @see #setCode(String)
+         *
          * 
          * @param code
          *     required parameter

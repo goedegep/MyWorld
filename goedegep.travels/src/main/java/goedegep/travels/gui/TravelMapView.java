@@ -3,13 +3,13 @@ package goedegep.travels.gui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-//import com.gluonhq.maps.MapView;
-import goedegep.mapview.view.MapView;
 import goedegep.gpxeditor.gui.GPXLayer;
 import goedegep.jfx.CustomizationFx;
+import goedegep.mapview.MapLayer;
+//import com.gluonhq.maps.MapView;
+import goedegep.mapview.view.MapView;
 import goedegep.util.objectselector.ObjectSelectionListener;
 import goedegep.util.objectselector.ObjectSelector;
 import javafx.stage.Stage;

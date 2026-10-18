@@ -1,22 +1,14 @@
 
 package de.micromata.opengis.kml.v_2_2_0.xal;
 
+import jakarta.xml.bind.annotation.*;
+
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAnyAttribute;
-import jakarta.xml.bind.annotation.XmlAnyElement;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.XmlValue;
-import javax.xml.namespace.QName;
-
+import java.util.Objects;
 
 /**
  * 
@@ -178,93 +170,42 @@ public class PostalRoute implements Cloneable
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = ((prime*result)+((addressLine == null)? 0 :addressLine.hashCode()));
-        result = ((prime*result)+((postalRouteName == null)? 0 :postalRouteName.hashCode()));
-        result = ((prime*result)+((postalRouteNumber == null)? 0 :postalRouteNumber.hashCode()));
-        result = ((prime*result)+((postBox == null)? 0 :postBox.hashCode()));
-        result = ((prime*result)+((any == null)? 0 :any.hashCode()));
-        result = ((prime*result)+((underscore == null)? 0 :underscore.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+
+        PostalRoute that = (PostalRoute) object;
+        return Objects.equals(addressLine, that.addressLine)
+                && Objects.equals(postalRouteName, that.postalRouteName)
+                && Objects.equals(postalRouteNumber, that.postalRouteNumber)
+                && Objects.equals(postBox, that.postBox)
+                && Objects.equals(any, that.any)
+                && Objects.equals(underscore, that.underscore)
+                && Objects.equals(otherAttributes, that.otherAttributes);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if ((obj instanceof PostalRoute) == false) {
-            return false;
-        }
-        PostalRoute other = ((PostalRoute) obj);
-        if (addressLine == null) {
-            if (other.addressLine!= null) {
-                return false;
-            }
-        } else {
-            if (addressLine.equals(other.addressLine) == false) {
-                return false;
-            }
-        }
-        if (postalRouteName == null) {
-            if (other.postalRouteName!= null) {
-                return false;
-            }
-        } else {
-            if (postalRouteName.equals(other.postalRouteName) == false) {
-                return false;
-            }
-        }
-        if (postalRouteNumber == null) {
-            if (other.postalRouteNumber!= null) {
-                return false;
-            }
-        } else {
-            if (postalRouteNumber.equals(other.postalRouteNumber) == false) {
-                return false;
-            }
-        }
-        if (postBox == null) {
-            if (other.postBox!= null) {
-                return false;
-            }
-        } else {
-            if (postBox.equals(other.postBox) == false) {
-                return false;
-            }
-        }
-        if (any == null) {
-            if (other.any!= null) {
-                return false;
-            }
-        } else {
-            if (any.equals(other.any) == false) {
-                return false;
-            }
-        }
-        if (underscore == null) {
-            if (other.underscore!= null) {
-                return false;
-            }
-        } else {
-            if (underscore.equals(other.underscore) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = Objects.hashCode(addressLine);
+        result = 31 * result + Objects.hashCode(postalRouteName);
+        result = 31 * result + Objects.hashCode(postalRouteNumber);
+        result = 31 * result + Objects.hashCode(postBox);
+        result = 31 * result + Objects.hashCode(any);
+        result = 31 * result + Objects.hashCode(underscore);
+        result = 31 * result + Objects.hashCode(otherAttributes);
+        return result;
     }
 
     /**
      * Creates a new instance of {@link AddressLine} and adds it to addressLine.
      * This method is a short version for:
-     * <code>
+     * {@code
      * AddressLine addressLine = new AddressLine();
-     * this.getAddressLine().add(addressLine); </code>
+     * this.getAddressLine().add(addressLine); }
      * 
      * 
      */
@@ -277,9 +218,9 @@ public class PostalRoute implements Cloneable
     /**
      * Creates a new instance of {@link PostalRoute.PostalRouteName} and adds it to postalRouteName.
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostalRouteName postalRouteName = new PostalRouteName();
-     * this.getPostalRouteName().add(postalRouteName); </code>
+     * this.getPostalRouteName().add(postalRouteName); }
      * 
      * 
      */
@@ -293,9 +234,9 @@ public class PostalRoute implements Cloneable
      * Creates a new instance of {@link PostalRoute.PostalRouteNumber} and set it to postalRouteNumber.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostalRouteNumber postalRouteNumber = new PostalRouteNumber();
-     * this.setPostalRouteNumber(postalRouteNumber); </code>
+     * this.setPostalRouteNumber(postalRouteNumber); }
      * 
      * 
      */
@@ -309,9 +250,9 @@ public class PostalRoute implements Cloneable
      * Creates a new instance of {@link PostBox} and set it to postBox.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostBox postBox = new PostBox();
-     * this.setPostBox(postBox); </code>
+     * this.setPostBox(postBox); }
      * 
      * 
      * @param postBoxNumber
@@ -324,12 +265,13 @@ public class PostalRoute implements Cloneable
     }
 
     /**
-     * Sets the value of the addressLine property Objects of the following type(s) are allowed in the list List<AddressLine>.
+     * Sets the value of the addressLine property Objects of the following type(s) are allowed in the list {@code List<AddressLine>}.
      * <p>Note:
-     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAddressLine} instead.
+     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use withAddressLine instead.
      * 
      * 
      * @param addressLine
+     *     Objects of the following type are allowed in the list: {@link AddressLine}
      */
     public void setAddressLine(final List<AddressLine> addressLine) {
         this.addressLine = addressLine;
@@ -341,7 +283,7 @@ public class PostalRoute implements Cloneable
      * @param addressLine
      *     Objects of the following type are allowed in the list: {@link AddressLine}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public PostalRoute addToAddressLine(final AddressLine addressLine) {
         this.getAddressLine().add(addressLine);
@@ -349,12 +291,13 @@ public class PostalRoute implements Cloneable
     }
 
     /**
-     * Sets the value of the postalRouteName property Objects of the following type(s) are allowed in the list List<PostalRouteName>.
+     * Sets the value of the postalRouteName property Objects of the following type(s) are allowed in the list {@code List<PostalRouteName>}.
      * <p>Note:
-     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withPostalRouteName} instead.
+     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use withPostalRouteName instead.
      * 
      * 
      * @param postalRouteName
+     *     Objects of the following type are allowed in the list: {@link PostalRoute.PostalRouteName}
      */
     public void setPostalRouteName(final List<PostalRoute.PostalRouteName> postalRouteName) {
         this.postalRouteName = postalRouteName;
@@ -366,7 +309,7 @@ public class PostalRoute implements Cloneable
      * @param postalRouteName
      *     Objects of the following type are allowed in the list: {@link PostalRoute.PostalRouteName}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public PostalRoute addToPostalRouteName(final PostalRoute.PostalRouteName postalRouteName) {
         this.getPostalRouteName().add(postalRouteName);
@@ -374,12 +317,13 @@ public class PostalRoute implements Cloneable
     }
 
     /**
-     * Sets the value of the any property Objects of the following type(s) are allowed in the list List<Object>.
+     * Sets the value of the any property Objects of the following type(s) are allowed in the list {@code List<Object>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAny} instead.
      * 
      * 
      * @param any
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setAny(final List<Object> any) {
         this.any = any;
@@ -391,7 +335,7 @@ public class PostalRoute implements Cloneable
      * @param any
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public PostalRoute addToAny(final Object any) {
         this.getAny().add(any);
@@ -400,7 +344,7 @@ public class PostalRoute implements Cloneable
 
     /**
      * fluent setter
-     * @see #setAddressLine(List<AddressLine>)
+     *
      * 
      * @param addressLine
      *     required parameter
@@ -412,7 +356,7 @@ public class PostalRoute implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPostBox(PostBox)
+     *
      * 
      * @param postBox
      *     required parameter
@@ -424,7 +368,7 @@ public class PostalRoute implements Cloneable
 
     /**
      * fluent setter
-     * @see #setAny(List<Object>)
+     *
      * 
      * @param any
      *     required parameter
@@ -436,7 +380,7 @@ public class PostalRoute implements Cloneable
 
     /**
      * fluent setter
-     * @see #setUnderscore(String)
+     *
      * 
      * @param underscore
      *     required parameter
@@ -627,7 +571,7 @@ public class PostalRoute implements Cloneable
 
         /**
          * fluent setter
-         * @see #setContent(String)
+         *
          * 
          * @param content
          *     required parameter
@@ -639,7 +583,7 @@ public class PostalRoute implements Cloneable
 
         /**
          * fluent setter
-         * @see #setUnderscore(String)
+         *
          * 
          * @param underscore
          *     required parameter
@@ -651,7 +595,7 @@ public class PostalRoute implements Cloneable
 
         /**
          * fluent setter
-         * @see #setCode(String)
+         *
          * 
          * @param code
          *     required parameter
@@ -795,7 +739,7 @@ public class PostalRoute implements Cloneable
 
         /**
          * fluent setter
-         * @see #setContent(String)
+         *
          * 
          * @param content
          *     required parameter
@@ -807,7 +751,7 @@ public class PostalRoute implements Cloneable
 
         /**
          * fluent setter
-         * @see #setCode(String)
+         *
          * 
          * @param code
          *     required parameter

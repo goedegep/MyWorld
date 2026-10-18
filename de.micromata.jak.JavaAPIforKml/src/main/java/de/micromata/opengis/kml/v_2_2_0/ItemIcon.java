@@ -1,24 +1,19 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
+import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
+import jakarta.xml.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlList;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
-
+import java.util.Objects;
 
 /**
- * <itemicon>
+ * {@code <itemicon>}
  * <p>
- * <state> Specifies the current state of the NetworkLink or Folder. Possible values 
+ * {@code <state>} Specifies the current state of the NetworkLink or Folder. Possible values 
  * are open, closed, error, fetching0, fetching1, and fetching2. These values can be 
- * combined by inserting a space between two values (no comma). <href> Specifies the 
+ * combined by inserting a space between two values (no comma). {@code <href>}Specifies the 
  * URI of the image used in the List View for the Feature. 
  * </p>
  * <p>
@@ -46,7 +41,7 @@ public class ItemIcon
 {
 
     /**
-     * <state>
+     * {@code <state>}
      * <p>
      * Specifies the current state of the NetworkLink or Folder. Possible values are open, 
      * closed, error, fetching0, fetching1, and fetching2. These values can be combined 
@@ -59,12 +54,12 @@ public class ItemIcon
     @XmlList
     protected List<ItemIconState> state;
     /**
-     * <href>
+     * {@code <href>}
      * <p>
      * A URL (either an HTTP address or a local file specification). When the parent of 
-     * <Link> is a NetworkLink, <href> is a KML file. When the parent of <Link> is a Model, 
-     * <href> is a COLLADA file. When the parent of <Icon> (same fields as <Link>) is an 
-     * Overlay, <href> is an image. Relative URLs can be used in this tag and are evaluated 
+     * {@code <Link>} is a NetworkLink, {@code <href>}is a KML file. When the parent of {@code <Link>} is a Model, 
+     * {@code <href>}is a COLLADA file. When the parent of {@code <Icon>}(same fields as {@code <Link>}) is an 
+     * Overlay, {@code <href>}is an image. Relative URLs can be used in this tag and are evaluated 
      * relative to the enclosing KML file. 
      * </p>
      * <p>
@@ -82,12 +77,12 @@ public class ItemIcon
     @XmlSchemaType(name = "anySimpleType")
     protected List<Object> itemIconSimpleExtension;
     /**
-     * <Object>
+     * {@code <Object>}
      * <p>
      * This is an abstract base class and cannot be used directly in a KML file. It provides 
      * the id attribute, which allows unique identification of a KML element, and the targetId 
      * attribute, which is used to reference objects that have already been loaded into 
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
      * be used. 
      * </p>
      * 
@@ -107,7 +102,7 @@ public class ItemIcon
     }
 
     /**
-     * @see state
+     *
      * 
      */
     public List<ItemIconState> getState() {
@@ -118,7 +113,7 @@ public class ItemIcon
     }
 
     /**
-     * @see href
+     *
      * 
      * @return
      *     possible object is
@@ -130,7 +125,7 @@ public class ItemIcon
     }
 
     /**
-     * @see href
+     *
      * 
      * @param value
      *     allowed object is
@@ -142,7 +137,7 @@ public class ItemIcon
     }
 
     /**
-     * @see itemIconSimpleExtension
+     *
      * 
      */
     public List<Object> getItemIconSimpleExtension() {
@@ -153,7 +148,7 @@ public class ItemIcon
     }
 
     /**
-     * @see itemIconObjectExtension
+     *
      * 
      */
     public List<AbstractObject> getItemIconObjectExtension() {
@@ -164,74 +159,38 @@ public class ItemIcon
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = ((prime*result)+((state == null)? 0 :state.hashCode()));
-        result = ((prime*result)+((href == null)? 0 :href.hashCode()));
-        result = ((prime*result)+((itemIconSimpleExtension == null)? 0 :itemIconSimpleExtension.hashCode()));
-        result = ((prime*result)+((itemIconObjectExtension == null)? 0 :itemIconObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        ItemIcon itemIcon = (ItemIcon) object;
+        return Objects.equals(state, itemIcon.state)
+                && Objects.equals(href, itemIcon.href)
+                && Objects.equals(itemIconSimpleExtension, itemIcon.itemIconSimpleExtension)
+                && Objects.equals(itemIconObjectExtension, itemIcon.itemIconObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof ItemIcon) == false) {
-            return false;
-        }
-        ItemIcon other = ((ItemIcon) obj);
-        if (state == null) {
-            if (other.state!= null) {
-                return false;
-            }
-        } else {
-            if (state.equals(other.state) == false) {
-                return false;
-            }
-        }
-        if (href == null) {
-            if (other.href!= null) {
-                return false;
-            }
-        } else {
-            if (href.equals(other.href) == false) {
-                return false;
-            }
-        }
-        if (itemIconSimpleExtension == null) {
-            if (other.itemIconSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (itemIconSimpleExtension.equals(other.itemIconSimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (itemIconObjectExtension == null) {
-            if (other.itemIconObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (itemIconObjectExtension.equals(other.itemIconObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(state);
+        result = 31 * result + Objects.hashCode(href);
+        result = 31 * result + Objects.hashCode(itemIconSimpleExtension);
+        result = 31 * result + Objects.hashCode(itemIconObjectExtension);
+        return result;
     }
 
     /**
-     * @see state
+     *
      * 
      * @param state
+     *     Objects of the following type are allowed in the list: {@link ItemIconState}
      */
     public void setState(final List<ItemIconState> state) {
         this.state = state;
@@ -243,7 +202,7 @@ public class ItemIcon
      * @param state
      *     Objects of the following type are allowed in the list: {@link ItemIconState}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public ItemIcon addToState(final ItemIconState state) {
         this.getState().add(state);
@@ -251,9 +210,10 @@ public class ItemIcon
     }
 
     /**
-     * @see itemIconSimpleExtension
+     *
      * 
      * @param itemIconSimpleExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setItemIconSimpleExtension(final List<Object> itemIconSimpleExtension) {
         this.itemIconSimpleExtension = itemIconSimpleExtension;
@@ -265,7 +225,7 @@ public class ItemIcon
      * @param itemIconSimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public ItemIcon addToItemIconSimpleExtension(final Object itemIconSimpleExtension) {
         this.getItemIconSimpleExtension().add(itemIconSimpleExtension);
@@ -273,9 +233,10 @@ public class ItemIcon
     }
 
     /**
-     * @see itemIconObjectExtension
+     *
      * 
      * @param itemIconObjectExtension
+     *     Objects of the following type are allowed in the list: {@link AbstractObject}
      */
     public void setItemIconObjectExtension(final List<AbstractObject> itemIconObjectExtension) {
         this.itemIconObjectExtension = itemIconObjectExtension;
@@ -287,7 +248,7 @@ public class ItemIcon
      * @param itemIconObjectExtension
      *     Objects of the following type are allowed in the list: {@link AbstractObject}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public ItemIcon addToItemIconObjectExtension(final AbstractObject itemIconObjectExtension) {
         this.getItemIconObjectExtension().add(itemIconObjectExtension);
@@ -295,7 +256,7 @@ public class ItemIcon
     }
 
     /**
-     * @see objectSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -313,7 +274,7 @@ public class ItemIcon
 
     /**
      * fluent setter
-     * @see #setState(List<ItemIconState>)
+     *
      * 
      * @param state
      *     required parameter
@@ -325,7 +286,7 @@ public class ItemIcon
 
     /**
      * fluent setter
-     * @see #setHref(String)
+     *
      * 
      * @param href
      *     required parameter
@@ -337,7 +298,7 @@ public class ItemIcon
 
     /**
      * fluent setter
-     * @see #setItemIconSimpleExtension(List<Object>)
+     *
      * 
      * @param itemIconSimpleExtension
      *     required parameter
@@ -349,7 +310,7 @@ public class ItemIcon
 
     /**
      * fluent setter
-     * @see #setItemIconObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param itemIconObjectExtension
      *     required parameter

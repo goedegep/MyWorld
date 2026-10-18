@@ -1,24 +1,20 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
+import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
+import jakarta.xml.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
-
+import java.util.Objects;
 
 /**
- * <LabelStyle>
+ * {@code <LabelStyle>}
  * <p>
- * Note: The <labelColor> tag is deprecated. Use <LabelStyle> instead. 
+ * Note: The {@code <LabelColor>} tag is deprecated. Use {@code <LabelStyle>} instead.
  * </p>
  * <p>
- * Specifies how the <name> of a Feature is drawn in the 3D viewer. A custom color, 
+ * Specifies how the {@code <name>} of a Feature is drawn in the 3D viewer. A custom color,
  * color mode, and scale for the label (name) can be specified. 
  * </p>
  * 
@@ -32,11 +28,11 @@ import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
  *   &lt;scale&gt;1&lt;/scale&gt;                   &lt;!-- float --&gt;
  * <strong>&lt;/LabelStyle&gt;</strong></pre>
  * 
- * Extends: 
- * @see: <ColorStyle>
- * 
- * Contained By: 
- * @see: <Style>
+ * Extends:
+ * <p></p>
+ * Contained By:
+ * <p></p>
+ *
  * 
  * 
  * 
@@ -54,33 +50,33 @@ public class LabelStyle
 {
 
     /**
-     * <scale>
+     * {@code <scale>}
      * <p>
-     * Note: The <geomScale> tag has been deprecated. Use <scale> instead. 
+     * Note: The {@code <geomScale>} tag has been deprecated. Use {@code <scale>} instead. 
      * </p>
      * <p>
      * Resizes the icon. 
      * </p>
      * <p>
-     * Scales a model along the x, y, and z axes in the model's coordinate space. <Scale> 
-     * <x>2.5</x> <y>2.5</y> <z>3.5</z> </Scale> 
+     * Scales a model along the x, y, and z axes in the model's coordinate space. {@code <Scale>
+     * <x>2.5</x> <y>2.5</y> <z>3.5</z> </Scale> }
      * </p>
      * 
      * 
      * 
      */
     @XmlElement(defaultValue = "1.0")
-    protected double scale;
+    protected Double scale;
     @XmlElement(name = "LabelStyleSimpleExtensionGroup")
     @XmlSchemaType(name = "anySimpleType")
     protected List<Object> labelStyleSimpleExtension;
     /**
-     * <Object>
+     * {@code <Object>}
      * <p>
      * This is an abstract base class and cannot be used directly in a KML file. It provides 
      * the id attribute, which allows unique identification of a KML element, and the targetId 
      * attribute, which is used to reference objects that have already been loaded into 
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
      * be used. 
      * </p>
      * 
@@ -100,106 +96,82 @@ public class LabelStyle
     }
 
     /**
-     * @see scale
+     *
      * 
      * @return
      *     possible object is
      *     {@link Double}
      *     
      */
-    public double getScale() {
+    public Double getScale() {
         return scale;
     }
 
     /**
-     * @see scale
-     * 
+     *
+     *
      * @param value
      *     allowed object is
      *     {@link Double}
-     *     
+     *
      */
-    public void setScale(double value) {
+    public void setScale(Double value) {
         this.scale = value;
     }
 
     /**
-     * @see labelStyleSimpleExtension
+     *
      * 
      */
     public List<Object> getLabelStyleSimpleExtension() {
         if (labelStyleSimpleExtension == null) {
-            labelStyleSimpleExtension = new ArrayList<Object>();
+            labelStyleSimpleExtension = new ArrayList<>();
         }
         return this.labelStyleSimpleExtension;
     }
 
     /**
-     * @see labelStyleObjectExtension
+     *
      * 
      */
     public List<AbstractObject> getLabelStyleObjectExtension() {
         if (labelStyleObjectExtension == null) {
-            labelStyleObjectExtension = new ArrayList<AbstractObject>();
+            labelStyleObjectExtension = new ArrayList<>();
         }
         return this.labelStyleObjectExtension;
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        long temp;
-        temp = Double.doubleToLongBits(scale);
-        result = ((prime*result)+((int)(temp^(temp >>>(32)))));
-        result = ((prime*result)+((labelStyleSimpleExtension == null)? 0 :labelStyleSimpleExtension.hashCode()));
-        result = ((prime*result)+((labelStyleObjectExtension == null)? 0 :labelStyleObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        LabelStyle that = (LabelStyle) object;
+        return Objects.equals(scale, that.scale)
+                && Objects.equals(labelStyleSimpleExtension, that.labelStyleSimpleExtension)
+                && Objects.equals(labelStyleObjectExtension, that.labelStyleObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof LabelStyle) == false) {
-            return false;
-        }
-        LabelStyle other = ((LabelStyle) obj);
-        if (scale!= other.scale) {
-            return false;
-        }
-        if (labelStyleSimpleExtension == null) {
-            if (other.labelStyleSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (labelStyleSimpleExtension.equals(other.labelStyleSimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (labelStyleObjectExtension == null) {
-            if (other.labelStyleObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (labelStyleObjectExtension.equals(other.labelStyleObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(scale);
+        result = 31 * result + Objects.hashCode(labelStyleSimpleExtension);
+        result = 31 * result + Objects.hashCode(labelStyleObjectExtension);
+        return result;
     }
 
     /**
-     * @see labelStyleSimpleExtension
+     *
      * 
      * @param labelStyleSimpleExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setLabelStyleSimpleExtension(final List<Object> labelStyleSimpleExtension) {
         this.labelStyleSimpleExtension = labelStyleSimpleExtension;
@@ -211,7 +183,7 @@ public class LabelStyle
      * @param labelStyleSimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public LabelStyle addToLabelStyleSimpleExtension(final Object labelStyleSimpleExtension) {
         this.getLabelStyleSimpleExtension().add(labelStyleSimpleExtension);
@@ -219,9 +191,10 @@ public class LabelStyle
     }
 
     /**
-     * @see labelStyleObjectExtension
+     *
      * 
      * @param labelStyleObjectExtension
+     *     Objects of the following type are allowed in the list: {@link AbstractObject}
      */
     public void setLabelStyleObjectExtension(final List<AbstractObject> labelStyleObjectExtension) {
         this.labelStyleObjectExtension = labelStyleObjectExtension;
@@ -233,7 +206,7 @@ public class LabelStyle
      * @param labelStyleObjectExtension
      *     Objects of the following type are allowed in the list: {@link AbstractObject}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public LabelStyle addToLabelStyleObjectExtension(final AbstractObject labelStyleObjectExtension) {
         this.getLabelStyleObjectExtension().add(labelStyleObjectExtension);
@@ -241,7 +214,7 @@ public class LabelStyle
     }
 
     /**
-     * @see objectSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -258,7 +231,7 @@ public class LabelStyle
     }
 
     /**
-     * @see subStyleSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -275,7 +248,7 @@ public class LabelStyle
     }
 
     /**
-     * @see subStyleObjectExtension
+     *
      * 
      */
     @Obvious
@@ -292,7 +265,7 @@ public class LabelStyle
     }
 
     /**
-     * @see colorStyleSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -309,7 +282,7 @@ public class LabelStyle
     }
 
     /**
-     * @see colorStyleObjectExtension
+     *
      * 
      */
     @Obvious
@@ -327,19 +300,19 @@ public class LabelStyle
 
     /**
      * fluent setter
-     * @see #setScale(double)
+     *
      * 
      * @param scale
      *     required parameter
      */
-    public LabelStyle withScale(final double scale) {
+    public LabelStyle withScale(final Double scale) {
         this.setScale(scale);
         return this;
     }
 
     /**
      * fluent setter
-     * @see #setLabelStyleSimpleExtension(List<Object>)
+     *
      * 
      * @param labelStyleSimpleExtension
      *     required parameter
@@ -351,7 +324,7 @@ public class LabelStyle
 
     /**
      * fluent setter
-     * @see #setLabelStyleObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param labelStyleObjectExtension
      *     required parameter
@@ -428,11 +401,9 @@ public class LabelStyle
     public LabelStyle clone() {
         LabelStyle copy;
         copy = ((LabelStyle) super.clone());
-        copy.labelStyleSimpleExtension = new ArrayList<Object>((getLabelStyleSimpleExtension().size()));
-        for (Object iter: labelStyleSimpleExtension) {
-            copy.labelStyleSimpleExtension.add(iter);
-        }
-        copy.labelStyleObjectExtension = new ArrayList<AbstractObject>((getLabelStyleObjectExtension().size()));
+        copy.labelStyleSimpleExtension = new ArrayList<>((getLabelStyleSimpleExtension().size()));
+        copy.labelStyleSimpleExtension.addAll(labelStyleSimpleExtension);
+        copy.labelStyleObjectExtension = new ArrayList<>((getLabelStyleObjectExtension().size()));
         for (AbstractObject iter: labelStyleObjectExtension) {
             copy.labelStyleObjectExtension.add(iter.clone());
         }

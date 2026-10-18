@@ -1,18 +1,15 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
-import java.util.ArrayList;
-import java.util.List;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAnyElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.*;
 import org.w3c.dom.Element;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
- * <metadata> (deprecated in kml 2.2; use <extendeddata> instead)
+ * {@code <metadata>} (deprecated in kml 2.2; use {@code <extendeddata>} instead)
  * 
  * 
  */
@@ -33,7 +30,7 @@ public class Metadata implements Cloneable
     }
 
     /**
-     * @see any
+     *
      * 
      */
     public List<Object> getAny() {
@@ -44,41 +41,28 @@ public class Metadata implements Cloneable
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = ((prime*result)+((any == null)? 0 :any.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+
+        Metadata metadata = (Metadata) object;
+        return Objects.equals(any, metadata.any);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if ((obj instanceof Metadata) == false) {
-            return false;
-        }
-        Metadata other = ((Metadata) obj);
-        if (any == null) {
-            if (other.any!= null) {
-                return false;
-            }
-        } else {
-            if (any.equals(other.any) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        return Objects.hashCode(any);
     }
 
     /**
-     * @see any
+     *
      * 
      * @param any
+     *     Objects of the following type are allowed in the list: {@link Object}{@link Element}
      */
     public void setAny(final List<Object> any) {
         this.any = any;
@@ -90,7 +74,7 @@ public class Metadata implements Cloneable
      * @param any
      *     Objects of the following type are allowed in the list: {@link Object}{@link Element}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Metadata addToAny(final Object any) {
         this.getAny().add(any);
@@ -99,7 +83,7 @@ public class Metadata implements Cloneable
 
     /**
      * fluent setter
-     * @see #setAny(List<Object>)
+     *
      * 
      * @param any
      *     required parameter

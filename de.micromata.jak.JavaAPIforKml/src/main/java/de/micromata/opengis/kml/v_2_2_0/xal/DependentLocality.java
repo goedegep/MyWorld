@@ -1,24 +1,16 @@
 
 package de.micromata.opengis.kml.v_2_2_0.xal;
 
+import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAnyAttribute;
-import jakarta.xml.bind.annotation.XmlAnyElement;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.XmlValue;
-import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.namespace.QName;
-
+import java.util.Objects;
 
 /**
  * 
@@ -284,24 +276,10 @@ public class DependentLocality implements Cloneable
         this.premise = value;
     }
 
-    /**
-     * 
-     * @return
-     *     possible object is
-     *     {@link DependentLocality}
-     *     
-     */
     public DependentLocality getDependentLocality() {
         return dependentLocality;
     }
 
-    /**
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link DependentLocality}
-     *     
-     */
     public void setDependentLocality(DependentLocality value) {
         this.dependentLocality = value;
     }
@@ -436,193 +414,62 @@ public class DependentLocality implements Cloneable
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = ((prime*result)+((addressLine == null)? 0 :addressLine.hashCode()));
-        result = ((prime*result)+((dependentLocalityName == null)? 0 :dependentLocalityName.hashCode()));
-        result = ((prime*result)+((dependentLocalityNumber == null)? 0 :dependentLocalityNumber.hashCode()));
-        result = ((prime*result)+((postBox == null)? 0 :postBox.hashCode()));
-        result = ((prime*result)+((largeMailUser == null)? 0 :largeMailUser.hashCode()));
-        result = ((prime*result)+((postOffice == null)? 0 :postOffice.hashCode()));
-        result = ((prime*result)+((postalRoute == null)? 0 :postalRoute.hashCode()));
-        result = ((prime*result)+((thoroughfare == null)? 0 :thoroughfare.hashCode()));
-        result = ((prime*result)+((premise == null)? 0 :premise.hashCode()));
-        result = ((prime*result)+((dependentLocality == null)? 0 :dependentLocality.hashCode()));
-        result = ((prime*result)+((postalCode == null)? 0 :postalCode.hashCode()));
-        result = ((prime*result)+((any == null)? 0 :any.hashCode()));
-        result = ((prime*result)+((underscore == null)? 0 :underscore.hashCode()));
-        result = ((prime*result)+((usage == null)? 0 :usage.hashCode()));
-        result = ((prime*result)+((connector == null)? 0 :connector.hashCode()));
-        result = ((prime*result)+((indicator == null)? 0 :indicator.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+
+        DependentLocality that = (DependentLocality) object;
+        return Objects.equals(addressLine, that.addressLine)
+                && Objects.equals(dependentLocalityName, that.dependentLocalityName)
+                && Objects.equals(dependentLocalityNumber, that.dependentLocalityNumber)
+                && Objects.equals(postBox, that.postBox)
+                && Objects.equals(largeMailUser, that.largeMailUser)
+                && Objects.equals(postOffice, that.postOffice)
+                && Objects.equals(postalRoute, that.postalRoute)
+                && Objects.equals(thoroughfare, that.thoroughfare)
+                && Objects.equals(premise, that.premise)
+                && Objects.equals(dependentLocality, that.dependentLocality)
+                && Objects.equals(postalCode, that.postalCode)
+                && Objects.equals(any, that.any)
+                && Objects.equals(underscore, that.underscore)
+                && Objects.equals(usage, that.usage)
+                && Objects.equals(connector, that.connector)
+                && Objects.equals(indicator, that.indicator)
+                && Objects.equals(otherAttributes, that.otherAttributes);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if ((obj instanceof DependentLocality) == false) {
-            return false;
-        }
-        DependentLocality other = ((DependentLocality) obj);
-        if (addressLine == null) {
-            if (other.addressLine!= null) {
-                return false;
-            }
-        } else {
-            if (addressLine.equals(other.addressLine) == false) {
-                return false;
-            }
-        }
-        if (dependentLocalityName == null) {
-            if (other.dependentLocalityName!= null) {
-                return false;
-            }
-        } else {
-            if (dependentLocalityName.equals(other.dependentLocalityName) == false) {
-                return false;
-            }
-        }
-        if (dependentLocalityNumber == null) {
-            if (other.dependentLocalityNumber!= null) {
-                return false;
-            }
-        } else {
-            if (dependentLocalityNumber.equals(other.dependentLocalityNumber) == false) {
-                return false;
-            }
-        }
-        if (postBox == null) {
-            if (other.postBox!= null) {
-                return false;
-            }
-        } else {
-            if (postBox.equals(other.postBox) == false) {
-                return false;
-            }
-        }
-        if (largeMailUser == null) {
-            if (other.largeMailUser!= null) {
-                return false;
-            }
-        } else {
-            if (largeMailUser.equals(other.largeMailUser) == false) {
-                return false;
-            }
-        }
-        if (postOffice == null) {
-            if (other.postOffice!= null) {
-                return false;
-            }
-        } else {
-            if (postOffice.equals(other.postOffice) == false) {
-                return false;
-            }
-        }
-        if (postalRoute == null) {
-            if (other.postalRoute!= null) {
-                return false;
-            }
-        } else {
-            if (postalRoute.equals(other.postalRoute) == false) {
-                return false;
-            }
-        }
-        if (thoroughfare == null) {
-            if (other.thoroughfare!= null) {
-                return false;
-            }
-        } else {
-            if (thoroughfare.equals(other.thoroughfare) == false) {
-                return false;
-            }
-        }
-        if (premise == null) {
-            if (other.premise!= null) {
-                return false;
-            }
-        } else {
-            if (premise.equals(other.premise) == false) {
-                return false;
-            }
-        }
-        if (dependentLocality == null) {
-            if (other.dependentLocality!= null) {
-                return false;
-            }
-        } else {
-            if (dependentLocality.equals(other.dependentLocality) == false) {
-                return false;
-            }
-        }
-        if (postalCode == null) {
-            if (other.postalCode!= null) {
-                return false;
-            }
-        } else {
-            if (postalCode.equals(other.postalCode) == false) {
-                return false;
-            }
-        }
-        if (any == null) {
-            if (other.any!= null) {
-                return false;
-            }
-        } else {
-            if (any.equals(other.any) == false) {
-                return false;
-            }
-        }
-        if (underscore == null) {
-            if (other.underscore!= null) {
-                return false;
-            }
-        } else {
-            if (underscore.equals(other.underscore) == false) {
-                return false;
-            }
-        }
-        if (usage == null) {
-            if (other.usage!= null) {
-                return false;
-            }
-        } else {
-            if (usage.equals(other.usage) == false) {
-                return false;
-            }
-        }
-        if (connector == null) {
-            if (other.connector!= null) {
-                return false;
-            }
-        } else {
-            if (connector.equals(other.connector) == false) {
-                return false;
-            }
-        }
-        if (indicator == null) {
-            if (other.indicator!= null) {
-                return false;
-            }
-        } else {
-            if (indicator.equals(other.indicator) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = Objects.hashCode(addressLine);
+        result = 31 * result + Objects.hashCode(dependentLocalityName);
+        result = 31 * result + Objects.hashCode(dependentLocalityNumber);
+        result = 31 * result + Objects.hashCode(postBox);
+        result = 31 * result + Objects.hashCode(largeMailUser);
+        result = 31 * result + Objects.hashCode(postOffice);
+        result = 31 * result + Objects.hashCode(postalRoute);
+        result = 31 * result + Objects.hashCode(thoroughfare);
+        result = 31 * result + Objects.hashCode(premise);
+        result = 31 * result + Objects.hashCode(dependentLocality);
+        result = 31 * result + Objects.hashCode(postalCode);
+        result = 31 * result + Objects.hashCode(any);
+        result = 31 * result + Objects.hashCode(underscore);
+        result = 31 * result + Objects.hashCode(usage);
+        result = 31 * result + Objects.hashCode(connector);
+        result = 31 * result + Objects.hashCode(indicator);
+        result = 31 * result + Objects.hashCode(otherAttributes);
+        return result;
     }
 
     /**
      * Creates a new instance of {@link AddressLine} and adds it to addressLine.
      * This method is a short version for:
-     * <code>
+     * {@code
      * AddressLine addressLine = new AddressLine();
-     * this.getAddressLine().add(addressLine); </code>
+     * this.getAddressLine().add(addressLine); }
      * 
      * 
      */
@@ -635,9 +482,9 @@ public class DependentLocality implements Cloneable
     /**
      * Creates a new instance of {@link DependentLocality.DependentLocalityName} and adds it to dependentLocalityName.
      * This method is a short version for:
-     * <code>
+     * {@code
      * DependentLocalityName dependentLocalityName = new DependentLocalityName();
-     * this.getDependentLocalityName().add(dependentLocalityName); </code>
+     * this.getDependentLocalityName().add(dependentLocalityName); }
      * 
      * 
      */
@@ -651,9 +498,9 @@ public class DependentLocality implements Cloneable
      * Creates a new instance of {@link DependentLocality.DependentLocalityNumber} and set it to dependentLocalityNumber.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * DependentLocalityNumber dependentLocalityNumber = new DependentLocalityNumber();
-     * this.setDependentLocalityNumber(dependentLocalityNumber); </code>
+     * this.setDependentLocalityNumber(dependentLocalityNumber); }
      * 
      * 
      */
@@ -667,9 +514,9 @@ public class DependentLocality implements Cloneable
      * Creates a new instance of {@link PostBox} and set it to postBox.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostBox postBox = new PostBox();
-     * this.setPostBox(postBox); </code>
+     * this.setPostBox(postBox); }
      * 
      * 
      * @param postBoxNumber
@@ -685,9 +532,9 @@ public class DependentLocality implements Cloneable
      * Creates a new instance of {@link LargeMailUser} and set it to largeMailUser.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * LargeMailUser largeMailUser = new LargeMailUser();
-     * this.setLargeMailUser(largeMailUser); </code>
+     * this.setLargeMailUser(largeMailUser); }
      * 
      * 
      */
@@ -701,9 +548,9 @@ public class DependentLocality implements Cloneable
      * Creates a new instance of {@link PostOffice} and set it to postOffice.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostOffice postOffice = new PostOffice();
-     * this.setPostOffice(postOffice); </code>
+     * this.setPostOffice(postOffice); }
      * 
      * 
      */
@@ -717,9 +564,9 @@ public class DependentLocality implements Cloneable
      * Creates a new instance of {@link PostalRoute} and set it to postalRoute.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostalRoute postalRoute = new PostalRoute();
-     * this.setPostalRoute(postalRoute); </code>
+     * this.setPostalRoute(postalRoute); }
      * 
      * 
      * @param postalRouteName
@@ -737,9 +584,9 @@ public class DependentLocality implements Cloneable
      * Creates a new instance of {@link Thoroughfare} and set it to thoroughfare.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * Thoroughfare thoroughfare = new Thoroughfare();
-     * this.setThoroughfare(thoroughfare); </code>
+     * this.setThoroughfare(thoroughfare); }
      * 
      * 
      * @param postalCode
@@ -761,9 +608,9 @@ public class DependentLocality implements Cloneable
      * Creates a new instance of {@link Premise} and set it to premise.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * Premise premise = new Premise();
-     * this.setPremise(premise); </code>
+     * this.setPremise(premise); }
      * 
      * 
      * @param premiseNumber
@@ -780,12 +627,12 @@ public class DependentLocality implements Cloneable
     }
 
     /**
-     * Creates a new instance of {@link DependentLocality} and set it to dependentLocality.
+     * Creates a new instance of DependentLocality and set it to dependentLocality.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * DependentLocality dependentLocality = new DependentLocality();
-     * this.setDependentLocality(dependentLocality); </code>
+     * this.setDependentLocality(dependentLocality); }
      * 
      * 
      * @param postBox
@@ -807,9 +654,9 @@ public class DependentLocality implements Cloneable
      * Creates a new instance of {@link PostalCode} and set it to postalCode.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostalCode postalCode = new PostalCode();
-     * this.setPostalCode(postalCode); </code>
+     * this.setPostalCode(postalCode); }
      * 
      * 
      */
@@ -820,12 +667,13 @@ public class DependentLocality implements Cloneable
     }
 
     /**
-     * Sets the value of the addressLine property Objects of the following type(s) are allowed in the list List<AddressLine>.
+     * Sets the value of the addressLine property Objects of the following type(s) are allowed in the list {@code List<AddressLine>}.
      * <p>Note:
-     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAddressLine} instead.
+     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use withAddressLine instead.
      * 
      * 
      * @param addressLine
+     *     Objects of the following type are allowed in the list: {@link AddressLine}
      */
     public void setAddressLine(final List<AddressLine> addressLine) {
         this.addressLine = addressLine;
@@ -837,7 +685,7 @@ public class DependentLocality implements Cloneable
      * @param addressLine
      *     Objects of the following type are allowed in the list: {@link AddressLine}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public DependentLocality addToAddressLine(final AddressLine addressLine) {
         this.getAddressLine().add(addressLine);
@@ -845,12 +693,13 @@ public class DependentLocality implements Cloneable
     }
 
     /**
-     * Sets the value of the dependentLocalityName property Objects of the following type(s) are allowed in the list List<DependentLocalityName>.
+     * Sets the value of the dependentLocalityName property Objects of the following type(s) are allowed in the list {@code List<DependentLocalityName>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withDependentLocalityName} instead.
      * 
      * 
      * @param dependentLocalityName
+     *     Objects of the following type are allowed in the list: {@link DependentLocality.DependentLocalityName}
      */
     public void setDependentLocalityName(final List<DependentLocality.DependentLocalityName> dependentLocalityName) {
         this.dependentLocalityName = dependentLocalityName;
@@ -862,7 +711,7 @@ public class DependentLocality implements Cloneable
      * @param dependentLocalityName
      *     Objects of the following type are allowed in the list: {@link DependentLocality.DependentLocalityName}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public DependentLocality addToDependentLocalityName(final DependentLocality.DependentLocalityName dependentLocalityName) {
         this.getDependentLocalityName().add(dependentLocalityName);
@@ -870,12 +719,13 @@ public class DependentLocality implements Cloneable
     }
 
     /**
-     * Sets the value of the any property Objects of the following type(s) are allowed in the list List<Object>.
+     * Sets the value of the any property Objects of the following type(s) are allowed in the list {@code List<Object>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAny} instead.
      * 
      * 
      * @param any
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setAny(final List<Object> any) {
         this.any = any;
@@ -887,7 +737,7 @@ public class DependentLocality implements Cloneable
      * @param any
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public DependentLocality addToAny(final Object any) {
         this.getAny().add(any);
@@ -896,7 +746,7 @@ public class DependentLocality implements Cloneable
 
     /**
      * fluent setter
-     * @see #setAddressLine(List<AddressLine>)
+     *
      * 
      * @param addressLine
      *     required parameter
@@ -908,7 +758,7 @@ public class DependentLocality implements Cloneable
 
     /**
      * fluent setter
-     * @see #setDependentLocalityName(List<DependentLocalityName>)
+     *
      * 
      * @param dependentLocalityName
      *     required parameter
@@ -920,7 +770,7 @@ public class DependentLocality implements Cloneable
 
     /**
      * fluent setter
-     * @see #setDependentLocalityNumber(DependentLocalityNumber)
+     *
      * 
      * @param dependentLocalityNumber
      *     required parameter
@@ -932,7 +782,7 @@ public class DependentLocality implements Cloneable
 
     /**
      * fluent setter
-     * @see #setThoroughfare(Thoroughfare)
+     *
      * 
      * @param thoroughfare
      *     required parameter
@@ -944,7 +794,7 @@ public class DependentLocality implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPremise(Premise)
+     *
      * 
      * @param premise
      *     required parameter
@@ -956,7 +806,7 @@ public class DependentLocality implements Cloneable
 
     /**
      * fluent setter
-     * @see #setDependentLocality(DependentLocality)
+     *
      * 
      * @param dependentLocality
      *     required parameter
@@ -968,7 +818,7 @@ public class DependentLocality implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPostalCode(PostalCode)
+     *
      * 
      * @param postalCode
      *     required parameter
@@ -980,7 +830,7 @@ public class DependentLocality implements Cloneable
 
     /**
      * fluent setter
-     * @see #setAny(List<Object>)
+     *
      * 
      * @param any
      *     required parameter
@@ -992,7 +842,7 @@ public class DependentLocality implements Cloneable
 
     /**
      * fluent setter
-     * @see #setUnderscore(String)
+     *
      * 
      * @param underscore
      *     required parameter
@@ -1004,7 +854,7 @@ public class DependentLocality implements Cloneable
 
     /**
      * fluent setter
-     * @see #setUsage(String)
+     *
      * 
      * @param usage
      *     required parameter
@@ -1016,7 +866,7 @@ public class DependentLocality implements Cloneable
 
     /**
      * fluent setter
-     * @see #setConnector(String)
+     *
      * 
      * @param connector
      *     required parameter
@@ -1028,7 +878,7 @@ public class DependentLocality implements Cloneable
 
     /**
      * fluent setter
-     * @see #setIndicator(String)
+     *
      * 
      * @param indicator
      *     required parameter
@@ -1226,7 +1076,7 @@ public class DependentLocality implements Cloneable
 
         /**
          * fluent setter
-         * @see #setContent(String)
+         *
          * 
          * @param content
          *     required parameter
@@ -1238,7 +1088,7 @@ public class DependentLocality implements Cloneable
 
         /**
          * fluent setter
-         * @see #setUnderscore(String)
+         *
          * 
          * @param underscore
          *     required parameter
@@ -1250,7 +1100,7 @@ public class DependentLocality implements Cloneable
 
         /**
          * fluent setter
-         * @see #setCode(String)
+         *
          * 
          * @param code
          *     required parameter
@@ -1429,7 +1279,7 @@ public class DependentLocality implements Cloneable
 
         /**
          * fluent setter
-         * @see #setContent(String)
+         *
          * 
          * @param content
          *     required parameter
@@ -1441,7 +1291,7 @@ public class DependentLocality implements Cloneable
 
         /**
          * fluent setter
-         * @see #setNameNumberOccurrence(String)
+         *
          * 
          * @param nameNumberOccurrence
          *     required parameter
@@ -1453,7 +1303,7 @@ public class DependentLocality implements Cloneable
 
         /**
          * fluent setter
-         * @see #setCode(String)
+         *
          * 
          * @param code
          *     required parameter

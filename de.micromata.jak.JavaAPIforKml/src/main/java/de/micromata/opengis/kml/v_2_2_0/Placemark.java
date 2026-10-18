@@ -1,26 +1,20 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementRef;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
 import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
 import de.micromata.opengis.kml.v_2_2_0.atom.Author;
 import de.micromata.opengis.kml.v_2_2_0.atom.Link;
 import de.micromata.opengis.kml.v_2_2_0.gx.MultiTrack;
 import de.micromata.opengis.kml.v_2_2_0.gx.Track;
 import de.micromata.opengis.kml.v_2_2_0.xal.AddressDetails;
+import jakarta.xml.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
- * <Placemark>
+ * {@code <Placemark>}
  * <p>
  * A Placemark is a Feature with associated Geometry. In Google Earth, a Placemark 
  * appears as a list item in the Places panel. A Placemark with a Point has an icon 
@@ -54,14 +48,14 @@ import de.micromata.opengis.kml.v_2_2_0.xal.AddressDetails;
  * <strong>&lt;/Placemark&gt;</strong></pre>
  * 
  * Extends: 
- * @see: <Feature>
+ *
  * 
  * Contained By: 
- * @see: <Document>
- * @see: <Folder>
+ *
+ *
  * 
  * See Also: 
- * <Icon>
+ * {@code <Icon>}
  * 
  * 
  * 
@@ -79,7 +73,7 @@ public class Placemark
 {
 
     /**
-     * <Geometry>
+     * {@code <Geometry>}
      * <p>
      * This is an abstract element and cannot be used directly in a KML file. It provides 
      * a placeholder object for all derived Geometry objects. 
@@ -92,15 +86,15 @@ public class Placemark
      * <strong>&lt;!-- /<em>Geometry --</em>&gt;</strong></pre>
      * 
      * Extends: 
-     * @see: <Object>
+     *
      * 
      * Extended By: 
-     * @see: <LineString>
-     * @see: <LinearRing>
-     * @see: <Model>
-     * @see: <Point>
-     * @see: MultiGeometry
-     * @see: Polygon
+     *
+     *
+     *
+     *
+     *
+     *
      * 
      * 
      * 
@@ -111,12 +105,12 @@ public class Placemark
     @XmlSchemaType(name = "anySimpleType")
     protected List<Object> placemarkSimpleExtension;
     /**
-     * <Object>
+     * {@code <Object>}
      * <p>
      * This is an abstract base class and cannot be used directly in a KML file. It provides 
      * the id attribute, which allows unique identification of a KML element, and the targetId 
      * attribute, which is used to reference objects that have already been loaded into 
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
      * be used. 
      * </p>
      * 
@@ -136,19 +130,19 @@ public class Placemark
     }
 
     /**
-     * @see geometry
+     *
      * 
      * @return
      *     possible object is
-     *     {@code <}{@link Geometry}{@code>}
-     *     {@code <}{@link Point}{@code>}
-     *     {@code <}{@link LinearRing}{@code>}
-     *     {@code <}{@link Polygon}{@code>}
-     *     {@code <}{@link Track}{@code>}
-     *     {@code <}{@link MultiTrack}{@code>}
-     *     {@code <}{@link Model}{@code>}
-     *     {@code <}{@link LineString}{@code>}
-     *     {@code <}{@link MultiGeometry}{@code>}
+     *     {@code <}{@link Geometry}{@code >}
+     *     {@code <}{@link Point}{@code >}
+     *     {@code <}{@link LinearRing}{@code >}
+     *     {@code <}{@link Polygon}{@code >}
+     *     {@code <}{@link Track}{@code >}
+     *     {@code <}{@link MultiTrack}{@code >}
+     *     {@code <}{@link Model}{@code >}
+     *     {@code <}{@link LineString}{@code >}
+     *     {@code <}{@link MultiGeometry}{@code >}
      *     
      */
     public Geometry getGeometry() {
@@ -156,19 +150,19 @@ public class Placemark
     }
 
     /**
-     * @see geometry
+     *
      * 
      * @param value
      *     allowed object is
-     *     {@code <}{@link Geometry}{@code>}
-     *     {@code <}{@link Point}{@code>}
-     *     {@code <}{@link LinearRing}{@code>}
-     *     {@code <}{@link Polygon}{@code>}
-     *     {@code <}{@link Track}{@code>}
-     *     {@code <}{@link MultiTrack}{@code>}
-     *     {@code <}{@link Model}{@code>}
-     *     {@code <}{@link LineString}{@code>}
-     *     {@code <}{@link MultiGeometry}{@code>}
+     *     {@code <}{@link Geometry}{@code >}
+     *     {@code <}{@link Point}{@code >}
+     *     {@code <}{@link LinearRing}{@code >}
+     *     {@code <}{@link Polygon}{@code >}
+     *     {@code <}{@link Track}{@code >}
+     *     {@code <}{@link MultiTrack}{@code >}
+     *     {@code <}{@link Model}{@code >}
+     *     {@code <}{@link LineString}{@code >}
+     *     {@code <}{@link MultiGeometry}{@code >}
      *     
      */
     public void setGeometry(Geometry value) {
@@ -176,7 +170,7 @@ public class Placemark
     }
 
     /**
-     * @see placemarkSimpleExtension
+     *
      * 
      */
     public List<Object> getPlacemarkSimpleExtension() {
@@ -187,7 +181,7 @@ public class Placemark
     }
 
     /**
-     * @see placemarkObjectExtension
+     *
      * 
      */
     public List<AbstractObject> getPlacemarkObjectExtension() {
@@ -198,67 +192,38 @@ public class Placemark
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = ((prime*result)+((geometry == null)? 0 :geometry.hashCode()));
-        result = ((prime*result)+((placemarkSimpleExtension == null)? 0 :placemarkSimpleExtension.hashCode()));
-        result = ((prime*result)+((placemarkObjectExtension == null)? 0 :placemarkObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        Placemark placemark = (Placemark) object;
+        return Objects.equals(geometry, placemark.geometry)
+                && Objects.equals(placemarkSimpleExtension, placemark.placemarkSimpleExtension)
+                && Objects.equals(placemarkObjectExtension, placemark.placemarkObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof Placemark) == false) {
-            return false;
-        }
-        Placemark other = ((Placemark) obj);
-        if (geometry == null) {
-            if (other.geometry!= null) {
-                return false;
-            }
-        } else {
-            if (geometry.equals(other.geometry) == false) {
-                return false;
-            }
-        }
-        if (placemarkSimpleExtension == null) {
-            if (other.placemarkSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (placemarkSimpleExtension.equals(other.placemarkSimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (placemarkObjectExtension == null) {
-            if (other.placemarkObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (placemarkObjectExtension.equals(other.placemarkObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(geometry);
+        result = 31 * result + Objects.hashCode(placemarkSimpleExtension);
+        result = 31 * result + Objects.hashCode(placemarkObjectExtension);
+        return result;
     }
 
     /**
      * Creates a new instance of {@link MultiTrack} and set it to geometry.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * MultiTrack multiTrack = new MultiTrack();
-     * this.setGeometry(multiTrack); </code>
+     * this.setGeometry(multiTrack); }
      * 
      * 
      */
@@ -272,9 +237,9 @@ public class Placemark
      * Creates a new instance of {@link Track} and set it to geometry.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * Track track = new Track();
-     * this.setGeometry(track); </code>
+     * this.setGeometry(track); }
      * 
      * 
      */
@@ -288,9 +253,9 @@ public class Placemark
      * Creates a new instance of {@link LinearRing} and set it to geometry.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * LinearRing linearRing = new LinearRing();
-     * this.setGeometry(linearRing); </code>
+     * this.setGeometry(linearRing); }
      * 
      * 
      */
@@ -304,9 +269,9 @@ public class Placemark
      * Creates a new instance of {@link Point} and set it to geometry.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * Point point = new Point();
-     * this.setGeometry(point); </code>
+     * this.setGeometry(point); }
      * 
      * 
      */
@@ -320,9 +285,9 @@ public class Placemark
      * Creates a new instance of {@link Model} and set it to geometry.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * Model model = new Model();
-     * this.setGeometry(model); </code>
+     * this.setGeometry(model); }
      * 
      * 
      */
@@ -336,9 +301,9 @@ public class Placemark
      * Creates a new instance of {@link MultiGeometry} and set it to geometry.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * MultiGeometry multiGeometry = new MultiGeometry();
-     * this.setGeometry(multiGeometry); </code>
+     * this.setGeometry(multiGeometry); }
      * 
      * 
      */
@@ -352,9 +317,9 @@ public class Placemark
      * Creates a new instance of {@link LineString} and set it to geometry.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * LineString lineString = new LineString();
-     * this.setGeometry(lineString); </code>
+     * this.setGeometry(lineString); }
      * 
      * 
      */
@@ -368,9 +333,9 @@ public class Placemark
      * Creates a new instance of {@link Polygon} and set it to geometry.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * Polygon polygon = new Polygon();
-     * this.setGeometry(polygon); </code>
+     * this.setGeometry(polygon); }
      * 
      * 
      */
@@ -381,9 +346,10 @@ public class Placemark
     }
 
     /**
-     * @see placemarkSimpleExtension
+     *
      * 
      * @param placemarkSimpleExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setPlacemarkSimpleExtension(final List<Object> placemarkSimpleExtension) {
         this.placemarkSimpleExtension = placemarkSimpleExtension;
@@ -395,7 +361,7 @@ public class Placemark
      * @param placemarkSimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Placemark addToPlacemarkSimpleExtension(final Object placemarkSimpleExtension) {
         this.getPlacemarkSimpleExtension().add(placemarkSimpleExtension);
@@ -403,9 +369,10 @@ public class Placemark
     }
 
     /**
-     * @see placemarkObjectExtension
+     *
      * 
      * @param placemarkObjectExtension
+     *     Objects of the following type are allowed in the list: {@link AbstractObject}
      */
     public void setPlacemarkObjectExtension(final List<AbstractObject> placemarkObjectExtension) {
         this.placemarkObjectExtension = placemarkObjectExtension;
@@ -417,7 +384,7 @@ public class Placemark
      * @param placemarkObjectExtension
      *     Objects of the following type are allowed in the list: {@link AbstractObject}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Placemark addToPlacemarkObjectExtension(final AbstractObject placemarkObjectExtension) {
         this.getPlacemarkObjectExtension().add(placemarkObjectExtension);
@@ -425,7 +392,7 @@ public class Placemark
     }
 
     /**
-     * @see objectSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -442,7 +409,7 @@ public class Placemark
     }
 
     /**
-     * @see styleSelector
+     *
      * 
      */
     @Obvious
@@ -459,7 +426,7 @@ public class Placemark
     }
 
     /**
-     * @see featureSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -476,7 +443,7 @@ public class Placemark
     }
 
     /**
-     * @see featureObjectExtension
+     *
      * 
      */
     @Obvious
@@ -494,7 +461,7 @@ public class Placemark
 
     /**
      * fluent setter
-     * @see #setGeometry(Geometry)
+     *
      * 
      * @param geometry
      *     required parameter
@@ -506,7 +473,7 @@ public class Placemark
 
     /**
      * fluent setter
-     * @see #setPlacemarkSimpleExtension(List<Object>)
+     *
      * 
      * @param placemarkSimpleExtension
      *     required parameter
@@ -518,7 +485,7 @@ public class Placemark
 
     /**
      * fluent setter
-     * @see #setPlacemarkObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param placemarkObjectExtension
      *     required parameter

@@ -1,20 +1,16 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
+import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
+import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
-
+import java.util.Objects;
 
 /**
- * <PolyStyle>
+ * {@code <PolyStyle>}
  * Syntax: 
  * <pre><strong>&lt;PolyStyle id="ID"&gt;</strong>
  *   &lt;!-- inherited from <em>ColorStyle</em> --&gt;
@@ -27,10 +23,10 @@ import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
  * <strong>&lt;/PolyStyle&gt;</strong></pre>
  * 
  * Extends: 
- * @see: <ColorStyle>
+ *
  * 
  * Contained By: 
- * @see: <Style>
+ *
  * 
  * 
  * 
@@ -49,7 +45,7 @@ public class PolyStyle
 {
 
     /**
-     * <fill>
+     * {@code <fill>}
      * <p>
      * Boolean value. Specifies whether to fill the polygon. 
      * </p>
@@ -61,7 +57,7 @@ public class PolyStyle
     @XmlJavaTypeAdapter(BooleanConverter.class)
     protected Boolean fill;
     /**
-     * <outline>
+     * {@code <outline>}
      * <p>
      * Boolean value. Specifies whether to outline the polygon. Polygon outlines use the 
      * current LineStyle. 
@@ -77,12 +73,12 @@ public class PolyStyle
     @XmlSchemaType(name = "anySimpleType")
     protected List<Object> polyStyleSimpleExtension;
     /**
-     * <Object>
+     * {@code <Object>}
      * <p>
      * This is an abstract base class and cannot be used directly in a KML file. It provides 
      * the id attribute, which allows unique identification of a KML element, and the targetId 
      * attribute, which is used to reference objects that have already been loaded into 
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
      * be used. 
      * </p>
      * 
@@ -113,7 +109,7 @@ public class PolyStyle
     }
 
     /**
-     * @see fill
+     *
      * 
      * @param value
      *     allowed object is
@@ -136,7 +132,7 @@ public class PolyStyle
     }
 
     /**
-     * @see outline
+     *
      * 
      * @param value
      *     allowed object is
@@ -148,7 +144,7 @@ public class PolyStyle
     }
 
     /**
-     * @see polyStyleSimpleExtension
+     *
      * 
      */
     public List<Object> getPolyStyleSimpleExtension() {
@@ -159,7 +155,7 @@ public class PolyStyle
     }
 
     /**
-     * @see polyStyleObjectExtension
+     *
      * 
      */
     public List<AbstractObject> getPolyStyleObjectExtension() {
@@ -170,74 +166,38 @@ public class PolyStyle
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = ((prime*result)+((fill == null)? 0 :fill.hashCode()));
-        result = ((prime*result)+((outline == null)? 0 :outline.hashCode()));
-        result = ((prime*result)+((polyStyleSimpleExtension == null)? 0 :polyStyleSimpleExtension.hashCode()));
-        result = ((prime*result)+((polyStyleObjectExtension == null)? 0 :polyStyleObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        PolyStyle polyStyle = (PolyStyle) object;
+        return Objects.equals(fill, polyStyle.fill)
+                && Objects.equals(outline, polyStyle.outline)
+                && Objects.equals(polyStyleSimpleExtension, polyStyle.polyStyleSimpleExtension)
+                && Objects.equals(polyStyleObjectExtension, polyStyle.polyStyleObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof PolyStyle) == false) {
-            return false;
-        }
-        PolyStyle other = ((PolyStyle) obj);
-        if (fill == null) {
-            if (other.fill!= null) {
-                return false;
-            }
-        } else {
-            if (fill.equals(other.fill) == false) {
-                return false;
-            }
-        }
-        if (outline == null) {
-            if (other.outline!= null) {
-                return false;
-            }
-        } else {
-            if (outline.equals(other.outline) == false) {
-                return false;
-            }
-        }
-        if (polyStyleSimpleExtension == null) {
-            if (other.polyStyleSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (polyStyleSimpleExtension.equals(other.polyStyleSimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (polyStyleObjectExtension == null) {
-            if (other.polyStyleObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (polyStyleObjectExtension.equals(other.polyStyleObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(fill);
+        result = 31 * result + Objects.hashCode(outline);
+        result = 31 * result + Objects.hashCode(polyStyleSimpleExtension);
+        result = 31 * result + Objects.hashCode(polyStyleObjectExtension);
+        return result;
     }
 
     /**
-     * @see polyStyleSimpleExtension
+     *
      * 
      * @param polyStyleSimpleExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setPolyStyleSimpleExtension(final List<Object> polyStyleSimpleExtension) {
         this.polyStyleSimpleExtension = polyStyleSimpleExtension;
@@ -249,7 +209,7 @@ public class PolyStyle
      * @param polyStyleSimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public PolyStyle addToPolyStyleSimpleExtension(final Object polyStyleSimpleExtension) {
         this.getPolyStyleSimpleExtension().add(polyStyleSimpleExtension);
@@ -257,9 +217,10 @@ public class PolyStyle
     }
 
     /**
-     * @see polyStyleObjectExtension
+     *
      * 
      * @param polyStyleObjectExtension
+     *     Objects of the following type are allowed in the list: {@link AbstractObject}
      */
     public void setPolyStyleObjectExtension(final List<AbstractObject> polyStyleObjectExtension) {
         this.polyStyleObjectExtension = polyStyleObjectExtension;
@@ -271,7 +232,7 @@ public class PolyStyle
      * @param polyStyleObjectExtension
      *     Objects of the following type are allowed in the list: {@link AbstractObject}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public PolyStyle addToPolyStyleObjectExtension(final AbstractObject polyStyleObjectExtension) {
         this.getPolyStyleObjectExtension().add(polyStyleObjectExtension);
@@ -279,7 +240,7 @@ public class PolyStyle
     }
 
     /**
-     * @see objectSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -296,7 +257,7 @@ public class PolyStyle
     }
 
     /**
-     * @see subStyleSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -313,7 +274,7 @@ public class PolyStyle
     }
 
     /**
-     * @see subStyleObjectExtension
+     *
      * 
      */
     @Obvious
@@ -330,7 +291,7 @@ public class PolyStyle
     }
 
     /**
-     * @see colorStyleSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -347,7 +308,7 @@ public class PolyStyle
     }
 
     /**
-     * @see colorStyleObjectExtension
+     *
      * 
      */
     @Obvious
@@ -365,7 +326,7 @@ public class PolyStyle
 
     /**
      * fluent setter
-     * @see #setFill(Boolean)
+     *
      * 
      * @param fill
      *     required parameter
@@ -377,7 +338,7 @@ public class PolyStyle
 
     /**
      * fluent setter
-     * @see #setOutline(Boolean)
+     *
      * 
      * @param outline
      *     required parameter
@@ -389,7 +350,7 @@ public class PolyStyle
 
     /**
      * fluent setter
-     * @see #setPolyStyleSimpleExtension(List<Object>)
+     *
      * 
      * @param polyStyleSimpleExtension
      *     required parameter
@@ -401,7 +362,7 @@ public class PolyStyle
 
     /**
      * fluent setter
-     * @see #setPolyStyleObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param polyStyleObjectExtension
      *     required parameter

@@ -1,21 +1,14 @@
 
 package de.micromata.opengis.kml.v_2_2_0.xal;
 
+import jakarta.xml.bind.annotation.*;
+
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAnyAttribute;
-import jakarta.xml.bind.annotation.XmlAnyElement;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
-
+import java.util.Objects;
 
 /**
  * 
@@ -111,63 +104,36 @@ public class XAL implements Cloneable
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = ((prime*result)+((xalAddressDetails == null)? 0 :xalAddressDetails.hashCode()));
-        result = ((prime*result)+((any == null)? 0 :any.hashCode()));
-        result = ((prime*result)+((version == null)? 0 :version.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+
+        XAL xal = (XAL) object;
+        return Objects.equals(xalAddressDetails, xal.xalAddressDetails)
+                && Objects.equals(any, xal.any)
+                && Objects.equals(version, xal.version)
+                && Objects.equals(otherAttributes, xal.otherAttributes);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if ((obj instanceof XAL) == false) {
-            return false;
-        }
-        XAL other = ((XAL) obj);
-        if (xalAddressDetails == null) {
-            if (other.xalAddressDetails!= null) {
-                return false;
-            }
-        } else {
-            if (xalAddressDetails.equals(other.xalAddressDetails) == false) {
-                return false;
-            }
-        }
-        if (any == null) {
-            if (other.any!= null) {
-                return false;
-            }
-        } else {
-            if (any.equals(other.any) == false) {
-                return false;
-            }
-        }
-        if (version == null) {
-            if (other.version!= null) {
-                return false;
-            }
-        } else {
-            if (version.equals(other.version) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = Objects.hashCode(xalAddressDetails);
+        result = 31 * result + Objects.hashCode(any);
+        result = 31 * result + Objects.hashCode(version);
+        result = 31 * result + Objects.hashCode(otherAttributes);
+        return result;
     }
 
     /**
      * Creates a new instance of {@link AddressDetails} and adds it to xalAddressDetails.
      * This method is a short version for:
-     * <code>
+     * {@code
      * AddressDetails addressDetails = new AddressDetails();
-     * this.getXalAddressDetails().add(addressDetails); </code>
+     * this.getXalAddressDetails().add(addressDetails); }
      * 
      * 
      * @param xalAddress
@@ -190,12 +156,13 @@ public class XAL implements Cloneable
     }
 
     /**
-     * Sets the value of the xalAddressDetails property Objects of the following type(s) are allowed in the list List<AddressDetails>.
+     * Sets the value of the xalAddressDetails property Objects of the following type(s) are allowed in the list {@code List<AddressDetails>}.
      * <p>Note:
-     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withXalAddressDetails} instead.
+     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use withXalAddressDetails instead.
      * 
      * 
      * @param xalAddressDetails
+     *     Objects of the following type are allowed in the list: {@link AddressDetails}
      */
     public void setXalAddressDetails(final List<AddressDetails> xalAddressDetails) {
         this.xalAddressDetails = xalAddressDetails;
@@ -207,7 +174,7 @@ public class XAL implements Cloneable
      * @param xalAddressDetails
      *     Objects of the following type are allowed in the list: {@link AddressDetails}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public XAL addToXalAddressDetails(final AddressDetails xalAddressDetails) {
         this.getXalAddressDetails().add(xalAddressDetails);
@@ -215,12 +182,13 @@ public class XAL implements Cloneable
     }
 
     /**
-     * Sets the value of the any property Objects of the following type(s) are allowed in the list List<Object>.
+     * Sets the value of the any property Objects of the following type(s) are allowed in the list {@code List<Object>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAny} instead.
      * 
      * 
      * @param any
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setAny(final List<Object> any) {
         this.any = any;
@@ -232,7 +200,7 @@ public class XAL implements Cloneable
      * @param any
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public XAL addToAny(final Object any) {
         this.getAny().add(any);
@@ -241,7 +209,7 @@ public class XAL implements Cloneable
 
     /**
      * fluent setter
-     * @see #setAny(List<Object>)
+     *
      * 
      * @param any
      *     required parameter
@@ -253,7 +221,7 @@ public class XAL implements Cloneable
 
     /**
      * fluent setter
-     * @see #setVersion(String)
+     *
      * 
      * @param version
      *     required parameter

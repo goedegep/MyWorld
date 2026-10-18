@@ -51,15 +51,25 @@ import goedegep.util.datetime.TimeZoneRetriever;
 public class KmlFileImporter {
   private static final Logger LOGGER = Logger.getLogger(KmlFileImporter.class.getName());
   
+  /**
+   * A map to convert KML categories (as {@code String}) to Activities {@code Activity}.
+   */
   private static Map<String, Activity> kmlCategoryToActivityMap = new HashMap<>();
-  private static Map<String, LocationCategory> kmlCategoryToPOICategoryIdMap = new HashMap<>();
+  
+  /**
+   * A map to convert KML categories (as {@code String}) to LocationCategory {@code LocationCategory}.
+   */
+  private static Map<String, LocationCategory> kmlCategoryToLocationCategoryMap = new HashMap<>();
+  
   private static String[] knownUnsupportedAddresses = {
       "C. de los Helechos, s/n, 38611, Santa Cruz de Tenerife, Spanje",
       "C. Cupido, 12, 38400 Puerto de la Cruz, Santa Cruz de Tenerife, Spanje"
   };
   
+  /**
+   * The date time formatter used to format the date/time values in a GPX file.
+   */
   private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss");
- 
   
   /**
    * An instance of the {@link NominatimAPI} used to perform a reverse geocode search.
@@ -77,6 +87,9 @@ public class KmlFileImporter {
   private String homeCountry;
   
   
+  /**
+   * Initialize the KML category to Activity map and the KML category to LocationCategory map.
+   */
   static {
     // initialize the kmlCategoryToActivityMap
     kmlCategoryToActivityMap.put("Boating", Activity.BOAT_TRIP);
@@ -93,70 +106,72 @@ public class KmlFileImporter {
     kmlCategoryToActivityMap.put("Running", Activity.RUNNING);
     kmlCategoryToActivityMap.put("Walking", Activity.WALKING);
     
-    // initialize the kmlCategoryToPOICategoryIdMap
-    kmlCategoryToPOICategoryIdMap.put("Autoverhuur", LocationCategory.CAR_RENTAL);
-    kmlCategoryToPOICategoryIdMap.put("Bakkerij", LocationCategory.SHOP);
-    kmlCategoryToPOICategoryIdMap.put("Bar", LocationCategory.BAR);
-    kmlCategoryToPOICategoryIdMap.put("Barbecue", LocationCategory.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Bergkabelbaan", LocationCategory.CABLE_CAR);
-    kmlCategoryToPOICategoryIdMap.put("Bergtop", LocationCategory.MOUNTAIN);
-    kmlCategoryToPOICategoryIdMap.put("Bierwinkel", LocationCategory.SHOP);
-    kmlCategoryToPOICategoryIdMap.put("Cultureel monument", LocationCategory.MONUMENT);
-    kmlCategoryToPOICategoryIdMap.put("Station bergspoorweg", LocationCategory.RAILWAY_STATION);
-    kmlCategoryToPOICategoryIdMap.put("Boerenmarkt", LocationCategory.MARKET);
-    kmlCategoryToPOICategoryIdMap.put("Buffet", LocationCategory.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Buitenzwembad", LocationCategory.SWIMMING_POOL);
-    kmlCategoryToPOICategoryIdMap.put("Bushalte", LocationCategory.BUS_STOP);
-    kmlCategoryToPOICategoryIdMap.put("Cadeauwinkel", LocationCategory.SHOP);
-    kmlCategoryToPOICategoryIdMap.put("Dierentuin", LocationCategory.ZOO);
-    kmlCategoryToPOICategoryIdMap.put("Delicatessenwinkel", LocationCategory.SHOP);
-    kmlCategoryToPOICategoryIdMap.put("Eiland", LocationCategory.ISLAND);
-    kmlCategoryToPOICategoryIdMap.put("Espressobar", LocationCategory.CAFE);
-    kmlCategoryToPOICategoryIdMap.put("Fastfood", LocationCategory.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Gebouw", LocationCategory.BUILDING);
-    kmlCategoryToPOICategoryIdMap.put("Grieks", LocationCategory.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Herberg", LocationCategory.GUESTHOUSE);
-    kmlCategoryToPOICategoryIdMap.put("Historisch herkenningspunt", LocationCategory.DEFAULT_POI);
-    kmlCategoryToPOICategoryIdMap.put("Hotel", LocationCategory.HOTEL);
-    kmlCategoryToPOICategoryIdMap.put("Italiaans", LocationCategory.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Kabelbaanstation", LocationCategory.RAILWAY_STATION);
-    kmlCategoryToPOICategoryIdMap.put("Kantoor van lokale/provinciale overheid", LocationCategory.GOVERMENT);
-    kmlCategoryToPOICategoryIdMap.put("Koffiehuis", LocationCategory.CAFE);
-    kmlCategoryToPOICategoryIdMap.put("Internationaal vliegveld", LocationCategory.AIRPORT);
-    kmlCategoryToPOICategoryIdMap.put("Lodge", LocationCategory.LODGE);
-    kmlCategoryToPOICategoryIdMap.put("Luchthaven", LocationCategory.AIRPORT);
-    kmlCategoryToPOICategoryIdMap.put("Markt", LocationCategory.MARKET);
-    kmlCategoryToPOICategoryIdMap.put("Momo restaurant", LocationCategory.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Nationaal park", LocationCategory.PARK);
-    kmlCategoryToPOICategoryIdMap.put("Nepalees", LocationCategory.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Observatieplatform", LocationCategory.SCENIC_VIEWPOINT);
-    kmlCategoryToPOICategoryIdMap.put("Ov-station", LocationCategory.RAILWAY_STATION);
-    kmlCategoryToPOICategoryIdMap.put("Pannenkoekenrestaurant", LocationCategory.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Panoramisch uitzicht", LocationCategory.SCENIC_VIEWPOINT);
-    kmlCategoryToPOICategoryIdMap.put("Park", LocationCategory.PARK);
-    kmlCategoryToPOICategoryIdMap.put("Parkeergarage", LocationCategory.PARKING);
-    kmlCategoryToPOICategoryIdMap.put("Parkeerplaats", LocationCategory.PARKING);
-    kmlCategoryToPOICategoryIdMap.put("Paspoortkantoor", LocationCategory.BORDER_CROSSING);
-    kmlCategoryToPOICategoryIdMap.put("Pension", LocationCategory.GUESTHOUSE);
-    kmlCategoryToPOICategoryIdMap.put("Plein", LocationCategory.SQUARE);
-    kmlCategoryToPOICategoryIdMap.put("Rivier", LocationCategory.RIVER);
-    kmlCategoryToPOICategoryIdMap.put("Restaurant", LocationCategory.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Restaurant", LocationCategory.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Snackbar", LocationCategory.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Skioord", LocationCategory.SKI_RESORT);
-    kmlCategoryToPOICategoryIdMap.put("Supermarkt", LocationCategory.SHOP);
-    kmlCategoryToPOICategoryIdMap.put("Tankstation", LocationCategory.PETROL_STATION);
-    kmlCategoryToPOICategoryIdMap.put("Thais", LocationCategory.RESTAURANT);
-    kmlCategoryToPOICategoryIdMap.put("Toeristische attractie", LocationCategory.TOURIST_ATTRACTION);
-    kmlCategoryToPOICategoryIdMap.put("Treinstation", LocationCategory.RAILWAY_STATION);
-    kmlCategoryToPOICategoryIdMap.put("Vakantiecomplex", LocationCategory.HOTEL);
-    kmlCategoryToPOICategoryIdMap.put("Veerbootterminal", LocationCategory.FERRY);
-    kmlCategoryToPOICategoryIdMap.put("Winkelcentrum", LocationCategory.SHOPPING_CENTER);
-    kmlCategoryToPOICategoryIdMap.put("Woods", LocationCategory.FOREST);
+    // initialize the kmlCategoryToLocationCategoryMap
+    kmlCategoryToLocationCategoryMap.put("Autoverhuur", LocationCategory.CAR_RENTAL);
+    kmlCategoryToLocationCategoryMap.put("Bakkerij", LocationCategory.SHOP);
+    kmlCategoryToLocationCategoryMap.put("Bar", LocationCategory.BAR);
+    kmlCategoryToLocationCategoryMap.put("Barbecue", LocationCategory.RESTAURANT);
+    kmlCategoryToLocationCategoryMap.put("Bergkabelbaan", LocationCategory.CABLE_CAR);
+    kmlCategoryToLocationCategoryMap.put("Bergtop", LocationCategory.MOUNTAIN);
+    kmlCategoryToLocationCategoryMap.put("Bierwinkel", LocationCategory.SHOP);
+    kmlCategoryToLocationCategoryMap.put("Cultureel monument", LocationCategory.MONUMENT);
+    kmlCategoryToLocationCategoryMap.put("Station bergspoorweg", LocationCategory.RAILWAY_STATION);
+    kmlCategoryToLocationCategoryMap.put("Boerenmarkt", LocationCategory.MARKET);
+    kmlCategoryToLocationCategoryMap.put("Buffet", LocationCategory.RESTAURANT);
+    kmlCategoryToLocationCategoryMap.put("Buitenzwembad", LocationCategory.SWIMMING_POOL);
+    kmlCategoryToLocationCategoryMap.put("Bushalte", LocationCategory.BUS_STOP);
+    kmlCategoryToLocationCategoryMap.put("Cadeauwinkel", LocationCategory.SHOP);
+    kmlCategoryToLocationCategoryMap.put("Dierentuin", LocationCategory.ZOO);
+    kmlCategoryToLocationCategoryMap.put("Delicatessenwinkel", LocationCategory.SHOP);
+    kmlCategoryToLocationCategoryMap.put("Eiland", LocationCategory.ISLAND);
+    kmlCategoryToLocationCategoryMap.put("Espressobar", LocationCategory.CAFE);
+    kmlCategoryToLocationCategoryMap.put("Fastfood", LocationCategory.RESTAURANT);
+    kmlCategoryToLocationCategoryMap.put("Gebouw", LocationCategory.BUILDING);
+    kmlCategoryToLocationCategoryMap.put("Grieks", LocationCategory.RESTAURANT);
+    kmlCategoryToLocationCategoryMap.put("Herberg", LocationCategory.GUESTHOUSE);
+    kmlCategoryToLocationCategoryMap.put("Historisch herkenningspunt", LocationCategory.DEFAULT_POI);
+    kmlCategoryToLocationCategoryMap.put("Hotel", LocationCategory.HOTEL);
+    kmlCategoryToLocationCategoryMap.put("Italiaans", LocationCategory.RESTAURANT);
+    kmlCategoryToLocationCategoryMap.put("Kabelbaanstation", LocationCategory.RAILWAY_STATION);
+    kmlCategoryToLocationCategoryMap.put("Kantoor van lokale/provinciale overheid", LocationCategory.GOVERMENT);
+    kmlCategoryToLocationCategoryMap.put("Koffiehuis", LocationCategory.CAFE);
+    kmlCategoryToLocationCategoryMap.put("Internationaal vliegveld", LocationCategory.AIRPORT);
+    kmlCategoryToLocationCategoryMap.put("Lodge", LocationCategory.LODGE);
+    kmlCategoryToLocationCategoryMap.put("Luchthaven", LocationCategory.AIRPORT);
+    kmlCategoryToLocationCategoryMap.put("Markt", LocationCategory.MARKET);
+    kmlCategoryToLocationCategoryMap.put("Momo restaurant", LocationCategory.RESTAURANT);
+    kmlCategoryToLocationCategoryMap.put("Nationaal park", LocationCategory.PARK);
+    kmlCategoryToLocationCategoryMap.put("Nepalees", LocationCategory.RESTAURANT);
+    kmlCategoryToLocationCategoryMap.put("Observatieplatform", LocationCategory.SCENIC_VIEWPOINT);
+    kmlCategoryToLocationCategoryMap.put("Ov-station", LocationCategory.RAILWAY_STATION);
+    kmlCategoryToLocationCategoryMap.put("Pannenkoekenrestaurant", LocationCategory.RESTAURANT);
+    kmlCategoryToLocationCategoryMap.put("Panoramisch uitzicht", LocationCategory.SCENIC_VIEWPOINT);
+    kmlCategoryToLocationCategoryMap.put("Park", LocationCategory.PARK);
+    kmlCategoryToLocationCategoryMap.put("Parkeergarage", LocationCategory.PARKING);
+    kmlCategoryToLocationCategoryMap.put("Parkeerplaats", LocationCategory.PARKING);
+    kmlCategoryToLocationCategoryMap.put("Paspoortkantoor", LocationCategory.BORDER_CROSSING);
+    kmlCategoryToLocationCategoryMap.put("Pension", LocationCategory.GUESTHOUSE);
+    kmlCategoryToLocationCategoryMap.put("Plein", LocationCategory.SQUARE);
+    kmlCategoryToLocationCategoryMap.put("Rivier", LocationCategory.RIVER);
+    kmlCategoryToLocationCategoryMap.put("Restaurant", LocationCategory.RESTAURANT);
+    kmlCategoryToLocationCategoryMap.put("Restaurant", LocationCategory.RESTAURANT);
+    kmlCategoryToLocationCategoryMap.put("Snackbar", LocationCategory.RESTAURANT);
+    kmlCategoryToLocationCategoryMap.put("Skioord", LocationCategory.SKI_RESORT);
+    kmlCategoryToLocationCategoryMap.put("Supermarkt", LocationCategory.SHOP);
+    kmlCategoryToLocationCategoryMap.put("Tankstation", LocationCategory.PETROL_STATION);
+    kmlCategoryToLocationCategoryMap.put("Thais", LocationCategory.RESTAURANT);
+    kmlCategoryToLocationCategoryMap.put("Toeristische attractie", LocationCategory.TOURIST_ATTRACTION);
+    kmlCategoryToLocationCategoryMap.put("Treinstation", LocationCategory.RAILWAY_STATION);
+    kmlCategoryToLocationCategoryMap.put("Vakantiecomplex", LocationCategory.HOTEL);
+    kmlCategoryToLocationCategoryMap.put("Veerbootterminal", LocationCategory.FERRY);
+    kmlCategoryToLocationCategoryMap.put("Winkelcentrum", LocationCategory.SHOPPING_CENTER);
+    kmlCategoryToLocationCategoryMap.put("Woods", LocationCategory.FOREST);
   }
   
   /**
    * Constructor
+   * <p>
+   * A private constructor, use the {@code Builder} to create an instance of this class.
    */
   private KmlFileImporter(Builder builder) {
     this.kmlFile = builder.kmlFile;
@@ -165,15 +180,14 @@ public class KmlFileImporter {
   }
 
   /**
-   * Get a list of <code>VacationElement</code>s from a KML file.
+   * Get a list of {@code KmlPlacemarkImportData}s from a KML file.
    * <p>
    * For each {@code Placemark} in the KML file a VacationElement is created.
    * If the {@code geometry} in the {@code Placemark} is a {@code Point}, a {@code Location} is derived from the information in the {@code Placemark}.
    * If the {@code geometry} in the {@code Placemark} is a {@code LineString}, a {@code GPXTrack} VacationElement is derived from the information in the {@code Placemark} together with
    * a GPX {@DocumentType}, which shall be stored to the file referred to by the {@code GPXTrack}.
    * 
-   * @param file The KML file to get the locations from.
-   * @return A list of {@code KmlPlacemarkImportData}. A list of all locations (Placemarks) in the KML file. 
+   * @return A list of {@code KmlPlacemarkImportData}. A list of all locations (Placemarks) in the KML file.
    *
    */
   public List<KmlPlacemarkImportData> getLocationsFromKmlFile() {
@@ -182,19 +196,29 @@ public class KmlFileImporter {
     Kml kml = Kml.unmarshal(kmlFile);
     
     Feature feature = kml.getFeature();
-    getLocationsFromKmlFeature(null, feature, null, vacationElements);
+    getVacationElementsFromKmlFeature(null, feature, null, vacationElements);
         
     return vacationElements;
   }
   
-  private void getLocationsFromKmlFeature(Feature previousFeature, Feature feature, Feature nextFeature, List<KmlPlacemarkImportData> vacationElements) {
+  /**
+   * Get the vacation elements from within a KML Feature.
+   * <p>
+   * The feature can be a {@code Document}, a {@code Folder} or a {@code Placemark}.
+   * 
+   * @param previousFeature the previous KML Feature, which can be null
+   * @param feature the KML Feature to get the acation elements from
+   * @param nextFeature the next KML Feature, which can be null
+   * @param vacationElements the list to add the vacation elements information to
+   */
+  private void getVacationElementsFromKmlFeature(Feature previousFeature, Feature feature, Feature nextFeature, List<KmlPlacemarkImportData> vacationElements) {
     switch (feature.getClass().getName()) {
     case "de.micromata.opengis.kml.v_2_2_0.Document":
-      getLocationsFromKmlDocument((Document) feature, vacationElements);
+      getVacationElementsFromKmlDocument((Document) feature, vacationElements);
       break;
       
     case "de.micromata.opengis.kml.v_2_2_0.Folder":
-      getLocationsFomKmlFolder((Folder) feature, vacationElements);
+      getVacationElementsFomKmlFolder((Folder) feature, vacationElements);
       break;
       
     case "de.micromata.opengis.kml.v_2_2_0.Placemark":
@@ -215,7 +239,13 @@ public class KmlFileImporter {
     
   }
 
-  private void getLocationsFromKmlDocument(Document document, List<KmlPlacemarkImportData> vacationElements) {
+  /**
+   * Get the locations from within a KML Document.
+   * 
+   * @param document the KML {@link Document} to get the locations from
+   * @param vacationElements the list to add the vacation elements information to
+   */
+  private void getVacationElementsFromKmlDocument(Document document, List<KmlPlacemarkImportData> vacationElements) {
     List<Feature> features = document.getFeature();
     for (int i = 0; i < features.size() - 1; i++) {
       Feature feature = features.get(i);
@@ -227,37 +257,37 @@ public class KmlFileImporter {
       if (i < features.size() - 2) {
         nextFeature = features.get(i + 1);
       }
-      getLocationsFromKmlFeature(previousFeature, feature, nextFeature, vacationElements);
+      getVacationElementsFromKmlFeature(previousFeature, feature, nextFeature, vacationElements);
     }
   }
 
   /**
-   * Get the locations from within a KML Folder.
+   * Get the vacation elements from within a KML Folder.
    * 
-   * @param folder the KML Folder to get the locations from
-   * @param locations the list to add the locations to
+   * @param folder the KML {@code Folder} to get the locations from
+   * @param vacationElements the list to add the vacation elements information to
    */
-  private void getLocationsFomKmlFolder(Folder folder, List<KmlPlacemarkImportData> vacationElements) {
+  private void getVacationElementsFomKmlFolder(Folder folder, List<KmlPlacemarkImportData> vacationElements) {
     List<Feature> features = folder.getFeature();
     for (int i = 0; i < features.size() - 1; i++) {
       Feature feature = features.get(i);
       
-      if (feature instanceof Folder) {
-        getLocationsFomKmlFolder((Folder) feature, vacationElements);
+      if (feature instanceof Folder featureFolder) {
+        getVacationElementsFomKmlFolder(featureFolder, vacationElements);
       } else if (feature instanceof Placemark placemark) {
         Placemark previousPlacemark = null;
         if (i > 0) {
           Feature previousFeature = features.get(i - 1);
-          if (previousFeature instanceof Placemark) {
-            previousPlacemark = (Placemark) previousFeature;
+          if (previousFeature instanceof Placemark previousFeaturePlacemark) {
+            previousPlacemark = previousFeaturePlacemark;
           }
         }
         
         Placemark nextPlacemark = null;
         if (i < features.size() - 2) {
           Feature nextFeature = features.get(i + 1);
-          if (nextFeature instanceof Placemark) {
-            nextPlacemark = (Placemark) nextFeature;
+          if (nextFeature instanceof Placemark nextFeaturePlacemark) {
+            nextPlacemark = nextFeaturePlacemark;
           }
         }
         getVacationElementFromKmlPlacemark(previousPlacemark, placemark, nextPlacemark, vacationElements);
@@ -266,13 +296,13 @@ public class KmlFileImporter {
   }
   
   /**
-   * Get a {@code VacationElement} from a KML Placemark.
+   * Get a {@code VacationElement} from a KML {@link Placemark}.
    * <p>
-   * If the Placemark is a point location (i.e. the geometry is a Point), the VacationElement will be a Location.<br/>
-   * If the Placemark is a track (i.e. the geometry is a LineString), the VacationElement will be a GPXTrack VacationElement with a related GPXTrack.
+   * If the placemark is a point location (i.e. the geometry is a Point), the VacationElement will be a Location.<br/>
+   * If the placemark is a track (i.e. the geometry is a LineString), the VacationElement will be a GPXTrack VacationElement with a related GPXTrack.
    * 
    * @param placemark the {@code Placemark} to derive the information from.
-   * @param vacationElements the {@code Map} to add the element to.
+   * @param vacationElements the list to add the vacation elements information to.
    */
   private void getVacationElementFromKmlPlacemark(Placemark previousPlacemark, Placemark placemark, Placemark nextPlacemark, List<KmlPlacemarkImportData> vacationElements) {
     Geometry geometry = placemark.getGeometry();
@@ -291,10 +321,10 @@ public class KmlFileImporter {
   }
 
   /**
-   * Create a <code>Location</code> for a <code>Placemark</code>.
+   * Create a {@code Location} for a {@code Placemark}.
    * 
-   * @param placemark The <code>Placemark</code> for which to create a <code>Location</code>.
-   * @param vacationElements the {@code Map} to add the element to.
+   * @param placemark The {@code Placemark} for which to create a {@code Location}.
+   * @param vacationElements the list to add the {@code Location} information to.
    */
   private void getLocationFromKmlPlacemark(Placemark placemark, List<KmlPlacemarkImportData> vacationElements) {
     TravelsFactory vacationsFactory = TravelsFactory.eINSTANCE;
@@ -336,8 +366,14 @@ public class KmlFileImporter {
     vacationElements.add(new KmlPlacemarkImportData(location, null, placemark.getAddress(), locationFromNominatim));
   }
 
+  /**
+   * Convert a KML category to a {@code LocationCategory}.
+   * 
+   * @param category the KML category to convert.
+   * @return the corresponding {@code LocationCategory}, or {@code LocationCategory.DEFAULT_POI} if the category is not supported.
+   */
   private LocationCategory kmlCategoryToPOICategoryId(String category) {
-    LocationCategory poiCategoryId = kmlCategoryToPOICategoryIdMap.get(category);
+    LocationCategory poiCategoryId = kmlCategoryToLocationCategoryMap.get(category);
     
     if (poiCategoryId == null) {
      LOGGER.severe("Unsupported KML category: " + category);
@@ -362,8 +398,7 @@ public class KmlFileImporter {
    * 
    * @param location the {@code Location} to be filled.
    * @param placemark the {@code Placemark} to obtain the information from.
-   * @param latitude the latitude coordinate of the location.
-   * @param longitude the longitude coordinate of the location.
+   * @param locationFromNominatim location information obtained from the Nominatim API.
    */
   private void fillLocationAddressFromPlacemark(Location location, Placemark placemark, Location locationFromNominatim) {
     String placemarkAddressText = placemark.getAddress();
@@ -455,6 +490,13 @@ public class KmlFileImporter {
     location.setCountry(country);
   }
   
+  /**
+   * Check if the placemark address text is a known unsupported address.
+   * <p>
+   * 
+   * @param placemarkAddressText the placemark address to check
+   * @return true if the {@code placemarkAddressText} is a known unsupported address, false otherwise.
+   */
   private boolean isKnownUnsupportedAddress(String placemarkAddressText) {
     for (String address: knownUnsupportedAddresses) {
       if (address.equals(placemarkAddressText)) {
@@ -465,6 +507,16 @@ public class KmlFileImporter {
     return false;
   }
 
+  /**
+   * Get the index of the space after the postal code in a string.
+   * <p>
+   * The postal code is assumed to be at the start of the string.
+   * <p>
+   * The postal code format is country specific. For now, we only support the Netherlands and Portugal.
+   * 
+   * @param string the string to check
+   * @return the index of the space after the postal code, or -1 if no postal code was found.
+   */
   private int getSpaceAfterPostalCodeIndex(String string) {
     string = string.toLowerCase();
     // Netherlands
@@ -480,6 +532,13 @@ public class KmlFileImporter {
     return -1;
   }
   
+  /**
+   * Get a {@code Location} from the Nominatim API based on the latitude and longitude.
+   * 
+   * @param latitude the latitude of the location
+   * @param longitude the longitude of the location
+   * @return a {@code Location} with information obtained from the Nominatim API, or null if no information could be obtained.
+   */
   private Location getLocationFromNominatimAPI(Double latitude, Double longitude) {
     if (latitude == null  ||  longitude == null) {
       return null;
@@ -494,9 +553,7 @@ public class KmlFileImporter {
   }
 
   /**
-   * Perform a reverse geocode search based on the latitude/longitude of the <code>reverseGeoCodePanel</code>.
-   * <p>
-   * The result is handed over to the {@code locationInfosPanel}.
+   * Perform a reverse geocode search based on the latitude/longitude of the {@code reverseGeoCodePanel}.
    */
   private OSMLocationInfo performReverseGeocodeSearch(double latitude, double longitude) {
     if (nominatimAPI == null) {
@@ -514,10 +571,12 @@ public class KmlFileImporter {
   }
 
   /**
-   * Create a <code>GPXTrack</code> for a <code>Placemark</code>.
+   * Create a {@code GPXTrack} for a {@code Placemark}.
    * 
-   * @param placemark The <code>Placemark</code> for which to create a <code>GPXTrack</code>.
-   * @param vacationElements the {@code Map} to add the element to.
+   * @param previousPlacemark The previous {@code Placemark} in the KML file, or null if there is no previous {@code Placemark}.
+   * @param placemark The {@code Placemark} for which to create a {@code GPXTrack}.
+   * @param nextPlacemark The next {@code Placemark} in the KML file, or null if there is no next {@code Placemark}.
+   * @param vacationElements the list to add the {@code GPXTrack} information to.
    */
   private void getGPXTrackFromKmlPlacemark(Placemark previousPlacemark, Placemark placemark, Placemark nextPlacemark, List<KmlPlacemarkImportData> vacationElements) {
     TravelsFactory vacationsFactory = TravelsFactory.eINSTANCE;
@@ -541,7 +600,7 @@ public class KmlFileImporter {
     }
     gpxType.setMetadata(metadataType);
     
-    gpxType.setCreator("Google Maps Timeline");
+    gpxType.setCreator("MyWorld Travels");
     
     TrkType track = gpxFactory.createTrkType();
     List<TrkType> tracks = gpxType.getTrk();
@@ -589,17 +648,23 @@ public class KmlFileImporter {
     vacationElements.add(new KmlPlacemarkImportData(gpxTrack, documentRoot, null, null));
   }
   
+  /**
+   * Get the {@link ZoneId} for a given {@code Coordinate}.
+   * 
+   * @param coordinate the {@code Coordinate} for which to get the {@code ZoneId}.
+   * @return the {@code ZoneId} for the given {@code coordinate}.
+   */
   private ZoneId getZoneId(Coordinate coordinate) {
     return TimeZoneRetriever.getZoneId(coordinate.getLatitude(), coordinate.getLongitude());
   }
   
   /**
-   * Create the name for a GPX track from information in the Placemarks
+   * Create the name for a GPX track from information in a {@code Placemark}.
    * 
-   * @param previousPlacemark
-   * @param placemark
-   * @param nextPlacemark
-   * @return
+   * @param previousPlacemark The previous {@code Placemark} in the KML file, or null if there is no previous {@code Placemark}.
+   * @param placemark The {@code Placemark} for which to create a {@code GPXTrack}.
+   * @param nextPlacemark The next {@code Placemark} in the KML file, or null if there is no next {@code Placemark}.
+   * @return the name for the GPX track.
    */
   private String createGpxTrackName(Placemark previousPlacemark, Placemark placemark, Placemark nextPlacemark) {
     StringBuilder buf = new StringBuilder();
@@ -629,6 +694,13 @@ public class KmlFileImporter {
     return buf.toString();
   }
   
+  /**
+   * Convert a KML category to an {@code Activity}.
+   * 
+   * @param kmlCategory the KML category to convert.
+   * @return the corresponding {@code Activity}, or null if the category is "Moving".
+   * @throws RuntimeException if the category is unknown.
+   */
   private static Activity kmlCategoryToActivity(String kmlCategory) {
     if (kmlCategory.equals("Moving")) {
       return null;
@@ -644,11 +716,11 @@ public class KmlFileImporter {
   }
   
   /**
-   * Get a specific value from the ExtededData of a Placemark.
+   * Get a specific value from the {@code ExtendedData} of a {@code Placemark}.
    * 
-   * @param placemark
-   * @param name
-   * @return
+   * @param placemark the {@code Placemark} from which to get the value.
+   * @param name the name of the value to get.
+   * @return the value of the specified name, or null if the name is not found.
    */
   public static String getExtendedDataValue(Placemark placemark, String name) {
     ExtendedData extendedData = placemark.getExtendedData();
@@ -675,6 +747,9 @@ public class KmlFileImporter {
      */
     private File kmlFile;
     
+    /**
+     * An instance of the {@link NominatimAPI} used to perform a reverse geocode search.
+     */
     private NominatimAPI nominatimAPI;
     
     /**
@@ -686,18 +761,30 @@ public class KmlFileImporter {
      * Constructor with mandatory arguments.
      * 
      * @param kmlFile the KML file from which information is to be imported.
+     * @param nominatimAPI an instance of the {@link NominatimAPI} used to perform a reverse geocode search.
      */
     public Builder(File kmlFile, NominatimAPI nominatimAPI) {
       this.kmlFile = kmlFile;
       this.nominatimAPI = nominatimAPI;
     }
     
+    /**
+     * Set the users home country, used as default if a {@code Placemark} has no country filled in.
+     * 
+     * @param homeCountry the users home country
+     * @return the builder instance
+     */
     public Builder setHomeCountry(String homeCountry) {
       this.homeCountry = homeCountry;
       
       return this;
     }
     
+    /**
+     * Build the {@code KmlFileImporter} instance.
+     * 
+     * @return the {@code KmlFileImporter} instance
+     */
     public KmlFileImporter build() {
       return new KmlFileImporter(this);
     }

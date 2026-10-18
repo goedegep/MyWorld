@@ -1,23 +1,19 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
+import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
+import jakarta.xml.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
-
+import java.util.Objects;
 
 /**
- * <alias> contains a mapping from a <sourcehref> to a <targethref>:
+ * alias contains a mapping from a sourceHref to a targetHref:
  * <p>
- * <targetHref> Specifies the texture file to be fetched by Google Earth. This reference 
+ * targetHref Specifies the texture file to be fetched by Google Earth. This reference 
  * can be a relative reference to an image file within the .kmz archive, or it can 
- * be an absolute reference to the file (for example, a URL). <sourceHref> Is the path 
+ * be an absolute reference to the file (for example, a URL). sourceHref Is the path 
  * specified for the texture file in the Collada .dae file. 
  * </p>
  * 
@@ -38,11 +34,11 @@ public class Alias
 {
 
     /**
-     * <targethref> (required)
+     * targetHref (required)
      * <p>
      * A URL that specifies the .kml or .kmz file whose data (within Google Earth) is to 
-     * be modified by an <Update> element. This KML file must already have been loaded 
-     * via a <NetworkLink>. In that file, the element to be modified must already have 
+     * be modified by an Update element. This KML file must already have been loaded 
+     * via a NetworkLink. In that file, the element to be modified must already have
      * an explicit id attribute defined for it. 
      * </p>
      * <p>
@@ -57,11 +53,11 @@ public class Alias
     @XmlSchemaType(name = "anyURI")
     protected String targetHref;
     /**
-     * <sourcehref>
+     * sourceHref
      * <p>
-     * <targetHref> Specifies the texture file to be fetched by Google Earth. This reference 
+     * targetHref Specifies the texture file to be fetched by Google Earth. This reference 
      * can be a relative reference to an image file within the .kmz archive, or it can 
-     * be an absolute reference to the file (for example, a URL). <sourceHref> Is the path 
+     * be an absolute reference to the file (for example, a URL). sourceHref Is the path 
      * specified for the texture file in the Collada .dae file. 
      * </p>
      * <p>
@@ -91,12 +87,12 @@ public class Alias
     @XmlSchemaType(name = "anySimpleType")
     protected List<Object> aliasSimpleExtension;
     /**
-     * <Object>
+     * Object
      * <p>
      * This is an abstract base class and cannot be used directly in a KML file. It provides 
      * the id attribute, which allows unique identification of a KML element, and the targetId 
      * attribute, which is used to reference objects that have already been loaded into 
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
      * be used. 
      * </p>
      * 
@@ -116,7 +112,7 @@ public class Alias
     }
 
     /**
-     * @see targetHref
+     *
      * 
      * @return
      *     possible object is
@@ -128,7 +124,7 @@ public class Alias
     }
 
     /**
-     * @see targetHref
+     *
      * 
      * @param value
      *     allowed object is
@@ -140,7 +136,7 @@ public class Alias
     }
 
     /**
-     * @see sourceHref
+     *
      * 
      * @return
      *     possible object is
@@ -152,7 +148,7 @@ public class Alias
     }
 
     /**
-     * @see sourceHref
+     *
      * 
      * @param value
      *     allowed object is
@@ -164,7 +160,7 @@ public class Alias
     }
 
     /**
-     * @see aliasSimpleExtension
+     *
      * 
      */
     public List<Object> getAliasSimpleExtension() {
@@ -175,7 +171,7 @@ public class Alias
     }
 
     /**
-     * @see aliasObjectExtension
+     *
      * 
      */
     public List<AbstractObject> getAliasObjectExtension() {
@@ -186,74 +182,38 @@ public class Alias
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = ((prime*result)+((targetHref == null)? 0 :targetHref.hashCode()));
-        result = ((prime*result)+((sourceHref == null)? 0 :sourceHref.hashCode()));
-        result = ((prime*result)+((aliasSimpleExtension == null)? 0 :aliasSimpleExtension.hashCode()));
-        result = ((prime*result)+((aliasObjectExtension == null)? 0 :aliasObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        Alias alias = (Alias) object;
+        return Objects.equals(targetHref, alias.targetHref)
+                && Objects.equals(sourceHref, alias.sourceHref)
+                && Objects.equals(aliasSimpleExtension, alias.aliasSimpleExtension)
+                && Objects.equals(aliasObjectExtension, alias.aliasObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof Alias) == false) {
-            return false;
-        }
-        Alias other = ((Alias) obj);
-        if (targetHref == null) {
-            if (other.targetHref!= null) {
-                return false;
-            }
-        } else {
-            if (targetHref.equals(other.targetHref) == false) {
-                return false;
-            }
-        }
-        if (sourceHref == null) {
-            if (other.sourceHref!= null) {
-                return false;
-            }
-        } else {
-            if (sourceHref.equals(other.sourceHref) == false) {
-                return false;
-            }
-        }
-        if (aliasSimpleExtension == null) {
-            if (other.aliasSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (aliasSimpleExtension.equals(other.aliasSimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (aliasObjectExtension == null) {
-            if (other.aliasObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (aliasObjectExtension.equals(other.aliasObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(targetHref);
+        result = 31 * result + Objects.hashCode(sourceHref);
+        result = 31 * result + Objects.hashCode(aliasSimpleExtension);
+        result = 31 * result + Objects.hashCode(aliasObjectExtension);
+        return result;
     }
 
     /**
-     * @see aliasSimpleExtension
+     *
      * 
      * @param aliasSimpleExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setAliasSimpleExtension(final List<Object> aliasSimpleExtension) {
         this.aliasSimpleExtension = aliasSimpleExtension;
@@ -265,7 +225,7 @@ public class Alias
      * @param aliasSimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Alias addToAliasSimpleExtension(final Object aliasSimpleExtension) {
         this.getAliasSimpleExtension().add(aliasSimpleExtension);
@@ -273,9 +233,10 @@ public class Alias
     }
 
     /**
-     * @see aliasObjectExtension
+     *
      * 
      * @param aliasObjectExtension
+     *     Objects of the following type are allowed in the list: {@link AbstractObject}
      */
     public void setAliasObjectExtension(final List<AbstractObject> aliasObjectExtension) {
         this.aliasObjectExtension = aliasObjectExtension;
@@ -287,7 +248,7 @@ public class Alias
      * @param aliasObjectExtension
      *     Objects of the following type are allowed in the list: {@link AbstractObject}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Alias addToAliasObjectExtension(final AbstractObject aliasObjectExtension) {
         this.getAliasObjectExtension().add(aliasObjectExtension);
@@ -295,7 +256,7 @@ public class Alias
     }
 
     /**
-     * @see objectSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -313,10 +274,12 @@ public class Alias
 
     /**
      * fluent setter
-     * @see #setTargetHref(String)
+     *
      * 
      * @param targetHref
      *     required parameter
+     * @return
+     *     Alias
      */
     public Alias withTargetHref(final String targetHref) {
         this.setTargetHref(targetHref);
@@ -325,10 +288,12 @@ public class Alias
 
     /**
      * fluent setter
-     * @see #setSourceHref(String)
+     *
      * 
      * @param sourceHref
      *     required parameter
+     * @return
+     *     Alias
      */
     public Alias withSourceHref(final String sourceHref) {
         this.setSourceHref(sourceHref);
@@ -337,10 +302,12 @@ public class Alias
 
     /**
      * fluent setter
-     * @see #setAliasSimpleExtension(List<Object>)
+     *
      * 
      * @param aliasSimpleExtension
      *     required parameter
+     * @return
+     *     Alias
      */
     public Alias withAliasSimpleExtension(final List<Object> aliasSimpleExtension) {
         this.setAliasSimpleExtension(aliasSimpleExtension);
@@ -349,10 +316,12 @@ public class Alias
 
     /**
      * fluent setter
-     * @see #setAliasObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param aliasObjectExtension
      *     required parameter
+     * @return
+     *     Alias
      */
     public Alias withAliasObjectExtension(final List<AbstractObject> aliasObjectExtension) {
         this.setAliasObjectExtension(aliasObjectExtension);

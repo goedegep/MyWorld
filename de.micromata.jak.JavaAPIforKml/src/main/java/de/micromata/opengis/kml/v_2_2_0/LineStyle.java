@@ -1,20 +1,15 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
+import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
+import jakarta.xml.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementRef;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlType;
-import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
-
+import java.util.Objects;
 
 /**
- * <LineStyle>
+ * {@code <LineStyle>}
  * <p>
  * Specifies the drawing style (color, color mode, and line width) for all line geometry. 
  * Line geometry includes the outlines of outlined polygons and the extruded "tether" 
@@ -31,11 +26,10 @@ import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
  *   &lt;width&gt;1&lt;/width&gt;                   &lt;!-- float --&gt;
  * <strong>&lt;/LineStyle&gt;</strong></pre>
  * 
- * Extends: 
- * @see: <ColorStyle>
- * 
+ * Extends:
+ * <p></p>
  * Contained By: 
- * @see: <Style>
+ * <p></p>
  * 
  * 
  * 
@@ -53,7 +47,7 @@ public class LineStyle
 {
 
     /**
-     * <width>
+     * {@code <width>}
      * <p>
      * Width of the line, in pixels. 
      * </p>
@@ -62,14 +56,14 @@ public class LineStyle
      * 
      */
     @XmlElement(defaultValue = "1.0")
-    protected double width;
+    protected Double width;
     /**
-     * <Object>
+     * {@code <Object>}
      * <p>
      * This is an abstract base class and cannot be used directly in a KML file. It provides 
      * the id attribute, which allows unique identification of a KML element, and the targetId 
      * attribute, which is used to reference objects that have already been loaded into 
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
      * be used. 
      * </p>
      * 
@@ -84,12 +78,12 @@ public class LineStyle
     @XmlElement(name = "LineStyleSimpleExtensionGroup")
     protected List<Object> lineStyleSimpleExtension;
     /**
-     * <Object>
+     * {@code <Object>}
      * <p>
      * This is an abstract base class and cannot be used directly in a KML file. It provides 
      * the id attribute, which allows unique identification of a KML element, and the targetId 
      * attribute, which is used to reference objects that have already been loaded into 
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
      * be used. 
      * </p>
      * 
@@ -109,106 +103,82 @@ public class LineStyle
     }
 
     /**
-     * @see width
+     *
      * 
      * @return
      *     possible object is
      *     {@link Double}
      *     
      */
-    public double getWidth() {
+    public Double getWidth() {
         return width;
     }
 
     /**
-     * @see width
-     * 
+     *
+     *
      * @param value
      *     allowed object is
      *     {@link Double}
-     *     
+     *
      */
-    public void setWidth(double value) {
+    public void setWidth(Double value) {
         this.width = value;
     }
 
     /**
-     * @see lineStyleSimpleExtension
+     *
      * 
      */
     public List<Object> getLineStyleSimpleExtension() {
         if (lineStyleSimpleExtension == null) {
-            lineStyleSimpleExtension = new ArrayList<Object>();
+            lineStyleSimpleExtension = new ArrayList<>();
         }
         return this.lineStyleSimpleExtension;
     }
 
     /**
-     * @see lineStyleObjectExtension
+     *
      * 
      */
     public List<AbstractObject> getLineStyleObjectExtension() {
         if (lineStyleObjectExtension == null) {
-            lineStyleObjectExtension = new ArrayList<AbstractObject>();
+            lineStyleObjectExtension = new ArrayList<>();
         }
         return this.lineStyleObjectExtension;
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        long temp;
-        temp = Double.doubleToLongBits(width);
-        result = ((prime*result)+((int)(temp^(temp >>>(32)))));
-        result = ((prime*result)+((lineStyleSimpleExtension == null)? 0 :lineStyleSimpleExtension.hashCode()));
-        result = ((prime*result)+((lineStyleObjectExtension == null)? 0 :lineStyleObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        LineStyle lineStyle = (LineStyle) object;
+        return Objects.equals(width, lineStyle.width)
+                && Objects.equals(lineStyleSimpleExtension, lineStyle.lineStyleSimpleExtension)
+                && Objects.equals(lineStyleObjectExtension, lineStyle.lineStyleObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof LineStyle) == false) {
-            return false;
-        }
-        LineStyle other = ((LineStyle) obj);
-        if (width!= other.width) {
-            return false;
-        }
-        if (lineStyleSimpleExtension == null) {
-            if (other.lineStyleSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (lineStyleSimpleExtension.equals(other.lineStyleSimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (lineStyleObjectExtension == null) {
-            if (other.lineStyleObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (lineStyleObjectExtension.equals(other.lineStyleObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(width);
+        result = 31 * result + Objects.hashCode(lineStyleSimpleExtension);
+        result = 31 * result + Objects.hashCode(lineStyleObjectExtension);
+        return result;
     }
 
     /**
-     * @see lineStyleSimpleExtension
+     *
      * 
      * @param lineStyleSimpleExtension
+     *     Objects of the following type are allowed in the list: {@code <}{@link Object}{@code >}{@code <}{@link byte[]}{@code >}{@code <}{@link Float}{@code >}{@code <}{@link Float}{@code >}
      */
     public void setLineStyleSimpleExtension(final List<Object> lineStyleSimpleExtension) {
         this.lineStyleSimpleExtension = lineStyleSimpleExtension;
@@ -218,9 +188,9 @@ public class LineStyle
      * add a value to the lineStyleSimpleExtension property collection
      * 
      * @param lineStyleSimpleExtension
-     *     Objects of the following type are allowed in the list: {@code <}{@link Object}{@code>}{@link JAXBElement}{@code <}{@link byte[]}{@code >}{@link JAXBElement}{@code <}{@link Float}{@code>}{@link JAXBElement}{@code <}{@link Float}{@code>}
+     *     Objects of the following type are allowed in the list: {@code <}{@link Object}{@code >}{@code <}{@link byte[]}{@code >}{@code <}{@link Float}{@code >}{@code <}{@link Float}{@code >}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public LineStyle addToLineStyleSimpleExtension(final Object lineStyleSimpleExtension) {
         this.getLineStyleSimpleExtension().add(lineStyleSimpleExtension);
@@ -228,9 +198,10 @@ public class LineStyle
     }
 
     /**
-     * @see lineStyleObjectExtension
+     *
      * 
      * @param lineStyleObjectExtension
+     *     Objects of the following type are allowed in the list: {@link AbstractObject}
      */
     public void setLineStyleObjectExtension(final List<AbstractObject> lineStyleObjectExtension) {
         this.lineStyleObjectExtension = lineStyleObjectExtension;
@@ -242,7 +213,7 @@ public class LineStyle
      * @param lineStyleObjectExtension
      *     Objects of the following type are allowed in the list: {@link AbstractObject}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public LineStyle addToLineStyleObjectExtension(final AbstractObject lineStyleObjectExtension) {
         this.getLineStyleObjectExtension().add(lineStyleObjectExtension);
@@ -250,7 +221,7 @@ public class LineStyle
     }
 
     /**
-     * @see objectSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -267,7 +238,7 @@ public class LineStyle
     }
 
     /**
-     * @see subStyleSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -284,7 +255,7 @@ public class LineStyle
     }
 
     /**
-     * @see subStyleObjectExtension
+     *
      * 
      */
     @Obvious
@@ -301,7 +272,7 @@ public class LineStyle
     }
 
     /**
-     * @see colorStyleSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -318,7 +289,7 @@ public class LineStyle
     }
 
     /**
-     * @see colorStyleObjectExtension
+     *
      * 
      */
     @Obvious
@@ -336,19 +307,19 @@ public class LineStyle
 
     /**
      * fluent setter
-     * @see #setWidth(double)
+     *
      * 
      * @param width
      *     required parameter
      */
-    public LineStyle withWidth(final double width) {
+    public LineStyle withWidth(final Double width) {
         this.setWidth(width);
         return this;
     }
 
     /**
      * fluent setter
-     * @see #setLineStyleSimpleExtension(List<Object>)
+     *
      * 
      * @param lineStyleSimpleExtension
      *     required parameter
@@ -360,7 +331,7 @@ public class LineStyle
 
     /**
      * fluent setter
-     * @see #setLineStyleObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param lineStyleObjectExtension
      *     required parameter
@@ -437,11 +408,9 @@ public class LineStyle
     public LineStyle clone() {
         LineStyle copy;
         copy = ((LineStyle) super.clone());
-        copy.lineStyleSimpleExtension = new ArrayList<Object>((getLineStyleSimpleExtension().size()));
-        for (Object iter: lineStyleSimpleExtension) {
-            copy.lineStyleSimpleExtension.add(iter);
-        }
-        copy.lineStyleObjectExtension = new ArrayList<AbstractObject>((getLineStyleObjectExtension().size()));
+        copy.lineStyleSimpleExtension = new ArrayList<>((getLineStyleSimpleExtension().size()));
+        copy.lineStyleSimpleExtension.addAll(lineStyleSimpleExtension);
+        copy.lineStyleObjectExtension = new ArrayList<>((getLineStyleObjectExtension().size()));
         for (AbstractObject iter: lineStyleObjectExtension) {
             copy.lineStyleObjectExtension.add(iter.clone());
         }

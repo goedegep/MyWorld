@@ -1,17 +1,13 @@
 
 package de.micromata.opengis.kml.v_2_2_0.gx;
 
-import java.util.ArrayList;
-import java.util.List;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlType;
 import de.micromata.opengis.kml.v_2_2_0.AbstractObject;
 import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
+import jakarta.xml.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 
@@ -80,67 +76,39 @@ public class SimpleArrayData
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = ((prime*result)+((value == null)? 0 :value.hashCode()));
-        result = ((prime*result)+((simpleArrayDataExtension == null)? 0 :simpleArrayDataExtension.hashCode()));
-        result = ((prime*result)+((name == null)? 0 :name.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        SimpleArrayData that = (SimpleArrayData) object;
+        return Objects.equals(value, that.value)
+                && Objects.equals(simpleArrayDataExtension, that.simpleArrayDataExtension)
+                && Objects.equals(name, that.name);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof SimpleArrayData) == false) {
-            return false;
-        }
-        SimpleArrayData other = ((SimpleArrayData) obj);
-        if (value == null) {
-            if (other.value!= null) {
-                return false;
-            }
-        } else {
-            if (value.equals(other.value) == false) {
-                return false;
-            }
-        }
-        if (simpleArrayDataExtension == null) {
-            if (other.simpleArrayDataExtension!= null) {
-                return false;
-            }
-        } else {
-            if (simpleArrayDataExtension.equals(other.simpleArrayDataExtension) == false) {
-                return false;
-            }
-        }
-        if (name == null) {
-            if (other.name!= null) {
-                return false;
-            }
-        } else {
-            if (name.equals(other.name) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(value);
+        result = 31 * result + Objects.hashCode(simpleArrayDataExtension);
+        result = 31 * result + Objects.hashCode(name);
+        return result;
     }
 
     /**
-     * Sets the value of the value property Objects of the following type(s) are allowed in the list List<String>.
+     * Sets the value of the value property Objects of the following type(s) are allowed in the list {@code List<String>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withValue} instead.
      * 
      * 
      * @param value
+     *     Objects of the following type are allowed in the list: {@link String}
      */
     public void setValue(final List<String> value) {
         this.value = value;
@@ -152,7 +120,7 @@ public class SimpleArrayData
      * @param value
      *     Objects of the following type are allowed in the list: {@link String}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public SimpleArrayData addToValue(final String value) {
         this.getValue().add(value);
@@ -160,12 +128,13 @@ public class SimpleArrayData
     }
 
     /**
-     * Sets the value of the simpleArrayDataExtension property Objects of the following type(s) are allowed in the list List<Object>.
+     * Sets the value of the simpleArrayDataExtension property Objects of the following type(s) are allowed in the list {@code List<Object>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withSimpleArrayDataExtension} instead.
      * 
      * 
      * @param simpleArrayDataExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setSimpleArrayDataExtension(final List<Object> simpleArrayDataExtension) {
         this.simpleArrayDataExtension = simpleArrayDataExtension;
@@ -177,7 +146,7 @@ public class SimpleArrayData
      * @param simpleArrayDataExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public SimpleArrayData addToSimpleArrayDataExtension(final Object simpleArrayDataExtension) {
         this.getSimpleArrayDataExtension().add(simpleArrayDataExtension);
@@ -199,7 +168,7 @@ public class SimpleArrayData
 
     /**
      * fluent setter
-     * @see #setValue(List<String>)
+     *
      * 
      * @param value
      *     required parameter
@@ -211,7 +180,7 @@ public class SimpleArrayData
 
     /**
      * fluent setter
-     * @see #setSimpleArrayDataExtension(List<Object>)
+     *
      * 
      * @param simpleArrayDataExtension
      *     required parameter
@@ -223,7 +192,7 @@ public class SimpleArrayData
 
     /**
      * fluent setter
-     * @see #setName(String)
+     *
      * 
      * @param name
      *     required parameter

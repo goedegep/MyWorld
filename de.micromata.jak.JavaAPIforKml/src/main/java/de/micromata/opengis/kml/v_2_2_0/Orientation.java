@@ -1,23 +1,19 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
+import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
+import jakarta.xml.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
-
+import java.util.Objects;
 
 /**
- * <orientation>
+ * {@code <Orientation>}
  * <p>
  * Describes rotation of a 3D model's coordinate system to position the object in Google 
- * Earth. See diagram below. <Orientation> <heading>45.0</heading> <tilt>10.0</tilt> 
- * <roll>0.0</roll> </Orientation> 
+ * Earth. See diagram below. {@code <Orientation> <heading>45.0</heading> <tilt>10.0</tilt>
+ * <roll>0.0</roll> </Orientation> }
  * </p>
  * 
  * 
@@ -38,7 +34,7 @@ public class Orientation
 {
 
     /**
-     * <heading>
+     * {@code <heading>}
      * <p>
      * Direction (azimuth) of the camera, in degrees. Default=0 (true North). (See diagram.) 
      * Values range from 0 to 360 degrees. 
@@ -63,12 +59,12 @@ public class Orientation
     @XmlElement(defaultValue = "0.0")
     protected double heading;
     /**
-     * <tilt>
+     * {@code <tilt>}
      * <p>
      * Angle between the direction of the LookAt position and the normal to the surface 
      * of the earth. (See diagram below.) Values range from 0 to 90 degrees. Values for 
-     * <tilt> cannot be negative. A <tilt> value of 0 degrees indicates viewing from directly 
-     * above. A <tilt> value of 90 degrees indicates viewing along the horizon. 
+     * {@code <tilt>} cannot be negative. A {@code <tilt>} value of 0 degrees indicates viewing from directly 
+     * above. A {@code <tilt>} value of 90 degrees indicates viewing along the horizon. 
      * </p>
      * <p>
      * Rotation about the x axis. A positive rotation is clockwise around the x axis and 
@@ -77,8 +73,8 @@ public class Orientation
      * <p>
      * Rotation, in degrees, of the camera around the X axis. A value of 0 indicates that 
      * the view is aimed straight down toward the earth (the most common case). A value 
-     * for 90 for <tilt> indicates that the view is aimed toward the horizon. Values greater 
-     * than 90 indicate that the view is pointed up into the sky. Values for <tilt> are 
+     * for 90 for {@code <tilt>} indicates that the view is aimed toward the horizon. Values greater 
+     * than 90 indicate that the view is pointed up into the sky. Values for {@code <tilt>} are 
      * clamped at +180 degrees. 
      * </p>
      * 
@@ -88,13 +84,13 @@ public class Orientation
     @XmlElement(defaultValue = "0.0")
     protected double tilt;
     /**
-     * <roll>
+     * {@code <roll>}
      * <p>
-     * <heading> Rotation about the z axis (normal to the Earth's surface). A value of 
+     * {@code <heading>} Rotation about the z axis (normal to the Earth's surface). A value of 
      *  0 (the default) equals North. A positive rotation is clockwise around the z axis 
-     * and specified in degrees from 0 to 360. <tilt> Rotation about the x axis. A positive 
+     * and specified in degrees from 0 to 360. {@code <tilt>} Rotation about the x axis. A positive 
      * rotation is clockwise around the x axis and specified in degrees from 0 to 360. 
-     * <roll> Rotation about the y axis. A positive rotation is clockwise around the y 
+     * {@code <roll>} Rotation about the y axis. A positive rotation is clockwise around the y 
      * axis and specified in degrees from 0 to 360. This diagram illustrates the typical 
      * orientation of a model's axes: 
      * </p>
@@ -119,12 +115,12 @@ public class Orientation
     @XmlSchemaType(name = "anySimpleType")
     protected List<Object> orientationSimpleExtension;
     /**
-     * <Object>
+     * {@code <Object>}
      * <p>
      * This is an abstract base class and cannot be used directly in a KML file. It provides 
      * the id attribute, which allows unique identification of a KML element, and the targetId 
      * attribute, which is used to reference objects that have already been loaded into 
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
      * be used. 
      * </p>
      * 
@@ -144,7 +140,7 @@ public class Orientation
     }
 
     /**
-     * @see heading
+     *
      * 
      * @return
      *     possible object is
@@ -156,7 +152,7 @@ public class Orientation
     }
 
     /**
-     * @see heading
+     *
      * 
      * @param value
      *     allowed object is
@@ -168,7 +164,7 @@ public class Orientation
     }
 
     /**
-     * @see tilt
+     *
      * 
      * @return
      *     possible object is
@@ -180,7 +176,7 @@ public class Orientation
     }
 
     /**
-     * @see tilt
+     *
      * 
      * @param value
      *     allowed object is
@@ -192,7 +188,7 @@ public class Orientation
     }
 
     /**
-     * @see roll
+     *
      * 
      * @return
      *     possible object is
@@ -204,7 +200,7 @@ public class Orientation
     }
 
     /**
-     * @see roll
+     *
      * 
      * @param value
      *     allowed object is
@@ -216,7 +212,7 @@ public class Orientation
     }
 
     /**
-     * @see orientationSimpleExtension
+     *
      * 
      */
     public List<Object> getOrientationSimpleExtension() {
@@ -227,7 +223,7 @@ public class Orientation
     }
 
     /**
-     * @see orientationObjectExtension
+     *
      * 
      */
     public List<AbstractObject> getOrientationObjectExtension() {
@@ -238,70 +234,40 @@ public class Orientation
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        long temp;
-        temp = Double.doubleToLongBits(heading);
-        result = ((prime*result)+((int)(temp^(temp >>>(32)))));
-        temp = Double.doubleToLongBits(tilt);
-        result = ((prime*result)+((int)(temp^(temp >>>(32)))));
-        temp = Double.doubleToLongBits(roll);
-        result = ((prime*result)+((int)(temp^(temp >>>(32)))));
-        result = ((prime*result)+((orientationSimpleExtension == null)? 0 :orientationSimpleExtension.hashCode()));
-        result = ((prime*result)+((orientationObjectExtension == null)? 0 :orientationObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        Orientation that = (Orientation) object;
+        return Double.compare(heading, that.heading) == 0
+                && Double.compare(tilt, that.tilt) == 0
+                && Double.compare(roll, that.roll) == 0
+                && Objects.equals(orientationSimpleExtension, that.orientationSimpleExtension)
+                && Objects.equals(orientationObjectExtension, that.orientationObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof Orientation) == false) {
-            return false;
-        }
-        Orientation other = ((Orientation) obj);
-        if (heading!= other.heading) {
-            return false;
-        }
-        if (tilt!= other.tilt) {
-            return false;
-        }
-        if (roll!= other.roll) {
-            return false;
-        }
-        if (orientationSimpleExtension == null) {
-            if (other.orientationSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (orientationSimpleExtension.equals(other.orientationSimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (orientationObjectExtension == null) {
-            if (other.orientationObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (orientationObjectExtension.equals(other.orientationObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Double.hashCode(heading);
+        result = 31 * result + Double.hashCode(tilt);
+        result = 31 * result + Double.hashCode(roll);
+        result = 31 * result + Objects.hashCode(orientationSimpleExtension);
+        result = 31 * result + Objects.hashCode(orientationObjectExtension);
+        return result;
     }
 
     /**
-     * @see orientationSimpleExtension
+     *
      * 
      * @param orientationSimpleExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setOrientationSimpleExtension(final List<Object> orientationSimpleExtension) {
         this.orientationSimpleExtension = orientationSimpleExtension;
@@ -313,7 +279,7 @@ public class Orientation
      * @param orientationSimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Orientation addToOrientationSimpleExtension(final Object orientationSimpleExtension) {
         this.getOrientationSimpleExtension().add(orientationSimpleExtension);
@@ -321,9 +287,10 @@ public class Orientation
     }
 
     /**
-     * @see orientationObjectExtension
+     *
      * 
      * @param orientationObjectExtension
+     *     Objects of the following type are allowed in the list: {@link AbstractObject}
      */
     public void setOrientationObjectExtension(final List<AbstractObject> orientationObjectExtension) {
         this.orientationObjectExtension = orientationObjectExtension;
@@ -335,7 +302,7 @@ public class Orientation
      * @param orientationObjectExtension
      *     Objects of the following type are allowed in the list: {@link AbstractObject}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Orientation addToOrientationObjectExtension(final AbstractObject orientationObjectExtension) {
         this.getOrientationObjectExtension().add(orientationObjectExtension);
@@ -343,7 +310,7 @@ public class Orientation
     }
 
     /**
-     * @see objectSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -361,7 +328,7 @@ public class Orientation
 
     /**
      * fluent setter
-     * @see #setHeading(double)
+     *
      * 
      * @param heading
      *     required parameter
@@ -373,7 +340,7 @@ public class Orientation
 
     /**
      * fluent setter
-     * @see #setTilt(double)
+     *
      * 
      * @param tilt
      *     required parameter
@@ -385,7 +352,7 @@ public class Orientation
 
     /**
      * fluent setter
-     * @see #setRoll(double)
+     *
      * 
      * @param roll
      *     required parameter
@@ -397,7 +364,7 @@ public class Orientation
 
     /**
      * fluent setter
-     * @see #setOrientationSimpleExtension(List<Object>)
+     *
      * 
      * @param orientationSimpleExtension
      *     required parameter
@@ -409,7 +376,7 @@ public class Orientation
 
     /**
      * fluent setter
-     * @see #setOrientationObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param orientationObjectExtension
      *     required parameter

@@ -1,23 +1,18 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.XmlType;
 import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
 import de.micromata.opengis.kml.v_2_2_0.atom.Author;
 import de.micromata.opengis.kml.v_2_2_0.atom.Link;
 import de.micromata.opengis.kml.v_2_2_0.xal.AddressDetails;
+import jakarta.xml.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
- * <Container>
+ * {@code <Container>}
  * <p>
  * This is an abstract element and cannot be used directly in a KML file. A Container 
  * element holds one or more Features and allows the creation of nested hierarchies. 
@@ -47,11 +42,11 @@ import de.micromata.opengis.kml.v_2_2_0.xal.AddressDetails;
  * <strong>&lt;!-- /<em>Container --</em>&gt;</strong></pre>
  * 
  * Extends: 
- * @see: <Feature>
+ *
  * 
  * Extended By: 
- * @see: <Document>
- * @see: <Folder>
+ *
+ *
  * 
  * 
  * 
@@ -74,12 +69,12 @@ public abstract class Container
     @XmlSchemaType(name = "anySimpleType")
     protected List<Object> containerSimpleExtension;
     /**
-     * <Object>
+     * {@code <Object>}
      * <p>
      * This is an abstract base class and cannot be used directly in a KML file. It provides 
      * the id attribute, which allows unique identification of a KML element, and the targetId 
      * attribute, which is used to reference objects that have already been loaded into 
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
      * be used. 
      * </p>
      * 
@@ -99,7 +94,7 @@ public abstract class Container
     }
 
     /**
-     * @see containerSimpleExtension
+     *
      * 
      */
     public List<Object> getContainerSimpleExtension() {
@@ -110,7 +105,7 @@ public abstract class Container
     }
 
     /**
-     * @see containerObjectExtension
+     *
      * 
      */
     public List<AbstractObject> getContainerObjectExtension() {
@@ -121,54 +116,34 @@ public abstract class Container
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = ((prime*result)+((containerSimpleExtension == null)? 0 :containerSimpleExtension.hashCode()));
-        result = ((prime*result)+((containerObjectExtension == null)? 0 :containerObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        Container container = (Container) object;
+        return Objects.equals(containerSimpleExtension, container.containerSimpleExtension)
+                && Objects.equals(containerObjectExtension, container.containerObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof Container) == false) {
-            return false;
-        }
-        Container other = ((Container) obj);
-        if (containerSimpleExtension == null) {
-            if (other.containerSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (containerSimpleExtension.equals(other.containerSimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (containerObjectExtension == null) {
-            if (other.containerObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (containerObjectExtension.equals(other.containerObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(containerSimpleExtension);
+        result = 31 * result + Objects.hashCode(containerObjectExtension);
+        return result;
     }
 
     /**
-     * @see containerSimpleExtension
+     *
      * 
      * @param containerSimpleExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setContainerSimpleExtension(final List<Object> containerSimpleExtension) {
         this.containerSimpleExtension = containerSimpleExtension;
@@ -180,7 +155,7 @@ public abstract class Container
      * @param containerSimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Container addToContainerSimpleExtension(final Object containerSimpleExtension) {
         this.getContainerSimpleExtension().add(containerSimpleExtension);
@@ -188,9 +163,10 @@ public abstract class Container
     }
 
     /**
-     * @see containerObjectExtension
+     *
      * 
      * @param containerObjectExtension
+     *     Objects of the following type are allowed in the list: {@link AbstractObject}
      */
     public void setContainerObjectExtension(final List<AbstractObject> containerObjectExtension) {
         this.containerObjectExtension = containerObjectExtension;
@@ -202,7 +178,7 @@ public abstract class Container
      * @param containerObjectExtension
      *     Objects of the following type are allowed in the list: {@link AbstractObject}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Container addToContainerObjectExtension(final AbstractObject containerObjectExtension) {
         this.getContainerObjectExtension().add(containerObjectExtension);
@@ -210,7 +186,7 @@ public abstract class Container
     }
 
     /**
-     * @see objectSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -227,7 +203,7 @@ public abstract class Container
     }
 
     /**
-     * @see styleSelector
+     *
      * 
      */
     @Obvious
@@ -244,7 +220,7 @@ public abstract class Container
     }
 
     /**
-     * @see featureSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -261,7 +237,7 @@ public abstract class Container
     }
 
     /**
-     * @see featureObjectExtension
+     *
      * 
      */
     @Obvious
@@ -279,7 +255,7 @@ public abstract class Container
 
     /**
      * fluent setter
-     * @see #setContainerSimpleExtension(List<Object>)
+     *
      * 
      * @param containerSimpleExtension
      *     required parameter
@@ -291,7 +267,7 @@ public abstract class Container
 
     /**
      * fluent setter
-     * @see #setContainerObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param containerObjectExtension
      *     required parameter

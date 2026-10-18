@@ -1,19 +1,16 @@
 
 package de.micromata.opengis.kml.v_2_2_0.atom;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElementRef;
-import jakarta.xml.bind.annotation.XmlElementRefs;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
- * <atom:author>
  * <p>
  * KML 2.2 supports new elements for including data about the author and related website 
  * in your KML file. This information is displayed in geo search results, both in Earth 
@@ -21,7 +18,7 @@ import jakarta.xml.bind.annotation.XmlType;
  * ascription elements used in KML are as follows: 
  * </p>
  * <p>
- * The <atom:author> element is the parent element for <atom:name>, which specifies 
+ * The {@code <atom:author>} element is the parent element for {@code <atom:name>}, which specifies
  * the author of the KML feature. 
  * </p>
  * <p>
@@ -50,10 +47,6 @@ public class Author implements Cloneable
         super();
     }
 
-    /**
-     * @see nameOrUriOrEmail
-     * 
-     */
     public List<String> getNameOrUriOrEmail() {
         if (nameOrUriOrEmail == null) {
             nameOrUriOrEmail = new ArrayList<String>();
@@ -62,42 +55,23 @@ public class Author implements Cloneable
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = ((prime*result)+((nameOrUriOrEmail == null)? 0 :nameOrUriOrEmail.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+
+        Author author = (Author) object;
+        return Objects.equals(nameOrUriOrEmail, author.nameOrUriOrEmail);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if ((obj instanceof Author) == false) {
-            return false;
-        }
-        Author other = ((Author) obj);
-        if (nameOrUriOrEmail == null) {
-            if (other.nameOrUriOrEmail!= null) {
-                return false;
-            }
-        } else {
-            if (nameOrUriOrEmail.equals(other.nameOrUriOrEmail) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        return Objects.hashCode(nameOrUriOrEmail);
     }
 
-    /**
-     * @see nameOrUriOrEmail
-     * 
-     * @param nameOrUriOrEmail
-     */
     public void setNameOrUriOrEmail(final List<String> nameOrUriOrEmail) {
         this.nameOrUriOrEmail = nameOrUriOrEmail;
     }
@@ -106,9 +80,9 @@ public class Author implements Cloneable
      * add a value to the nameOrUriOrEmail property collection
      * 
      * @param nameOrUriOrEmail
-     *     Objects of the following type are allowed in the list: {@code <}{@link String}{@code>}{@link JAXBElement}{@code <}{@link String}{@code>}{@link JAXBElement}{@code <}{@link String}{@code>}
+     *     Objects of the following type are allowed in the list: {@code <}{@link String}{@code >}{@code <}{@link String}{@code >}{@code <}{@link String}{@code >}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public Author addToNameOrUriOrEmail(final String nameOrUriOrEmail) {
         this.getNameOrUriOrEmail().add(nameOrUriOrEmail);
@@ -117,7 +91,7 @@ public class Author implements Cloneable
 
     /**
      * fluent setter
-     * @see #setNameOrUriOrEmail(List<String>)
+     *
      * 
      * @param nameOrUriOrEmail
      *     required parameter

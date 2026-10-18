@@ -1,30 +1,24 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementRef;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
 import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
 import de.micromata.opengis.kml.v_2_2_0.atom.Author;
 import de.micromata.opengis.kml.v_2_2_0.atom.Link;
 import de.micromata.opengis.kml.v_2_2_0.gx.LatLonQuad;
 import de.micromata.opengis.kml.v_2_2_0.xal.AddressDetails;
+import jakarta.xml.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
- * <GroundOverlay>
+ * GroundOverlay
  * <p>
- * This element draws an image overlay draped onto the terrain. The <href> child of 
- * <Icon> specifies the image to be used as the overlay. This file can be either on 
+ * This element draws an image overlay draped onto the terrain. The {@code <href>}child of 
+ * {@code <Icon>}specifies the image to be used as the overlay. This file can be either on
  * a local file system or on a web server. If this element is omitted or contains no 
- * <href>, a rectangle is drawn using the color and LatLonBox bounds defined by the 
+ * {@code <href>}, a rectangle is drawn using the color and LatLonBox bounds defined by the
  * ground overlay. 
  * </p>
  * 
@@ -67,12 +61,12 @@ import de.micromata.opengis.kml.v_2_2_0.xal.AddressDetails;
  * <strong>&lt;/GroundOverlay&gt;</strong></pre>
  * 
  * Extends: 
- * @see: <Feature>
- * @see: <Overlay>
+ *
+ *
  * 
  * Contained By: 
- * @see: <Document>
- * @see: <Folder>
+ *
+ *
  * 
  * 
  * 
@@ -92,14 +86,14 @@ public class GroundOverlay
 {
 
     /**
-     * <altitude>
+     * altitude
      * <p>
      * Distance from the earth's surface, in meters. Interpreted according to the LookAt's 
      * altitude mode. 
      * </p>
      * <p>
      * Distance of the camera from the earth's surface, in meters. Interpreted according 
-     * to the Camera's <altitudeMode> or <gx:altitudeMode>. 
+     * to the Camera's altitudeMode or gx:altitudeMode. 
      * </p>
      * <p>
      * Specifies the distance above the earth's surface, in meters, and is interpreted 
@@ -118,7 +112,7 @@ public class GroundOverlay
      * </p>
      * 
      * See Also: 
-     * See <LookAt> and <Region>
+     * See LookAt and {@code <Region>}
      * 
      * 
      * 
@@ -126,21 +120,21 @@ public class GroundOverlay
     @XmlElement(defaultValue = "clampToGround")
     protected AltitudeMode altitudeMode;
     /**
-     * <latlonbox>
+     * latlongbox
      * <p>
      * Specifies where the top, bottom, right, and left sides of a bounding box for the 
-     * ground overlay are aligned. <north> Specifies the latitude of the north edge of 
-     * the bounding box, in decimal degrees from 0 to ±90. <south> Specifies the latitude 
-     * of the south edge of the bounding box, in decimal degrees from 0 to ±90. <east> 
+     * ground overlay are aligned. north Specifies the latitude of the north edge of 
+     * the bounding box, in decimal degrees from 0 to ±90. south Specifies the latitude 
+     * of the south edge of the bounding box, in decimal degrees from 0 to ±90. east 
      * Specifies the longitude of the east edge of the bounding box, in decimal degrees 
      * from 0 to ±180. (For overlays that overlap the meridian of 180° longitude, values 
-     * can extend beyond that range.) <west> Specifies the longitude of the west edge of 
+     * can extend beyond that range.) west Specifies the longitude of the west edge of 
      * the bounding box, in decimal degrees from 0 to ±180. (For overlays that overlap 
-     * the meridian of 180° longitude, values can extend beyond that range.) <rotation> 
+     * the meridian of 180° longitude, values can extend beyond that range.) rotation 
      * Specifies a rotation of the overlay about its center, in degrees. Values can be 
      * ±180. The default is 0 (north). Rotations are specified in a counterclockwise direction. 
-     * <LatLonBox> <north>48.25475939255556</north> <south>48.25207367852141</south> <east>-90.86591508839973</east> 
-     * <west>-90.8714285289695</west> <rotation>39.37878630116985</rotation> </LatLonBox> 
+     * latlongbox north 48.25475939255556 south 48.25207367852141 east -90.86591508839973
+     * west -90.8714285289695 rotation 39.37878630116985
      * </p>
      * 
      * 
@@ -152,12 +146,12 @@ public class GroundOverlay
     @XmlSchemaType(name = "anySimpleType")
     protected List<Object> groundOverlaySimpleExtension;
     /**
-     * <Object>
+     * {@code <Object>}
      * <p>
      * This is an abstract base class and cannot be used directly in a KML file. It provides 
      * the id attribute, which allows unique identification of a KML element, and the targetId 
      * attribute, which is used to reference objects that have already been loaded into 
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
      * be used. 
      * </p>
      * 
@@ -177,7 +171,7 @@ public class GroundOverlay
     }
 
     /**
-     * @see altitude
+     *
      * 
      * @return
      *     possible object is
@@ -189,7 +183,7 @@ public class GroundOverlay
     }
 
     /**
-     * @see altitude
+     *
      * 
      * @param value
      *     allowed object is
@@ -201,13 +195,13 @@ public class GroundOverlay
     }
 
     /**
-     * @see altitudeMode
+     *
      * 
      * @return
      *     possible object is
-     *     {@code <}{@link Object}{@code>}
-     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.AltitudeMode}{@code>}
-     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.gx.AltitudeMode}{@code>}
+     *     {@code <}{@link Object}{@code >}
+     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.AltitudeMode}{@code >}
+     *     
      *     
      */
     public AltitudeMode getAltitudeMode() {
@@ -215,13 +209,13 @@ public class GroundOverlay
     }
 
     /**
-     * @see altitudeMode
+     *
      * 
      * @param value
      *     allowed object is
-     *     {@code <}{@link Object}{@code>}
-     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.AltitudeMode}{@code>}
-     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.gx.AltitudeMode}{@code>}
+     *     {@code <}{@link Object}{@code >}
+     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.AltitudeMode}{@code >}
+     *     
      *     
      */
     public void setAltitudeMode(AltitudeMode value) {
@@ -229,7 +223,7 @@ public class GroundOverlay
     }
 
     /**
-     * @see latLonBox
+     *
      * 
      * @return
      *     possible object is
@@ -241,7 +235,7 @@ public class GroundOverlay
     }
 
     /**
-     * @see latLonBox
+     *
      * 
      * @param value
      *     allowed object is
@@ -253,7 +247,7 @@ public class GroundOverlay
     }
 
     /**
-     * @see groundOverlaySimpleExtension
+     *
      * 
      */
     public List<Object> getGroundOverlaySimpleExtension() {
@@ -264,7 +258,7 @@ public class GroundOverlay
     }
 
     /**
-     * @see groundOverlayObjectExtension
+     *
      * 
      */
     public List<AbstractObject> getGroundOverlayObjectExtension() {
@@ -275,83 +269,42 @@ public class GroundOverlay
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        long temp;
-        temp = Double.doubleToLongBits(altitude);
-        result = ((prime*result)+((int)(temp^(temp >>>(32)))));
-        result = ((prime*result)+((altitudeMode == null)? 0 :altitudeMode.hashCode()));
-        result = ((prime*result)+((latLonBox == null)? 0 :latLonBox.hashCode()));
-        result = ((prime*result)+((groundOverlaySimpleExtension == null)? 0 :groundOverlaySimpleExtension.hashCode()));
-        result = ((prime*result)+((groundOverlayObjectExtension == null)? 0 :groundOverlayObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        GroundOverlay that = (GroundOverlay) object;
+        return altitudeMode == that.altitudeMode
+                && Double.compare(altitude, that.altitude) == 0
+                && Objects.equals(latLonBox, that.latLonBox)
+                && Objects.equals(groundOverlaySimpleExtension, that.groundOverlaySimpleExtension)
+                && Objects.equals(groundOverlayObjectExtension, that.groundOverlayObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof GroundOverlay) == false) {
-            return false;
-        }
-        GroundOverlay other = ((GroundOverlay) obj);
-        if (altitude!= other.altitude) {
-            return false;
-        }
-        if (altitudeMode == null) {
-            if (other.altitudeMode!= null) {
-                return false;
-            }
-        } else {
-            if (altitudeMode.equals(other.altitudeMode) == false) {
-                return false;
-            }
-        }
-        if (latLonBox == null) {
-            if (other.latLonBox!= null) {
-                return false;
-            }
-        } else {
-            if (latLonBox.equals(other.latLonBox) == false) {
-                return false;
-            }
-        }
-        if (groundOverlaySimpleExtension == null) {
-            if (other.groundOverlaySimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (groundOverlaySimpleExtension.equals(other.groundOverlaySimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (groundOverlayObjectExtension == null) {
-            if (other.groundOverlayObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (groundOverlayObjectExtension.equals(other.groundOverlayObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Double.hashCode(altitude);
+        result = 31 * result + Objects.hashCode(altitudeMode);
+        result = 31 * result + Objects.hashCode(latLonBox);
+        result = 31 * result + Objects.hashCode(groundOverlaySimpleExtension);
+        result = 31 * result + Objects.hashCode(groundOverlayObjectExtension);
+        return result;
     }
 
     /**
      * Creates a new instance of {@link LatLonBox} and set it to latLonBox.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * LatLonBox latLonBox = new LatLonBox();
-     * this.setLatLonBox(latLonBox); </code>
+     * this.setLatLonBox(latLonBox); }
      * 
      * 
      */
@@ -362,9 +315,10 @@ public class GroundOverlay
     }
 
     /**
-     * @see groundOverlaySimpleExtension
+     *
      * 
      * @param groundOverlaySimpleExtension
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setGroundOverlaySimpleExtension(final List<Object> groundOverlaySimpleExtension) {
         this.groundOverlaySimpleExtension = groundOverlaySimpleExtension;
@@ -376,7 +330,7 @@ public class GroundOverlay
      * @param groundOverlaySimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public GroundOverlay addToGroundOverlaySimpleExtension(final Object groundOverlaySimpleExtension) {
         this.getGroundOverlaySimpleExtension().add(groundOverlaySimpleExtension);
@@ -384,9 +338,10 @@ public class GroundOverlay
     }
 
     /**
-     * @see groundOverlayObjectExtension
+     *
      * 
      * @param groundOverlayObjectExtension
+     *     Objects of the following type are allowed in the list: {@code <}{@link LatLonQuad}{@code >}{@code <}{@link AbstractObject}{@code >}
      */
     public void setGroundOverlayObjectExtension(final List<AbstractObject> groundOverlayObjectExtension) {
         this.groundOverlayObjectExtension = groundOverlayObjectExtension;
@@ -396,9 +351,9 @@ public class GroundOverlay
      * add a value to the groundOverlayObjectExtension property collection
      * 
      * @param groundOverlayObjectExtension
-     *     Objects of the following type are allowed in the list: {@code <}{@link LatLonQuad}{@code>}{@link JAXBElement}{@code <}{@link AbstractObject}{@code>}
+     *     Objects of the following type are allowed in the list: {@code <}{@link LatLonQuad}{@code >}{@code <}{@link AbstractObject}{@code >}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public GroundOverlay addToGroundOverlayObjectExtension(final AbstractObject groundOverlayObjectExtension) {
         this.getGroundOverlayObjectExtension().add(groundOverlayObjectExtension);
@@ -406,7 +361,7 @@ public class GroundOverlay
     }
 
     /**
-     * @see objectSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -423,7 +378,7 @@ public class GroundOverlay
     }
 
     /**
-     * @see styleSelector
+     *
      * 
      */
     @Obvious
@@ -440,7 +395,7 @@ public class GroundOverlay
     }
 
     /**
-     * @see featureSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -457,7 +412,7 @@ public class GroundOverlay
     }
 
     /**
-     * @see featureObjectExtension
+     *
      * 
      */
     @Obvious
@@ -474,7 +429,7 @@ public class GroundOverlay
     }
 
     /**
-     * @see overlaySimpleExtension
+     *
      * 
      */
     @Obvious
@@ -491,7 +446,7 @@ public class GroundOverlay
     }
 
     /**
-     * @see overlayObjectExtension
+     *
      * 
      */
     @Obvious
@@ -509,7 +464,7 @@ public class GroundOverlay
 
     /**
      * fluent setter
-     * @see #setAltitude(double)
+     *
      * 
      * @param altitude
      *     required parameter
@@ -521,7 +476,7 @@ public class GroundOverlay
 
     /**
      * fluent setter
-     * @see #setAltitudeMode(Object)
+     *
      * 
      * @param altitudeMode
      *     required parameter
@@ -533,7 +488,7 @@ public class GroundOverlay
 
     /**
      * fluent setter
-     * @see #setLatLonBox(LatLonBox)
+     *
      * 
      * @param latLonBox
      *     required parameter
@@ -545,7 +500,7 @@ public class GroundOverlay
 
     /**
      * fluent setter
-     * @see #setGroundOverlaySimpleExtension(List<Object>)
+     *
      * 
      * @param groundOverlaySimpleExtension
      *     required parameter
@@ -557,7 +512,7 @@ public class GroundOverlay
 
     /**
      * fluent setter
-     * @see #setGroundOverlayObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param groundOverlayObjectExtension
      *     required parameter

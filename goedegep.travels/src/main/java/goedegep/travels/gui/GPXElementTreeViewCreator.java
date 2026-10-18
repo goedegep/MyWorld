@@ -82,7 +82,7 @@ public class GPXElementTreeViewCreator {
     
     // VacationElementGPX.trackReference
     EObjectTreeItemClassReferenceDescriptor eObjectTreeItemClassReferenceDescriptor = new EObjectTreeItemClassReferenceDescriptor(vacationsPackage.getGPXTrack_TrackReference())
-        .setNodeTextFunction(eObject -> "GPX track reference")
+        .setNodeTextFunction(_ -> "GPX track reference")
         .setExpandOnCreation(true);
     eObjectTreeItemClassDescriptor.addStructuralFeatureDescriptor(eObjectTreeItemClassReferenceDescriptor);
     

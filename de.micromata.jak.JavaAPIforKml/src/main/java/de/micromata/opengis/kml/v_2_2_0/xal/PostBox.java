@@ -1,22 +1,14 @@
 
 package de.micromata.opengis.kml.v_2_2_0.xal;
 
+import jakarta.xml.bind.annotation.*;
+
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAnyAttribute;
-import jakarta.xml.bind.annotation.XmlAnyElement;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.XmlValue;
-import javax.xml.namespace.QName;
-
+import java.util.Objects;
 
 /**
  * 
@@ -287,133 +279,50 @@ public class PostBox implements Cloneable
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = ((prime*result)+((addressLine == null)? 0 :addressLine.hashCode()));
-        result = ((prime*result)+((postBoxNumber == null)? 0 :postBoxNumber.hashCode()));
-        result = ((prime*result)+((postBoxNumberPrefix == null)? 0 :postBoxNumberPrefix.hashCode()));
-        result = ((prime*result)+((postBoxNumberSuffix == null)? 0 :postBoxNumberSuffix.hashCode()));
-        result = ((prime*result)+((postBoxNumberExtension == null)? 0 :postBoxNumberExtension.hashCode()));
-        result = ((prime*result)+((firm == null)? 0 :firm.hashCode()));
-        result = ((prime*result)+((postalCode == null)? 0 :postalCode.hashCode()));
-        result = ((prime*result)+((any == null)? 0 :any.hashCode()));
-        result = ((prime*result)+((underscore == null)? 0 :underscore.hashCode()));
-        result = ((prime*result)+((indicator == null)? 0 :indicator.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+
+        PostBox postBox = (PostBox) object;
+        return Objects.equals(addressLine, postBox.addressLine)
+                && Objects.equals(postBoxNumber, postBox.postBoxNumber)
+                && Objects.equals(postBoxNumberPrefix, postBox.postBoxNumberPrefix)
+                && Objects.equals(postBoxNumberSuffix, postBox.postBoxNumberSuffix)
+                && Objects.equals(postBoxNumberExtension, postBox.postBoxNumberExtension)
+                && Objects.equals(firm, postBox.firm)
+                && Objects.equals(postalCode, postBox.postalCode)
+                && Objects.equals(any, postBox.any)
+                && Objects.equals(underscore, postBox.underscore)
+                && Objects.equals(indicator, postBox.indicator)
+                && Objects.equals(otherAttributes, postBox.otherAttributes);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if ((obj instanceof PostBox) == false) {
-            return false;
-        }
-        PostBox other = ((PostBox) obj);
-        if (addressLine == null) {
-            if (other.addressLine!= null) {
-                return false;
-            }
-        } else {
-            if (addressLine.equals(other.addressLine) == false) {
-                return false;
-            }
-        }
-        if (postBoxNumber == null) {
-            if (other.postBoxNumber!= null) {
-                return false;
-            }
-        } else {
-            if (postBoxNumber.equals(other.postBoxNumber) == false) {
-                return false;
-            }
-        }
-        if (postBoxNumberPrefix == null) {
-            if (other.postBoxNumberPrefix!= null) {
-                return false;
-            }
-        } else {
-            if (postBoxNumberPrefix.equals(other.postBoxNumberPrefix) == false) {
-                return false;
-            }
-        }
-        if (postBoxNumberSuffix == null) {
-            if (other.postBoxNumberSuffix!= null) {
-                return false;
-            }
-        } else {
-            if (postBoxNumberSuffix.equals(other.postBoxNumberSuffix) == false) {
-                return false;
-            }
-        }
-        if (postBoxNumberExtension == null) {
-            if (other.postBoxNumberExtension!= null) {
-                return false;
-            }
-        } else {
-            if (postBoxNumberExtension.equals(other.postBoxNumberExtension) == false) {
-                return false;
-            }
-        }
-        if (firm == null) {
-            if (other.firm!= null) {
-                return false;
-            }
-        } else {
-            if (firm.equals(other.firm) == false) {
-                return false;
-            }
-        }
-        if (postalCode == null) {
-            if (other.postalCode!= null) {
-                return false;
-            }
-        } else {
-            if (postalCode.equals(other.postalCode) == false) {
-                return false;
-            }
-        }
-        if (any == null) {
-            if (other.any!= null) {
-                return false;
-            }
-        } else {
-            if (any.equals(other.any) == false) {
-                return false;
-            }
-        }
-        if (underscore == null) {
-            if (other.underscore!= null) {
-                return false;
-            }
-        } else {
-            if (underscore.equals(other.underscore) == false) {
-                return false;
-            }
-        }
-        if (indicator == null) {
-            if (other.indicator!= null) {
-                return false;
-            }
-        } else {
-            if (indicator.equals(other.indicator) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = Objects.hashCode(addressLine);
+        result = 31 * result + Objects.hashCode(postBoxNumber);
+        result = 31 * result + Objects.hashCode(postBoxNumberPrefix);
+        result = 31 * result + Objects.hashCode(postBoxNumberSuffix);
+        result = 31 * result + Objects.hashCode(postBoxNumberExtension);
+        result = 31 * result + Objects.hashCode(firm);
+        result = 31 * result + Objects.hashCode(postalCode);
+        result = 31 * result + Objects.hashCode(any);
+        result = 31 * result + Objects.hashCode(underscore);
+        result = 31 * result + Objects.hashCode(indicator);
+        result = 31 * result + Objects.hashCode(otherAttributes);
+        return result;
     }
 
     /**
      * Creates a new instance of {@link AddressLine} and adds it to addressLine.
      * This method is a short version for:
-     * <code>
+     * {@code
      * AddressLine addressLine = new AddressLine();
-     * this.getAddressLine().add(addressLine); </code>
+     * this.getAddressLine().add(addressLine); }
      * 
      * 
      */
@@ -427,9 +336,9 @@ public class PostBox implements Cloneable
      * Creates a new instance of {@link PostBox.PostBoxNumber} and set it to postBoxNumber.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostBoxNumber postBoxNumber = new PostBoxNumber();
-     * this.setPostBoxNumber(postBoxNumber); </code>
+     * this.setPostBoxNumber(postBoxNumber); }
      * 
      * 
      */
@@ -443,9 +352,9 @@ public class PostBox implements Cloneable
      * Creates a new instance of {@link PostBox.PostBoxNumberPrefix} and set it to postBoxNumberPrefix.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostBoxNumberPrefix postBoxNumberPrefix = new PostBoxNumberPrefix();
-     * this.setPostBoxNumberPrefix(postBoxNumberPrefix); </code>
+     * this.setPostBoxNumberPrefix(postBoxNumberPrefix); }
      * 
      * 
      */
@@ -459,9 +368,9 @@ public class PostBox implements Cloneable
      * Creates a new instance of {@link PostBox.PostBoxNumberSuffix} and set it to postBoxNumberSuffix.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostBoxNumberSuffix postBoxNumberSuffix = new PostBoxNumberSuffix();
-     * this.setPostBoxNumberSuffix(postBoxNumberSuffix); </code>
+     * this.setPostBoxNumberSuffix(postBoxNumberSuffix); }
      * 
      * 
      */
@@ -475,9 +384,9 @@ public class PostBox implements Cloneable
      * Creates a new instance of {@link PostBox.PostBoxNumberExtension} and set it to postBoxNumberExtension.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostBoxNumberExtension postBoxNumberExtension = new PostBoxNumberExtension();
-     * this.setPostBoxNumberExtension(postBoxNumberExtension); </code>
+     * this.setPostBoxNumberExtension(postBoxNumberExtension); }
      * 
      * 
      */
@@ -491,9 +400,9 @@ public class PostBox implements Cloneable
      * Creates a new instance of {@link Firm} and set it to firm.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * Firm firm = new Firm();
-     * this.setFirm(firm); </code>
+     * this.setFirm(firm); }
      * 
      * 
      */
@@ -507,9 +416,9 @@ public class PostBox implements Cloneable
      * Creates a new instance of {@link PostalCode} and set it to postalCode.
      * 
      * This method is a short version for:
-     * <code>
+     * {@code
      * PostalCode postalCode = new PostalCode();
-     * this.setPostalCode(postalCode); </code>
+     * this.setPostalCode(postalCode); }
      * 
      * 
      */
@@ -520,12 +429,13 @@ public class PostBox implements Cloneable
     }
 
     /**
-     * Sets the value of the addressLine property Objects of the following type(s) are allowed in the list List<AddressLine>.
+     * Sets the value of the addressLine property Objects of the following type(s) are allowed in the list {@code List<AddressLine>}.
      * <p>Note:
-     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAddressLine} instead.
+     * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use withAddressLine instead.
      * 
      * 
      * @param addressLine
+     *     Objects of the following type are allowed in the list: {@link AddressLine}
      */
     public void setAddressLine(final List<AddressLine> addressLine) {
         this.addressLine = addressLine;
@@ -537,7 +447,7 @@ public class PostBox implements Cloneable
      * @param addressLine
      *     Objects of the following type are allowed in the list: {@link AddressLine}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public PostBox addToAddressLine(final AddressLine addressLine) {
         this.getAddressLine().add(addressLine);
@@ -545,12 +455,13 @@ public class PostBox implements Cloneable
     }
 
     /**
-     * Sets the value of the any property Objects of the following type(s) are allowed in the list List<Object>.
+     * Sets the value of the any property Objects of the following type(s) are allowed in the list {@code List<Object>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withAny} instead.
      * 
      * 
      * @param any
+     *     Objects of the following type are allowed in the list: {@link Object}
      */
     public void setAny(final List<Object> any) {
         this.any = any;
@@ -562,7 +473,7 @@ public class PostBox implements Cloneable
      * @param any
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public PostBox addToAny(final Object any) {
         this.getAny().add(any);
@@ -571,7 +482,7 @@ public class PostBox implements Cloneable
 
     /**
      * fluent setter
-     * @see #setAddressLine(List<AddressLine>)
+     *
      * 
      * @param addressLine
      *     required parameter
@@ -583,7 +494,7 @@ public class PostBox implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPostBoxNumberPrefix(PostBoxNumberPrefix)
+     *
      * 
      * @param postBoxNumberPrefix
      *     required parameter
@@ -595,7 +506,7 @@ public class PostBox implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPostBoxNumberSuffix(PostBoxNumberSuffix)
+     *
      * 
      * @param postBoxNumberSuffix
      *     required parameter
@@ -607,7 +518,7 @@ public class PostBox implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPostBoxNumberExtension(PostBoxNumberExtension)
+     *
      * 
      * @param postBoxNumberExtension
      *     required parameter
@@ -619,7 +530,7 @@ public class PostBox implements Cloneable
 
     /**
      * fluent setter
-     * @see #setFirm(Firm)
+     *
      * 
      * @param firm
      *     required parameter
@@ -631,7 +542,7 @@ public class PostBox implements Cloneable
 
     /**
      * fluent setter
-     * @see #setPostalCode(PostalCode)
+     *
      * 
      * @param postalCode
      *     required parameter
@@ -643,7 +554,7 @@ public class PostBox implements Cloneable
 
     /**
      * fluent setter
-     * @see #setAny(List<Object>)
+     *
      * 
      * @param any
      *     required parameter
@@ -655,7 +566,7 @@ public class PostBox implements Cloneable
 
     /**
      * fluent setter
-     * @see #setUnderscore(String)
+     *
      * 
      * @param underscore
      *     required parameter
@@ -667,7 +578,7 @@ public class PostBox implements Cloneable
 
     /**
      * fluent setter
-     * @see #setIndicator(String)
+     *
      * 
      * @param indicator
      *     required parameter
@@ -823,7 +734,7 @@ public class PostBox implements Cloneable
 
         /**
          * fluent setter
-         * @see #setContent(String)
+         *
          * 
          * @param content
          *     required parameter
@@ -835,7 +746,7 @@ public class PostBox implements Cloneable
 
         /**
          * fluent setter
-         * @see #setCode(String)
+         *
          * 
          * @param code
          *     required parameter
@@ -979,7 +890,7 @@ public class PostBox implements Cloneable
 
         /**
          * fluent setter
-         * @see #setContent(String)
+         *
          * 
          * @param content
          *     required parameter
@@ -991,7 +902,7 @@ public class PostBox implements Cloneable
 
         /**
          * fluent setter
-         * @see #setNumberExtensionSeparator(String)
+         *
          * 
          * @param numberExtensionSeparator
          *     required parameter
@@ -1170,7 +1081,7 @@ public class PostBox implements Cloneable
 
         /**
          * fluent setter
-         * @see #setContent(String)
+         *
          * 
          * @param content
          *     required parameter
@@ -1182,7 +1093,7 @@ public class PostBox implements Cloneable
 
         /**
          * fluent setter
-         * @see #setNumberPrefixSeparator(String)
+         *
          * 
          * @param numberPrefixSeparator
          *     required parameter
@@ -1194,7 +1105,7 @@ public class PostBox implements Cloneable
 
         /**
          * fluent setter
-         * @see #setCode(String)
+         *
          * 
          * @param code
          *     required parameter
@@ -1373,7 +1284,7 @@ public class PostBox implements Cloneable
 
         /**
          * fluent setter
-         * @see #setContent(String)
+         *
          * 
          * @param content
          *     required parameter
@@ -1385,7 +1296,7 @@ public class PostBox implements Cloneable
 
         /**
          * fluent setter
-         * @see #setNumberSuffixSeparator(String)
+         *
          * 
          * @param numberSuffixSeparator
          *     required parameter
@@ -1397,7 +1308,7 @@ public class PostBox implements Cloneable
 
         /**
          * fluent setter
-         * @see #setCode(String)
+         *
          * 
          * @param code
          *     required parameter

@@ -13,7 +13,6 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -30,8 +29,6 @@ import goedegep.travels.logic.TravelToHtmlConverterSettings;
 import goedegep.travels.logic.TravelsUtils;
 import goedegep.travels.model.Travel;
 import goedegep.util.file.FileUtils;
-import goedegep.util.settings.Setting;
-import goedegep.util.settings.Settings;
 import javafx.beans.value.ChangeListener;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;

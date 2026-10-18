@@ -1,32 +1,25 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
+import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
+import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementRef;
-
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
-
+import java.util.Objects;
 
 /**
- * <LinearRing>
+ * {@code <LinearRing>}
  * <p>
  * Defines a closed line string, typically the outer boundary of a Polygon. Optionally, 
  * a LinearRing can also be used as the inner boundary of a Polygon to create holes 
- * in the Polygon. A Polygon can contain multiple <LinearRing> elements used as inner 
+ * in the Polygon. A Polygon can contain multiple {@code <LinearRing>} elements used as inner 
  * boundaries. 
  * </p>
  * <p>
- * Note: In Google Earth, a Polygon with an <altitudeMode> of clampToGround follows 
- * the great circle; however, a LinearRing (by itself) with an <altitudeMode> of clampToGround 
+ * Note: In Google Earth, a Polygon with an altitudeMode of clampToGround follows 
+ * the great circle; however, a LinearRing (by itself) with an altitudeMode of clampToGround 
  * follows lines of constant latitude. 
  * </p>
  * 
@@ -42,13 +35,13 @@ import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
  * <strong>&lt;/LinearRing&gt;</strong></pre>
  * 
  * Extends: 
- * @see: <Geometry>
+ *
  * 
  * Contained By: 
- * @see: <MultiGeometry>
- * @see: <Placemark>
- * @see: <innerBoundaryIs>
- * @see: <outerBoundaryIs>
+ *
+ *
+ *
+ *
  * 
  * 
  * 
@@ -69,7 +62,7 @@ public class LinearRing
 {
 
     /**
-     * <extrude>
+     * {@code <extrude>}
      * <p>
      * Boolean value. Specifies whether to connect the LineString to the ground. To extrude 
      * a LineString, the altitude mode must be either relativeToGround, relativeToSeaFloor, 
@@ -91,7 +84,7 @@ public class LinearRing
      * </p>
      * <p>
      * Boolean value. Specifies whether to connect the point to the ground with a line. 
-     * To extrude a Point, the value for <altitudeMode> must be either relativeToGround, 
+     * To extrude a Point, the value for altitudeMode must be either relativeToGround, 
      * relativeToSeaFloor, or absolute. The point is extruded toward the center of the 
      * Earth's sphere. 
      * </p>
@@ -103,7 +96,7 @@ public class LinearRing
     @XmlJavaTypeAdapter(BooleanConverter.class)
     protected Boolean extrude;
     /**
-     * <tessellate>
+     * {@code <extrude>}
      * <p>
      * Boolean value. Specifies whether to allow the LineString to follow the terrain. 
      * To enable tessellation, the altitude mode must be clampToGround or clampToSeaFloor. 
@@ -112,7 +105,7 @@ public class LinearRing
      * </p>
      * <p>
      * Boolean value. Specifies whether to allow the LinearRing to follow the terrain. 
-     * To enable tessellation, the value for <altitudeMode> must be clampToGround or clampToSeaFloor. 
+     * To enable tessellation, the value for altitudeMode must be clampToGround or clampToSeaFloor. 
      * Very large LinearRings should enable tessellation so that they follow the curvature 
      * of the earth (otherwise, they may go underground and be hidden). 
      * </p>
@@ -136,7 +129,7 @@ public class LinearRing
      * </p>
      * 
      * See Also: 
-     * See <LookAt> and <Region>
+     * See LookAt and {@code <Region>}
      * 
      * 
      * 
@@ -144,11 +137,11 @@ public class LinearRing
     @XmlElement(defaultValue = "clampToGround")
     protected AltitudeMode altitudeMode;
     /**
-     * <coordinates> (required)
+     * coordinates (required)
      * <p>
      * A single tuple consisting of floating point values for longitude, latitude, and 
      * altitude (in that order). Longitude and latitude values are in degrees, where longitude 
-     * ≥ −180 and <= 180 latitude ≥ −90 and ≤ 90 altitude values (optional) are in meters 
+     * gt −180 and lteq 180 latitude gteq −90 and lteq 90 altitude values (optional) are in meters
      * above sea level 
      * </p>
      * <p>
@@ -171,12 +164,12 @@ public class LinearRing
     @XmlSchemaType(name = "anySimpleType")
     protected List<Object> linearRingSimpleExtension;
     /**
-     * <Object>
+     * {@code <Object>}
      * <p>
      * This is an abstract base class and cannot be used directly in a KML file. It provides 
      * the id attribute, which allows unique identification of a KML element, and the targetId 
      * attribute, which is used to reference objects that have already been loaded into 
-     * Google Earth. The id attribute must be assigned if the <Update> mechanism is to 
+     * Google Earth. The id attribute must be assigned if the Update mechanism is to 
      * be used. 
      * </p>
      * 
@@ -207,7 +200,7 @@ public class LinearRing
     }
 
     /**
-     * @see extrude
+     *
      * 
      * @param value
      *     allowed object is
@@ -230,7 +223,7 @@ public class LinearRing
     }
 
     /**
-     * @see tessellate
+     *
      * 
      * @param value
      *     allowed object is
@@ -242,13 +235,13 @@ public class LinearRing
     }
 
     /**
-     * @see altitudeMode
+     *
      * 
      * @return
      *     possible object is
-     *     {@code <}{@link Object}{@code>}
-     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.AltitudeMode}{@code>}
-     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.gx.AltitudeMode}{@code>}
+     *     {@code <}{@link Object}{@code >}
+     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.AltitudeMode}{@code >}
+     *     
      *     
      */
     public AltitudeMode getAltitudeMode() {
@@ -256,13 +249,13 @@ public class LinearRing
     }
 
     /**
-     * @see altitudeMode
+     *
      * 
      * @param value
      *     allowed object is
-     *     {@code <}{@link Object}{@code>}
-     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.AltitudeMode}{@code>}
-     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.gx.AltitudeMode}{@code>}
+     *     {@code <}{@link Object}{@code >}
+     *     {@code <}{@link de.micromata.opengis.kml.v_2_2_0.AltitudeMode}{@code >}
+     *     
      *     
      */
     public void setAltitudeMode(AltitudeMode value) {
@@ -270,7 +263,7 @@ public class LinearRing
     }
 
     /**
-     * @see linearRingSimpleExtension
+     *
      * 
      */
     public List<Object> getLinearRingSimpleExtension() {
@@ -281,7 +274,7 @@ public class LinearRing
     }
 
     /**
-     * @see linearRingObjectExtension
+     *
      * 
      */
     public List<AbstractObject> getLinearRingObjectExtension() {
@@ -292,7 +285,7 @@ public class LinearRing
     }
 
     /**
-     * @see coordinates
+     *
      * 
      */
     public List<Coordinate> getCoordinates() {
@@ -303,95 +296,37 @@ public class LinearRing
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = ((prime*result)+((extrude == null)? 0 :extrude.hashCode()));
-        result = ((prime*result)+((tessellate == null)? 0 :tessellate.hashCode()));
-        result = ((prime*result)+((altitudeMode == null)? 0 :altitudeMode.hashCode()));
-        result = ((prime*result)+((coordinates == null)? 0 :coordinates.hashCode()));
-        result = ((prime*result)+((linearRingSimpleExtension == null)? 0 :linearRingSimpleExtension.hashCode()));
-        result = ((prime*result)+((linearRingObjectExtension == null)? 0 :linearRingObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        LinearRing that = (LinearRing) object;
+        return altitudeMode == that.altitudeMode
+                && Objects.equals(extrude, that.extrude)
+                && Objects.equals(tessellate, that.tessellate)
+                && Objects.equals(coordinates, that.coordinates)
+                && Objects.equals(linearRingSimpleExtension, that.linearRingSimpleExtension)
+                && Objects.equals(linearRingObjectExtension, that.linearRingObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof LinearRing) == false) {
-            return false;
-        }
-        LinearRing other = ((LinearRing) obj);
-        if (extrude == null) {
-            if (other.extrude!= null) {
-                return false;
-            }
-        } else {
-            if (extrude.equals(other.extrude) == false) {
-                return false;
-            }
-        }
-        if (tessellate == null) {
-            if (other.tessellate!= null) {
-                return false;
-            }
-        } else {
-            if (tessellate.equals(other.tessellate) == false) {
-                return false;
-            }
-        }
-        if (altitudeMode == null) {
-            if (other.altitudeMode!= null) {
-                return false;
-            }
-        } else {
-            if (altitudeMode.equals(other.altitudeMode) == false) {
-                return false;
-            }
-        }
-        if (coordinates == null) {
-            if (other.coordinates!= null) {
-                return false;
-            }
-        } else {
-            if (coordinates.equals(other.coordinates) == false) {
-                return false;
-            }
-        }
-        if (linearRingSimpleExtension == null) {
-            if (other.linearRingSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (linearRingSimpleExtension.equals(other.linearRingSimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (linearRingObjectExtension == null) {
-            if (other.linearRingObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (linearRingObjectExtension.equals(other.linearRingObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(extrude);
+        result = 31 * result + Objects.hashCode(tessellate);
+        result = 31 * result + Objects.hashCode(altitudeMode);
+        result = 31 * result + Objects.hashCode(coordinates);
+        result = 31 * result + Objects.hashCode(linearRingSimpleExtension);
+        result = 31 * result + Objects.hashCode(linearRingObjectExtension);
+        return result;
     }
 
-    /**
-     * @see coordinates
-     * 
-     * @param coordinates
-     */
     public void setCoordinates(final List<Coordinate> coordinates) {
         this.coordinates = coordinates;
     }
@@ -404,7 +339,7 @@ public class LinearRing
      * @param latitude
      *     required parameter
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public LinearRing addToCoordinates(final double longitude, final double latitude) {
         this.getCoordinates().add(new Coordinate(longitude, latitude));
@@ -421,7 +356,7 @@ public class LinearRing
      * @param altitude
      *     required parameter
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public LinearRing addToCoordinates(final double longitude, final double latitude, final double altitude) {
         this.getCoordinates().add(new Coordinate(longitude, latitude, altitude));
@@ -434,7 +369,7 @@ public class LinearRing
      * @param coordinates
      *     required parameter
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public LinearRing addToCoordinates(final String coordinates) {
         this.getCoordinates().add(new Coordinate(coordinates));
@@ -442,9 +377,10 @@ public class LinearRing
     }
 
     /**
-     * @see linearRingSimpleExtension
+     *
      * 
      * @param linearRingSimpleExtension
+     *     Objects of the following type are allowed in the list: {@link AbstractObject}
      */
     public void setLinearRingSimpleExtension(final List<Object> linearRingSimpleExtension) {
         this.linearRingSimpleExtension = linearRingSimpleExtension;
@@ -456,7 +392,7 @@ public class LinearRing
      * @param linearRingSimpleExtension
      *     Objects of the following type are allowed in the list: {@link Object}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public LinearRing addToLinearRingSimpleExtension(final Object linearRingSimpleExtension) {
         this.getLinearRingSimpleExtension().add(linearRingSimpleExtension);
@@ -464,9 +400,10 @@ public class LinearRing
     }
 
     /**
-     * @see linearRingObjectExtension
+     *
      * 
      * @param linearRingObjectExtension
+     *     Objects of the following type are allowed in the list: {@link AbstractObject}
      */
     public void setLinearRingObjectExtension(final List<AbstractObject> linearRingObjectExtension) {
         this.linearRingObjectExtension = linearRingObjectExtension;
@@ -478,7 +415,7 @@ public class LinearRing
      * @param linearRingObjectExtension
      *     Objects of the following type are allowed in the list: {@link AbstractObject}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public LinearRing addToLinearRingObjectExtension(final AbstractObject linearRingObjectExtension) {
         this.getLinearRingObjectExtension().add(linearRingObjectExtension);
@@ -486,7 +423,7 @@ public class LinearRing
     }
 
     /**
-     * @see objectSimpleExtension
+     *
      * 
      */
     @Obvious
@@ -503,7 +440,7 @@ public class LinearRing
     }
 
     /**
-     * @see geometrySimpleExtension
+     *
      * 
      */
     @Obvious
@@ -520,7 +457,7 @@ public class LinearRing
     }
 
     /**
-     * @see geometryObjectExtension
+     *
      * 
      */
     @Obvious
@@ -538,7 +475,7 @@ public class LinearRing
 
     /**
      * fluent setter
-     * @see #setExtrude(Boolean)
+     *
      * 
      * @param extrude
      *     required parameter
@@ -550,7 +487,7 @@ public class LinearRing
 
     /**
      * fluent setter
-     * @see #setTessellate(Boolean)
+     *
      * 
      * @param tessellate
      *     required parameter
@@ -562,7 +499,7 @@ public class LinearRing
 
     /**
      * fluent setter
-     * @see #setAltitudeMode(Object)
+     *
      * 
      * @param altitudeMode
      *     required parameter
@@ -574,7 +511,7 @@ public class LinearRing
 
     /**
      * fluent setter
-     * @see #setCoordinates(List<Coordinate>)
+     *
      * 
      * @param coordinates
      *     required parameter
@@ -586,7 +523,7 @@ public class LinearRing
 
     /**
      * fluent setter
-     * @see #setLinearRingSimpleExtension(List<Object>)
+     *
      * 
      * @param linearRingSimpleExtension
      *     required parameter
@@ -598,7 +535,7 @@ public class LinearRing
 
     /**
      * fluent setter
-     * @see #setLinearRingObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param linearRingObjectExtension
      *     required parameter
@@ -644,14 +581,12 @@ public class LinearRing
     }
 
     /**
-     * Creates a new instance of {@link List}{@code <}{@link Coordinate}{@code>} and set it to this.coordinates.
+     * Creates a new instance of {@link List}{@code <}{@link Coordinate}{@code >} and set it to this.coordinates.
      * 
      * This method is a short version for:
-     * <pre>
-     * <code>
+     * {@code
      * List<Coordinate> newValue = new List<Coordinate>();
-     * this.setCoordinates(newValue); </code>
-     * </pre>
+     * this.setCoordinates(newValue); }
      * 
      * 
      */

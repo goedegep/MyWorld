@@ -1,19 +1,13 @@
 
 package de.micromata.opengis.kml.v_2_2_0;
 
+import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
+import jakarta.xml.bind.annotation.*;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementRef;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.XmlType;
-import de.micromata.opengis.kml.v_2_2_0.annotations.Obvious;
-
+import java.util.Objects;
 
 /**
  * 
@@ -87,67 +81,39 @@ public class BasicLink
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = ((prime*result)+((href == null)? 0 :href.hashCode()));
-        result = ((prime*result)+((basicLinkSimpleExtension == null)? 0 :basicLinkSimpleExtension.hashCode()));
-        result = ((prime*result)+((basicLinkObjectExtension == null)? 0 :basicLinkObjectExtension.hashCode()));
-        return result;
+    public boolean equals(Object object)
+    {
+        if (this == object)
+            return true;
+        if (object == null || getClass() != object.getClass())
+            return false;
+        if (!super.equals(object))
+            return false;
+
+        BasicLink basicLink = (BasicLink) object;
+        return Objects.equals(href, basicLink.href)
+                && Objects.equals(basicLinkSimpleExtension, basicLink.basicLinkSimpleExtension)
+                && Objects.equals(basicLinkObjectExtension, basicLink.basicLinkObjectExtension);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (super.equals(obj) == false) {
-            return false;
-        }
-        if ((obj instanceof BasicLink) == false) {
-            return false;
-        }
-        BasicLink other = ((BasicLink) obj);
-        if (href == null) {
-            if (other.href!= null) {
-                return false;
-            }
-        } else {
-            if (href.equals(other.href) == false) {
-                return false;
-            }
-        }
-        if (basicLinkSimpleExtension == null) {
-            if (other.basicLinkSimpleExtension!= null) {
-                return false;
-            }
-        } else {
-            if (basicLinkSimpleExtension.equals(other.basicLinkSimpleExtension) == false) {
-                return false;
-            }
-        }
-        if (basicLinkObjectExtension == null) {
-            if (other.basicLinkObjectExtension!= null) {
-                return false;
-            }
-        } else {
-            if (basicLinkObjectExtension.equals(other.basicLinkObjectExtension) == false) {
-                return false;
-            }
-        }
-        return true;
+    public int hashCode()
+    {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(href);
+        result = 31 * result + Objects.hashCode(basicLinkSimpleExtension);
+        result = 31 * result + Objects.hashCode(basicLinkObjectExtension);
+        return result;
     }
 
     /**
-     * Sets the value of the basicLinkSimpleExtension property Objects of the following type(s) are allowed in the list List<Object>.
+     * Sets the value of the basicLinkSimpleExtension property Objects of the following type(s) are allowed in the list {@code List<Object>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withBasicLinkSimpleExtension} instead.
      * 
      * 
      * @param basicLinkSimpleExtension
+     *     Objects of the following type are allowed in the list: {@code <}{@link BigInteger}{@code >}{@code <}{@link BigInteger}{@code >}{@code <}{@link Object}{@code >}{@code <}{@link BigInteger}{@code >}{@code <}{@link BigInteger}{@code >}
      */
     public void setBasicLinkSimpleExtension(final List<Object> basicLinkSimpleExtension) {
         this.basicLinkSimpleExtension = basicLinkSimpleExtension;
@@ -157,9 +123,9 @@ public class BasicLink
      * add a value to the basicLinkSimpleExtension property collection
      * 
      * @param basicLinkSimpleExtension
-     *     Objects of the following type are allowed in the list: {@code <}{@link BigInteger}{@code>}{@link JAXBElement}{@code <}{@link BigInteger}{@code>}{@link JAXBElement}{@code <}{@link Object}{@code>}{@link JAXBElement}{@code <}{@link BigInteger}{@code>}{@link JAXBElement}{@code <}{@link BigInteger}{@code>}
+     *     Objects of the following type are allowed in the list: {@code <}{@link BigInteger}{@code >}{@code <}{@link BigInteger}{@code >}{@code <}{@link Object}{@code >}{@code <}{@link BigInteger}{@code >}{@code <}{@link BigInteger}{@code >}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public BasicLink addToBasicLinkSimpleExtension(final Object basicLinkSimpleExtension) {
         this.getBasicLinkSimpleExtension().add(basicLinkSimpleExtension);
@@ -167,12 +133,13 @@ public class BasicLink
     }
 
     /**
-     * Sets the value of the basicLinkObjectExtension property Objects of the following type(s) are allowed in the list List<AbstractObject>.
+     * Sets the value of the basicLinkObjectExtension property Objects of the following type(s) are allowed in the list {@code List<AbstractObject>}.
      * <p>Note:
      * <p>This method does not make use of the fluent pattern.If you would like to make it fluent, use {@link #withBasicLinkObjectExtension} instead.
      * 
      * 
      * @param basicLinkObjectExtension
+     *     Objects of the following type are allowed in the list: {@link AbstractObject}
      */
     public void setBasicLinkObjectExtension(final List<AbstractObject> basicLinkObjectExtension) {
         this.basicLinkObjectExtension = basicLinkObjectExtension;
@@ -184,7 +151,7 @@ public class BasicLink
      * @param basicLinkObjectExtension
      *     Objects of the following type are allowed in the list: {@link AbstractObject}
      * @return
-     *     <tt>true</tt> (as general contract of <tt>Collection.add</tt>). 
+     *     true (as general contract of Collection.add). 
      */
     public BasicLink addToBasicLinkObjectExtension(final AbstractObject basicLinkObjectExtension) {
         this.getBasicLinkObjectExtension().add(basicLinkObjectExtension);
@@ -206,10 +173,12 @@ public class BasicLink
 
     /**
      * fluent setter
-     * @see #setHref(String)
+     *
      * 
      * @param href
      *     required parameter
+     * @return
+     *     BasicLink
      */
     public BasicLink withHref(final String href) {
         this.setHref(href);
@@ -218,10 +187,12 @@ public class BasicLink
 
     /**
      * fluent setter
-     * @see #setBasicLinkSimpleExtension(List<Object>)
+     *
      * 
      * @param basicLinkSimpleExtension
      *     required parameter
+     * @return
+     *     BasicLink
      */
     public BasicLink withBasicLinkSimpleExtension(final List<Object> basicLinkSimpleExtension) {
         this.setBasicLinkSimpleExtension(basicLinkSimpleExtension);
@@ -230,10 +201,12 @@ public class BasicLink
 
     /**
      * fluent setter
-     * @see #setBasicLinkObjectExtension(List<AbstractObject>)
+     *
      * 
      * @param basicLinkObjectExtension
      *     required parameter
+     * @return
+     *     BasicLink
      */
     public BasicLink withBasicLinkObjectExtension(final List<AbstractObject> basicLinkObjectExtension) {
         this.setBasicLinkObjectExtension(basicLinkObjectExtension);

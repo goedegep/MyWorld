@@ -1,6 +1,5 @@
 package goedegep.travels.exe;
 
-import java.io.File;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,8 +18,6 @@ public class TravelsApplication extends JfxApplication {
   @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger(TravelsApplication.class.getName());
   
-  private static final String LOG_SUBFOLDER = "MyWorld";
-
 
   /**
    * Constructor
@@ -46,7 +43,6 @@ public class TravelsApplication extends JfxApplication {
     String logFileBaseName = null;
     if (!RunningInEclipse.runningInEclipse()) {
       String applicationName = getApplicationNameFromApplicationProperties();
-//      logFileBaseName = System.getProperty("user.home") + File.separator + LOG_SUBFOLDER + File.separator + applicationName + "_logfile";
       logFileBaseName = MyWorldUtil.createLogFileBaseName(applicationName);
     }
     logSetup(Level.SEVERE, logFileBaseName);
